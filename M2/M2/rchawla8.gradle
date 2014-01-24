@@ -1,0 +1,76 @@
+apply plugin: 'java'
+defaultTasks 'jar'
+
+
+version = '1.0'
+MAIN_CLASS = 'edu/gatech/oad/antlab/pkg1/AntLabMain'
+CLASS_PATH = 'lib/resources.jar'
+
+
+repositories {
+        flatDir {
+                name 'localRepository'
+        }
+}
+
+
+repositories {
+        localRepository {
+                dirs 'lib'
+        }
+}
+
+
+configurations {
+        extraLibs
+        }
+
+
+sourceSets {
+        main {
+                java {
+                        srcDirs =  ['src/main/java/edu/gatech/oad/antlab']
+                        }
+                }
+        }
+
+
+sourceSets {
+        test {
+                java {
+                        srcDirs = ['src/test/java']
+                        }
+                }
+        }
+
+
+dependencies {
+        
+        testCompile(group: 'junit', name: 'junit');
+        testCompile(group: 'org.hamcrest', name: 'org.hamcrest-core')
+        compile(name: 'resources')
+}
+
+
+task hello {
+        doLast {
+                println "$word1 $word2"
+        }
+}
+
+
+javadoc{
+        source = sourceSets.main.allJava
+        classpath = configurations.compile
+}
+
+
+jar{
+
+
+        manifest {
+                attributes 'Manifest-Version': version, 'Created-By': 'Ravish Chawla', 'Signature-Version': version, 'Class-Path': CLASS_PATH, 'Main-Class': MAIN_CLASS
+                }
+
+
+        }        
