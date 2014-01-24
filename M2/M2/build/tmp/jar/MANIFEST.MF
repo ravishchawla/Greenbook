@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-Signature-Version: 1.0
-Created-By: Ravish Chawla
-Class-Path: lib/resources.jar
-Main-Class: edu/gatech/oad/antlab/pkg1/AntLabMain
-
