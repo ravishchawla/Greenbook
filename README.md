@@ -1,9 +1,8 @@
 AndroidDesignProject
 ====================
 
-Android Design Project - 2340
-
-! I have created a new branch called 'Reserve', which contains all the changes we have made so far. So, pull the repository to eclipse, and it should be there. So there is a backup, so we can mess around with Original all we want to. 
+- Look on the wiki, I put up a small tutorial on gradle files
+- I also created a new branch called `Reserve`, so pull that to your local rep. don't make changes to it, its just a backp in case we screw something up. 
 
 
 https://github.com/rchawla8/AndroidDesignProject/wiki
