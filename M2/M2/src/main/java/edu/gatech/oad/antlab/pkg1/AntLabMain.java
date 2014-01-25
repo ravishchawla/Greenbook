@@ -73,7 +73,11 @@ import edu.gatech.oad.antlab.pkg2.*;
                   toPrint += p4.toString("902871219");
                   //Person5 replace P4 with your name
                   //and gburdell5 with your gt id
+<<<<<<< HEAD
                   Person5 p5 = new Person5("Devang Patel" );
+=======
+                  Person5 p5 = new Person5("Devang Patel");
+>>>>>>> branch 'Original' of https://github.com/rchawla8/AndroidDesignProject
                   toPrint += p5.toString("dpatel304");
 		  
         System.out.println(toPrint);
