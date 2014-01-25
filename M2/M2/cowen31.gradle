@@ -23,4 +23,5 @@ repositories {
 dependencies {
 compile files('lib/resources.jar')
 compile fileTree(dir:'lib',include: '*.jar')
+
 }
