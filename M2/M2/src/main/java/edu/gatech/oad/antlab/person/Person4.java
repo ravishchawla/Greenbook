@@ -31,7 +31,18 @@ public class Person4 {
      */
     private String calc(String input) {
       //Person 1 put your implementation here
-      return null;
+    	String answer = "";
+    	char[] inputArray = input.toCharArray();
+    	int length = input.length();
+    	for(int i = 0; i < length; i++){
+    		if(inputArray[i] == 'z') inputArray[i] = 'a';
+    		else if(inputArray[i] == 'Z') inputArray[i] = 'A';
+    		else inputArray[i] = (char) (inputArray[i] + 1);
+    		answer = answer + inputArray[i];
+    	}
+
+    	
+        return answer;
     }
     
     /**
