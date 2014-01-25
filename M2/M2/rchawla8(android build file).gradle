@@ -1,7 +1,5 @@
 
-apply plugin: 'java'
 apply plugin: 'android'
-defaultTasks 'jar'
 
 version = '1.0'
 MAIN_CLASS = 'StackSmashers.MainClass'
@@ -99,28 +97,10 @@ repositories {
 	}
 }
 
-dependencies {
-	
-	testCompile(group: 'junit', name: 'junit');
-	testCompile(group: 'org.hamcrest', name: 'org.hamcrest-core')
-}
-
 task hello {
 	doLast {
 		println "$word1 $word2"
 	}
-}
-
-javadoc{
-	source = sourceSets.main.allJava
-	classpath = configurations.compile
-}
-
-jar{
-	manifest {
-		attributes 'Manifest-Version': version, 'Created-By': 'Ravish Chawla', 'Signature-Version': version, 'Class-Path': CLASS_PATH, 'Main-Class': MAIN_CLASS
-		}
-
 }
 	
 
