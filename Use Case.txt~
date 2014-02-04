@@ -1,0 +1,81 @@
+Use Case
+
+Scope: Accounts, Account Transactions, and Transaction History
+
+Level: User Goal
+
+Primary Actor: Account Manager
+
+Offstage Actor: Administrator, Developer
+
+Stakeholders and Interests:
+	
+	Account Manager: Wants to manage transactions, and make neccaary changes that reflect actual financial operations. 
+
+	
+	Administrator: Wants to make sure that all users under his domain are not having any problems using it, and help out any users as needed. 
+
+
+	Developer: Wants to make sure that the app is functioning properly, and wants to be able to debug problems as they arise.
+
+
+
+Preconditions:
+	The Account Manager has logged in to his account, and has been verified and authorized by the system as having a proper account. 
+
+
+Success Guarantee: 
+	Undo or Redo operations on transactions have been correctly applied, and the current balance correctly reflects the financial status of the Account Manager. All operations performed have been logged in.
+
+
+Main Success Scenario:
+	1. Account Manager decides to modify transactions
+	2. The system displays to the user the Transaction History
+	3. The Account Manager decides to rollback or redo some transactions
+	4. The Account Manager selects transactions to undo (in sequence )and presses enter
+	5. The system reads the input and finds the records mactching the transactions in the database
+	6. The system finds all transactions that performed after the transactions and returns them
+	7. The system prompts the Account Manager if he wants to perform a cascading rollback or an quick rollback
+	8. The Account Manager decides to perform a cascading rollback
+	9. The System performs counter transactions for all transactions found and selected
+	10. The system records the counter transactions in the transaction history
+	11. The system refreshes the transaction history to reflect the new status
+
+
+Extensions
+	* The Account Manager selects transactions that are not in sequence
+	6. The system does not look for transactions dependent on the selected transactions, because a cascading rollback cannot be performed on transactions that are out-of-sequence.
+	7.* The rest of the steps are resumed
+
+	* The Account Manager decides to perform a quick rollback
+	9. The System performs counter transactions for all transactions selected
+	10.* The rest of the steps are resumed
+	
+	* The Account Manager decides to undo a deposit transaction or redo a withrwal transaction in which the amount of money being transacted is higher than the current balance
+	9. The System performs counter transactions for all transactions found and selected, but the database refuses to update the data because of negative value (the database will have rules for only positive integers)
+	10.* The rest of the steps are resumed
+
+
+Special Requirements:
+	- A phone or tablet running Android 4.0 or higher.
+	- An existing account in the app, with atleast one transaction
+
+
+Technology and Data Variations List:
+	- Admin logs in by signing out the current logged in account
+	- Text is entered by a touch-UI keyboard
+	- An internet connection, to contact the developer
+
+Frequency of Occurence: Could be nearly continous
+
+Open Issues:
+	- Must the Account Manager or Admin log out before quitting the app from the task manager?
+	- Must the app ask for credentials when the app is resumed from background?
+	- Must the system allow the balance to be negative, or withrawals to be performed with a negative balance?
+	- 
+
+
+
+	
+
+
