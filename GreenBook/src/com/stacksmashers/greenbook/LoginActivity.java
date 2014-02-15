@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -50,7 +51,16 @@ public class LoginActivity extends Activity
 		
 		login_button = (Button)findViewById(R.id.login_button);
 		login_button.setEnabled(false);
+		
+		Bundle extras = getIntent().getExtras();
+		if(extras != null)
+		{
+			login_name.setText(extras.getString("Login Email"));
+		}
+		
+		
 		login_name.addTextChangedListener(new TextWatcher()
+		
 		{
 			
 			@Override
@@ -127,7 +137,9 @@ public class LoginActivity extends Activity
 		});
 		
 	}
-
+	
+	
+	
 	public void onClickLoginActivityButton(View view)
 	{
 		String name = login_name.getEditableText().toString();
@@ -146,12 +158,18 @@ public class LoginActivity extends Activity
 		
 		if(caeser.getCount() != 0)
 		{
-				caeser.moveToFirst();
-			
-				Intent accountsIntent = new Intent(getApplicationContext(), AccountsActivity.class);
-				startActivity(accountsIntent);
-
-			
+			caeser.moveToFirst();
+			Intent accountsIntent = new Intent(getApplicationContext(), AccountsActivity.class);
+			if(name.equals("sudo@root.com"))
+			{
+				accountsIntent.putExtra("Account Type", "Sudoer");
+		
+			}
+			else
+				accountsIntent.putExtra("Account Type", "Non-Sudoer");
+		
+			startActivity(accountsIntent);
+		
 		}
 		else
 		{

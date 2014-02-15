@@ -2,6 +2,7 @@ package com.stacksmashers.greenbook;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.widget.TextView;
 
 public class AccountsActivity extends Activity
 {
@@ -28,7 +29,11 @@ public class AccountsActivity extends Activity
 		
 		setContentView(R.layout.activity_accounts);
 		
+		Bundle extras = getIntent().getExtras();
 		
+		TextView type = (TextView)findViewById(R.id.accountType);
+		
+		type.setText(extras.getString("Account Type"));
 	
 	
 	}

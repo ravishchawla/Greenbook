@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.stacksmashers.greenbook"
     android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionName="1.2" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -24,6 +24,7 @@
         </activity>
         <activity
             android:name="com.stacksmashers.greenbook.RegisterActivity" >
+            android:noHitory="true">
         </activity> 
         <activity
             android:name="com.stacksmashers.greenbook.LoginActivity" >
