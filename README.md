@@ -1,4 +1,6 @@
 AndroidDesignProject
 ====================
 
-https://github.com/rchawla8/AndroidDesignProject/wiki
+Releases
+--------
+https://github.com/rchawla8/AndroidDesignProject/releases
