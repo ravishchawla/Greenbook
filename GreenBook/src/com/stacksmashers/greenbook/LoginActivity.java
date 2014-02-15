@@ -2,6 +2,7 @@ package com.stacksmashers.greenbook;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -145,12 +146,12 @@ public class LoginActivity extends Activity
 		
 		if(caeser.getCount() != 0)
 		{
-			caeser.moveToFirst();
-		
-			if(name.equals("mmayer"))
-				Toast.makeText(getApplicationContext(), "Admin Found\n", Toast.LENGTH_LONG).show();
-			else
-				Toast.makeText(getApplicationContext(), "User Found\n", Toast.LENGTH_LONG).show();
+				caeser.moveToFirst();
+			
+				Intent accountsIntent = new Intent(getApplicationContext(), AccountsActivity.class);
+				startActivity(accountsIntent);
+
+			
 		}
 		else
 		{

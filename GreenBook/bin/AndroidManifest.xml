@@ -28,6 +28,10 @@
         <activity
             android:name="com.stacksmashers.greenbook.LoginActivity" >
         </activity>
+        <activity
+            android:name="com.stacksmashers.greenbook.AccountsActivity" >
+        </activity>
+        
     </application>
 
 </manifest>
