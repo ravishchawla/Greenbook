@@ -17,6 +17,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	public static final String USER_TYPE = "USER_TYPE";
 	public static final String USER_NAME = "USER_NAME";
 	public static final String USER_DISPLAY_NAME = "USER_DISPLAY_NAME";
+    public static final String USER_EMAIL = "USER_EMAIL";
 	public static final String USER_PIC = "USER_PIC";
 	public static final String USER_PASS = "USER_PASS";
 	
@@ -75,28 +76,33 @@ public class DBHelper extends SQLiteOpenHelper {
 		final String createUserTable = "CREATE TABLE " + USER_TABLE + "( " + _id + " INTEGER PRIMARY KEY AUTOINCREMENT," + 
 																						  USER_TYPE + " TEXT," +
 																						  USER_NAME + " TEXT," +
-																						  USER_DISPLAY_NAME + " TEXT," + 
+																						  USER_DISPLAY_NAME + " TEXT," +
+																						  USER_EMAIL + " TEXT," +
 																						  USER_PIC + " TEXT," +
 																						  USER_PASS + " TEXT" + ");";
 		
 		final String createAccountTable = "CREATE TABLE " + ACCOUNT_TABLE + "( " + _id + " INTEGER PRIMARY KEY AUTOINCREMENT," + 
-																						  ACCOUNT_USER + " TEXT," + 
+																						  ACCOUNT_USER + " INTEGER," + 
 				                                                                          ACCOUNT_NAME + " TEXT," + 
-																						  ACCOUNT_BALANCE + " INTEGER" + ");";
+																						  ACCOUNT_BALANCE + " INTEGER," + 
+																						  "FOREIGN KEY(" + ACCOUNT_USER + ") REFERENCES " + USER_TABLE + "(" + _id + ") ON DELETE CASCADE" +
+																						  ");";
 		
 		
 					
 		final String createTransactionTable = "CREATE TABLE " + TRANSACTION_TABLE + "( " + _id + " INTEGER PRIMARY KEY AUTOINCREMENT," + 
-		                                                                                  TRANSACTION_USER + " TEXT," + 
-		                                                                                  TRANSACTION_ACCOUNT + " TEXT," + 
+		                                                                                  TRANSACTION_USER + " INTEGER," + 
+		                                                                                  TRANSACTION_ACCOUNT + " INTEGER," + 
 		                                                                                  TRANSACTION_NAME + " TEXT," + 
 		                                                                                  TRANSACTION_TYPE + " TEXT," + 
 		                                                                                  TRANSACTION_VALUE + " INTEGER," +
 		                                                                                  TRANSACTION_WITHRAWAL_REASON + " TEXT," +
 		                                                                                  TRANSACTION_DEPOSIT_SOURCE + " TEXT," + 
 		                                                                                  TRANSACTION_CATEGORY + " TEXT," + 
-		                                                                                  TRANSACTION_POSTED + " DATETIME DEFAULT," + 
-		                                                                                  TRANSACTION_AFFECTED + " DATETIME," + ");";
+		                                                                                  TRANSACTION_POSTED + " DATETIME," + 
+		                                                                                  TRANSACTION_AFFECTED + " DATETIME," +
+		                                                               				      "FOREIGN KEY(" + TRANSACTION_USER + ") REFERENCES " + USER_TABLE + "(" + _id + ") ON DELETE CASCADE," +
+		                                                            				      "FOREIGN KEY(" + TRANSACTION_ACCOUNT + ") REFERENCES " + ACCOUNT_TABLE + "(" + _id + ") ON DELETE CASCADE" +");";
 		
 		
 	

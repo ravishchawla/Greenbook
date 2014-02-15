@@ -5,7 +5,10 @@ import android.app.Activity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -13,10 +16,13 @@ public class LoginActivity extends Activity
 {
 	EditText login_name;
 	EditText login_pass;
+	Button login_button;
 	public Cursor caeser;
 
 	DBHelper dbase;
 	SQLiteDatabase sqldbase;
+	
+	boolean name_bool = false, pass_bool = false;
 	
 	public LoginActivity()
 	{
@@ -41,7 +47,83 @@ public class LoginActivity extends Activity
 		login_name = (EditText)findViewById(R.id.login_name);
 		login_pass = (EditText)findViewById(R.id.login_password);
 		
+		login_button = (Button)findViewById(R.id.login_button);
+		login_button.setEnabled(false);
+		login_name.addTextChangedListener(new TextWatcher()
+		{
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count)
+			{
+				// TODO Auto-generated method stub
+				
+				if(login_name.getEditableText().toString().matches(".+@[a-z]+[.]com"))
+					name_bool = true;
+				else
+					name_bool = false;
+					
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after)
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void afterTextChanged(Editable s)
+			{
+			
+				if(name_bool && pass_bool)
+					login_button.setEnabled(true);
+				else
+					login_button.setEnabled(false);
+				
+				
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		
+		login_pass.addTextChangedListener(new TextWatcher()
+		{
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count)
+			{
+				// TODO Auto-generated method stub
+				
+				if(login_pass.getEditableText().toString().matches(".+"))
+					pass_bool= true;
+				else
+					pass_bool = false;
+					
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after)
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void afterTextChanged(Editable s)
+			{
+			
+				if(name_bool && pass_bool)
+					login_button.setEnabled(true);
+				else
+					login_button.setEnabled(false);
+				
+				
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		
 	}
 
@@ -50,7 +132,7 @@ public class LoginActivity extends Activity
 		String name = login_name.getEditableText().toString();
 		String pass = login_pass.getEditableText().toString();
 		
-		caeser = sqldbase.query(DBHelper.USERS_TABLE, new String[]{DBHelper.USERS_ID, DBHelper.USER_NAME, DBHelper.USER_PASS}, DBHelper.USER_NAME + " = '" + name + "' AND " + DBHelper.USER_PASS + " = '" + pass + "'", null, null, null, null);
+		caeser = sqldbase.query(DBHelper.USER_TABLE, new String[]{DBHelper.USERS_ID, DBHelper.USER_NAME, DBHelper.USER_PASS}, DBHelper.USER_NAME + " = '" + name + "' AND " + DBHelper.USER_PASS + " = '" + pass + "'", null, null, null, null);
 				
 				/*
 				 * fields = sqldbase.query(DBHelper.COURSE_TABLE, new String[]
