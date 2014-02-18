@@ -14,15 +14,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class LoginActivity extends Activity
+public class LoginActivity extends BaseActivity
 {
 	EditText login_name;
 	EditText login_pass;
 	Button login_button;
 	public Cursor caeser;
 
-	DBHelper dbase;
-	SQLiteDatabase sqldbase;
+	
 	
 	boolean name_bool = false, pass_bool = false;
 	
@@ -42,9 +41,7 @@ public class LoginActivity extends Activity
 		
 		setContentView(R.layout.activity_login);
 	
-		dbase = new DBHelper(getBaseContext());
-		sqldbase = dbase.getWritableDatabase();
-		
+
 		
 		login_name = (EditText)findViewById(R.id.login_name);
 		login_pass = (EditText)findViewById(R.id.login_password);
@@ -56,6 +53,7 @@ public class LoginActivity extends Activity
 		if(extras != null)
 		{
 			login_name.setText(extras.getString("Login Email"));
+			name_bool = true;
 		}
 		
 		
@@ -129,6 +127,8 @@ public class LoginActivity extends Activity
 					login_button.setEnabled(true);
 				else
 					login_button.setEnabled(false);
+				
+				Log.i("tag", " " + name_bool);
 				
 				
 				// TODO Auto-generated method stub

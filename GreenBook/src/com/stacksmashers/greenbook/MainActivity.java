@@ -10,15 +10,14 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 
-public class MainActivity extends Activity
+public class MainActivity extends BaseActivity
 {
 
 	Button loginButton, registerButton;
 	
 	public final String TAG = "activity_main";
 
-	DBHelper dbase;
-	SQLiteDatabase sqldbase;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -26,9 +25,6 @@ public class MainActivity extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		dbase = new DBHelper(getBaseContext());
-		sqldbase = dbase.getWritableDatabase();
-			
 		
 		loginButton = (Button)findViewById(R.id.loginButton);
 		registerButton = (Button)findViewById(R.id.registerButton);

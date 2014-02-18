@@ -19,7 +19,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class RegisterActivity extends Activity
+public class RegisterActivity extends BaseActivity
 {
 
 	EditText register_name, register_username, register_password, register_checkpassword;
@@ -29,8 +29,7 @@ public class RegisterActivity extends Activity
 	 * @param args
 	 */
 	
-	DBHelper dbase;
-	SQLiteDatabase sqldbase;
+	
 	String text;
 	public Cursor caeser;
 	boolean name_bool = false, email_bool = false, password_bool = false, checkpassword_bool = false;
@@ -45,8 +44,7 @@ public class RegisterActivity extends Activity
 		
 		setContentView(R.layout.activity_register);
 	
-		dbase = new DBHelper(getBaseContext());
-		sqldbase = dbase.getWritableDatabase();
+		
 	
 		
 		register_name = (EditText)findViewById(R.id.register_name);
