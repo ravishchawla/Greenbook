@@ -7,6 +7,12 @@ import com.parse.Parse;
 import com.parse.ParseAnalytics;
 import com.parse.ParseObject;
 
+/**
+ * 
+ * this class calls all account activity within the application 
+ * it make sure basic stuff about activity life cycle 
+ *
+ */
 public class BaseActivity extends Activity
 {
 
@@ -20,6 +26,7 @@ public class BaseActivity extends Activity
 
 	/**
 	 * @param args
+	 * main method 
 	 */
 	public static void main(String[] args)
 	{
@@ -28,6 +35,10 @@ public class BaseActivity extends Activity
 	}
 
 	@Override
+	/*called this method to start the activity.  
+	 *  
+	 * 
+	 */
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		// TODO Auto-generated method stub
@@ -39,12 +50,14 @@ public class BaseActivity extends Activity
 		
 		Parse.initialize(this, "7003TMIrbLL91cSLNAhVD1dkHK2f6Xx1rtrVUtEY", "UooMQDvQLmMbzI2zsm4yHi1BYCTQFnSuSINL9elv");
 		
+		//test the different object
 		ParseObject testObject = new ParseObject("HailCaeser");
 		testObject.put("Caeser", "MarkAnthony");
 		
 		ParseObject crestObject = new ParseObject("HailBrutus");
 		crestObject.put("Bruthus", "Romeo");
 		
+		//save the activity in background 
 		testObject.saveInBackground();
 		crestObject.saveInBackground();
 		

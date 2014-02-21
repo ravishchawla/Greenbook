@@ -4,6 +4,12 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TextView;
 
+   /**
+    * 
+    * this class calls all account activity within the application 
+    *it is registry of user's account. 
+    *
+    */
 public class AccountsActivity extends Activity
 {
 
@@ -12,16 +18,21 @@ public class AccountsActivity extends Activity
 		// TODO Auto-generated constructor stub
 	}
 
-	/**
+    /**
 	 * @param args
-	 */
+	 * main method that calls other method
+     */
 	public static void main(String[] args)
 	{
 		// TODO Auto-generated method stub
 
 	}
-
+      
 	@Override
+	/*called this method to start the activity.  
+	 * Maintain the activity and application. 
+	 * 
+	 */
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		// TODO Auto-generated method stub

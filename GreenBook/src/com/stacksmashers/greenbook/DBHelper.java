@@ -6,6 +6,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+/*
+ * we use this method to extend the SQliteopenhelper 
+ */
 public class DBHelper extends SQLiteOpenHelper {
 
 	public static final String Database_Name = "main_database.db";
@@ -57,6 +60,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	}
 	
 	@Override
+	//call this method everytime to open the database 
 	public void onOpen(SQLiteDatabase db) {
 	    super.onOpen(db);
 	    if (!db.isReadOnly()) {
@@ -66,7 +70,9 @@ public class DBHelper extends SQLiteOpenHelper {
 	}
 
 
-
+    /**
+     * called once when the database file is created  
+     */
 
 	@Override
 	public void onCreate(SQLiteDatabase dbse) {
@@ -115,6 +121,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
 	@Override
+	/**
+	 * Called once if database has been changed since last time 
+	 */
 	public void onUpgrade(SQLiteDatabase dbse, int arg1, int arg2) {
 		// TODO Auto-generated method stub
 		
