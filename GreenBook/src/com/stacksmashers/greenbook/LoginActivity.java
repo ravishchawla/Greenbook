@@ -13,54 +13,68 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+/**
+ * 
+ * this class calls all account activity within the application . 
+ * it make sure all login activity 
+ */
 
 public class LoginActivity extends BaseActivity
 {
-	EditText login_name;
-	EditText login_pass;
-	Button login_button;
-	public Cursor caeser;
+	EditText login_name;      // edit login name 
+	EditText login_pass;      
+	Button login_button;      // edit login button 
+	public Cursor caeser;     // cursor 
 
 	
 	
 	boolean name_bool = false, pass_bool = false;
 	
-	public LoginActivity()
+	public LoginActivity()     //loginactivity 
 	{
 		// TODO Auto-generated constructor stub
 	}
 
-	/**
-	 * @param args
+	/**called this method to start the activity.  
+	 * @param savedInstanceState
+	 * @return void 
 	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		// TODO Auto-generated method stub
-		super.onCreate(savedInstanceState);
+		super.onCreate(savedInstanceState);    // create savedinstancestate 
 		
-		setContentView(R.layout.activity_login);
+		setContentView(R.layout.activity_login);  // setcontentview 
 	
 
 		
-		login_name = (EditText)findViewById(R.id.login_name);
+		login_name = (EditText)findViewById(R.id.login_name);    //login name 
 		login_pass = (EditText)findViewById(R.id.login_password);
 		
-		login_button = (Button)findViewById(R.id.login_button);
+		login_button = (Button)findViewById(R.id.login_button);  // login button 
 		login_button.setEnabled(false);
 		
 		Bundle extras = getIntent().getExtras();
 		if(extras != null)
 		{
-			login_name.setText(extras.getString("Login Email"));
+			login_name.setText(extras.getString("Login Email"));  //login email 
 			name_bool = true;
 		}
 		
 		
-		login_name.addTextChangedListener(new TextWatcher()
+		login_name.addTextChangedListener(new TextWatcher()    // text change listener 
 		
 		{
-			
+			/**
+			 * @param s
+			 * @param start  
+			 * @param before
+			 * @param count 
+			 * @return void 
+			 * called this method to notify that, within s, 
+			 * the count characters beginning at start have just replaced old text that had length before.
+			 */
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count)
 			{
@@ -72,7 +86,15 @@ public class LoginActivity extends BaseActivity
 					name_bool = false;
 					
 			}
-			
+			/**
+			 * @param s
+			 * @param start  
+			 * @param before
+			 * @param count 
+			 * @return void 
+			 * called this method to notify that, within s, 
+			 * the count characters beginning at start start are about to be replaced by new text with length after.
+			 */
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
 					int after)
@@ -81,14 +103,20 @@ public class LoginActivity extends BaseActivity
 				
 			}
 			
+			/**
+			 * @param s 
+			 * @return void 
+			 * This method is called to notify you that, somewhere within s, 
+			 * the text has been changed.
+			 */
 			@Override
 			public void afterTextChanged(Editable s)
 			{
 			
-				if(name_bool && pass_bool)
-					login_button.setEnabled(true);
+				if(name_bool && pass_bool)          // if name and passwor matches 
+					login_button.setEnabled(true);  // than its true 
 				else
-					login_button.setEnabled(false);
+					login_button.setEnabled(false); // its false 
 				
 				
 				// TODO Auto-generated method stub
@@ -98,7 +126,15 @@ public class LoginActivity extends BaseActivity
 		
 		login_pass.addTextChangedListener(new TextWatcher()
 		{
-			
+			/**
+			 * @param s
+			 * @param start  
+			 * @param before
+			 * @param count 
+			 * @return void 
+			 * called this method to notify that, within s, 
+			 * the count characters beginning at start have just replaced old text that had length before.
+			 */
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count)
 			{
@@ -111,6 +147,15 @@ public class LoginActivity extends BaseActivity
 					
 			}
 			
+			/**
+			 * @param s
+			 * @param start  
+			 * @param before
+			 * @param count 
+			 * @return void 
+			 * called this method to notify that, within s, 
+			 * the count characters beginning at start start are about to be replaced by new text with length after.
+			 */
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
 					int after)
@@ -119,6 +164,12 @@ public class LoginActivity extends BaseActivity
 				
 			}
 			
+			/**
+			 * @param s 
+			 * @return void 
+			 * This method is called to notify you that, somewhere within s, 
+			 * the text has been changed.
+			 */
 			@Override
 			public void afterTextChanged(Editable s)
 			{
@@ -139,7 +190,12 @@ public class LoginActivity extends BaseActivity
 	}
 	
 	
-	
+	/**
+	 * 
+	 * @param views
+	 * @return void 
+	 * this method to click on login activity and see it 
+	 */
 	public void onClickLoginActivityButton(View view)
 	{
 		String name = login_name.getEditableText().toString();
@@ -159,21 +215,21 @@ public class LoginActivity extends BaseActivity
 		if(caeser.getCount() != 0)
 		{
 			caeser.moveToFirst();
-			Intent accountsIntent = new Intent(getApplicationContext(), AccountsActivity.class);
-			if(name.equals("sudo@root.com"))
+			Intent accountsIntent = new Intent(getApplicationContext(), AccountsActivity.class);  // get application cotext from accountsactivity class 
+			if(name.equals("sudo@root.com"))    // if account type is specific 
 			{
-				accountsIntent.putExtra("Account Type", "Sudoer");
+				accountsIntent.putExtra("Account Type", "Sudoer");  // return sudoer 
 		
 			}
 			else
-				accountsIntent.putExtra("Account Type", "Non-Sudoer");
+				accountsIntent.putExtra("Account Type", "Non-Sudoer"); // reutrn nonsuder 
 		
-			startActivity(accountsIntent);
+			startActivity(accountsIntent);  // start activity 
 		
 		}
 		else
 		{
-			Toast.makeText(getApplicationContext(),"User not found", Toast.LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(),"User not found", Toast.LENGTH_LONG).show();  // user not found if id and password wrong 
 		}
 		
 	}

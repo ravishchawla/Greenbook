@@ -35,9 +35,9 @@ public class BaseActivity extends Activity
 	}
 
 	@Override
-	/*called this method to start the activity.  
-	 *  
-	 * 
+	/**called this method to start the activity.  
+	 * @param savedInstanceState
+	 * @return void 
 	 */
 	protected void onCreate(Bundle savedInstanceState)
 	{

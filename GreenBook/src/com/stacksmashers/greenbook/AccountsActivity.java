@@ -29,20 +29,21 @@ public class AccountsActivity extends Activity
 	}
       
 	@Override
-	/*called this method to start the activity.  
-	 * Maintain the activity and application. 
-	 * 
+	/**called this method to start the activity.  
+	 * Maintain the activity and application.
+	 *@param savedInstanceState 
+	 * @return void 
 	 */
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		
-		setContentView(R.layout.activity_accounts);
+		setContentView(R.layout.activity_accounts);     // calling setcontentview from res 
 		
 		Bundle extras = getIntent().getExtras();
 		
-		TextView type = (TextView)findViewById(R.id.accountType);
+		TextView type = (TextView)findViewById(R.id.accountType);  // finding textview type 
 		
 		type.setText(extras.getString("Account Type"));
 	

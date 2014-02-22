@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-/*
+/**
  * we use this method to extend the SQliteopenhelper 
  */
 public class DBHelper extends SQLiteOpenHelper {
@@ -72,6 +72,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
     /**
      * called once when the database file is created  
+     * @param dbse - to hold database 
+     * @return void 
      */
 
 	@Override
@@ -113,9 +115,9 @@ public class DBHelper extends SQLiteOpenHelper {
 		
 	
 		Log.i(TAG,"SQL Statements created");
-		dbse.execSQL(createUserTable);
-		dbse.execSQL(createAccountTable);
-		dbse.execSQL(createTransactionTable);
+		dbse.execSQL(createUserTable);          //create use table 
+		dbse.execSQL(createAccountTable);       // create account table 
+		dbse.execSQL(createTransactionTable);   // create transaction table 
 
 	}
 
@@ -123,6 +125,9 @@ public class DBHelper extends SQLiteOpenHelper {
 	@Override
 	/**
 	 * Called once if database has been changed since last time 
+	 * @param args1 - value 
+	 * @param args2 - value 
+	 * @return void 
 	 */
 	public void onUpgrade(SQLiteDatabase dbse, int arg1, int arg2) {
 		// TODO Auto-generated method stub
