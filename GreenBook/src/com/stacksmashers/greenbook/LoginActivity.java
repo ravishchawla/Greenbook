@@ -21,11 +21,11 @@ import android.widget.Toast;
 
 public class LoginActivity extends BaseActivity
 {
-	EditText login_name;      // edit login name 
-	EditText login_pass;      
-	Button login_button;      // edit login button 
-	public Cursor caeser;     // cursor 
-
+	private EditText login_name;      // edit login name 
+	private EditText login_pass;      
+	private Button login_button;      // edit login button 
+	private Cursor caeser;     // cursor 
+	
 	
 	
 	boolean name_bool = false, pass_bool = false;
@@ -218,12 +218,15 @@ public class LoginActivity extends BaseActivity
 			Intent accountsIntent = new Intent(getApplicationContext(), AccountsActivity.class);  // get application cotext from accountsactivity class 
 			if(name.equals("sudo@root.com"))    // if account type is specific 
 			{
-				accountsIntent.putExtra("Account Type", "Sudoer");  // return sudoer 
+				accountsIntent.putExtra("Account Type", "Sudoer");  // return sudoer
+				
 		
 			}
 			else
 				accountsIntent.putExtra("Account Type", "Non-Sudoer"); // reutrn nonsuder 
 		
+			
+			accountsIntent.putExtra("Account User", name);
 			startActivity(accountsIntent);  // start activity 
 		
 		}

@@ -4,14 +4,21 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
    /**
     * 
@@ -19,16 +26,18 @@ import android.widget.TextView;
     *it is registry of user's account. 
     *
     */
-public class AccountsActivity extends BaseActivity
+public class AccountsActivity extends BaseActivity 
 {
-	View dialogView;
-	ListView list;
-	TextView add_name;
-	TextView add_balance;
-	Spinner choose_bank;
-	Spinner choose_color;
-	SeperatedListAdapter adapter;
-	
+	private View dialogView;
+	private ListView list;
+	private TextView add_name;
+	private TextView add_balance;
+	private TextView add_custom;
+	private Spinner choose_bank;
+	private Spinner choose_color;
+	private SimpleCursorAdapter adap;
+	private String accountsUser, userType;
+	private int userID;
 	
 	
 
@@ -62,19 +71,21 @@ public class AccountsActivity extends BaseActivity
 		
 		Bundle extras = getIntent().getExtras();
 		
-		String userType = extras.getString("Account Type");
+		userType = extras.getString("Account Type");
+		accountsUser = extras.getString("Account User");
 		
-		ListView list = (ListView)findViewById(R.id.accounts_list);
+		list = (ListView)findViewById(R.id.accounts_list);
 		
 		dialogView = getLayoutInflater().inflate(R.layout.dialog_accounts, null);;
 		
 		add_name = (TextView)dialogView.findViewById(R.id.accounts_dialog_name);
 		add_balance = (TextView)dialogView.findViewById(R.id.accounts_dialog_balance);
+		add_custom = (AutoCompleteTextView)dialogView.findViewById(R.id.accounts_display_custom);
 		choose_bank = (Spinner)dialogView.findViewById(R.id.accounts_dialog_bank);
 		choose_color = (Spinner)dialogView.findViewById(R.id.accounts_dialog_color);
 		
-		
-		
+		add_custom.setVisibility(View.GONE);
+
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.Banks, android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		choose_bank.setAdapter(adapter);
@@ -82,9 +93,62 @@ public class AccountsActivity extends BaseActivity
 		adapter = ArrayAdapter.createFromResource(this, R.array.Colors, android.R.layout.simple_spinner_item);
 		choose_color.setAdapter(adapter);
 		
-	
+		
+		
+		choose_bank.setOnItemSelectedListener(new OnItemSelectedListener()
+		{
+
+			@Override
+			public void onItemSelected(AdapterView<?> adapter, View view,
+					int pos, long id)
+			{
+				// TODO Auto-generated method stub
+				
+
+				if(pos == (choose_bank.getCount() -1))
+				{
+					add_custom.setVisibility(View.VISIBLE);
+				}
+			
+				else
+					add_custom.setVisibility(View.GONE);
+				
+				Log.i("Selected id: ", choose_bank.getCount() + " - " + pos);
+			
+				
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0)
+			{
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		
+		//Toast.makeText(getApplicationContext(), "User: " + accountsUser, Toast.LENGTH_LONG).show();
+		Log.i("TAG", "User: " + accountsUser);
+		
+		Cursor csr = sqldbase.query(DBHelper.USER_TABLE, new String[]{DBHelper.USERS_ID}, DBHelper.USER_NAME + " = '" + accountsUser + "'", null,null,null,null); 
+		
+		if (csr.getCount() != 0)
+		{
+			csr.moveToFirst();
+			userID = csr.getInt(0);
+			Log.i("User ID: ", ""+userID);	
+		}
+		
+		
+		
+		
+		updateData();
 	
 	}
+	
+	
+	
+	
 	
 	
 	@Override
@@ -113,6 +177,9 @@ public class AccountsActivity extends BaseActivity
 		return super.onOptionsItemSelected(item);
 	}
 	
+	
+	
+	
 	public void addAccount()
 	{
 		
@@ -134,13 +201,14 @@ public class AccountsActivity extends BaseActivity
 					caeser.put(DBHelper.ACCOUNT_BALANCE, add_balance.getText().toString());
 					caeser.put(DBHelper.ACCOUNT_BANK, choose_bank.getSelectedItem().toString());
 					caeser.put(DBHelper.ACCOUNT_COLOR, choose_color.getSelectedItem().toString());
-					
+					caeser.put(DBHelper.ACCOUNT_USER, userID);
 					sqldbase.insert(DBHelper.ACCOUNT_TABLE, null, caeser);
-
+					updateData();
 					//caeser.put(DBHelper.ACCOUNT, value)
 					
 				}
 			}).show();
+			
 			
 		
 			
@@ -151,7 +219,32 @@ public class AccountsActivity extends BaseActivity
 	}
 	
 	
-	
+	@SuppressWarnings("deprecation")
+	public void updateData()
+	{
+		
+		
+		
+		String from[] = {DBHelper.ACCOUNT_NAME, DBHelper.ACCOUNT_BANK, DBHelper.ACCOUNT_BALANCE};
+		String query[] = {DBHelper.ACCOUNT_ID, DBHelper.ACCOUNT_NAME, DBHelper.ACCOUNT_BANK, DBHelper.ACCOUNT_BALANCE};
+		int to[] = {R.id.account_display_name, R.id.account_display_bank, R.id.account_display_balance};
+		
+		
+		
+		
+		Cursor csr = sqldbase.query(DBHelper.ACCOUNT_TABLE, query, DBHelper.ACCOUNT_USER + " = '" + userID + "'", null, null, null, null);
+		
+		Log.i("TAG", "Cursor Adap = null: " + csr.getCount());
+		
+		if(csr.getCount() != 0)
+		{
+			adap = new SimpleCursorAdapter(getBaseContext(), R.layout.listblock_accounts, csr, from, to);
+		
+			
+			list.setAdapter(adap);
+		}
+	}
+
 	
 	
 	
