@@ -5,11 +5,13 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -18,7 +20,6 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
    /**
     * 
@@ -76,7 +77,62 @@ public class AccountsActivity extends BaseActivity
 		
 		list = (ListView)findViewById(R.id.accounts_list);
 		
-		dialogView = getLayoutInflater().inflate(R.layout.dialog_accounts, null);;
+				
+		
+		//Toast.makeText(getApplicationContext(), "User: " + accountsUser, Toast.LENGTH_LONG).show();
+		Log.i("TAG", "User: " + accountsUser);
+		
+		Cursor csr = sqldbase.query(DBHelper.USER_TABLE, new String[]{DBHelper.USERS_ID}, DBHelper.USER_NAME + " = '" + accountsUser + "'", null,null,null,null); 
+		
+		if (csr.getCount() != 0)
+		{
+			csr.moveToFirst();
+			userID = csr.getInt(0);
+			Log.i("User ID: ", ""+userID);	
+		}
+		
+		
+		
+		
+		updateData();
+	
+		
+	}
+	
+	
+	
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+	
+		getMenuInflater().inflate(R.menu.menu_accounts, menu);
+		
+		// TODO Auto-generated method stub
+		return super.onCreateOptionsMenu(menu);
+	}
+	
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+	
+		if(item.getItemId() == R.id.accounts_add)
+		{
+			addAccount();
+			
+		}
+		
+		// TODO Auto-generated method stub
+		return super.onOptionsItemSelected(item);
+	}
+	
+	
+	
+	
+	public void addAccount()
+	{
+dialogView = getLayoutInflater().inflate(R.layout.dialog_accounts, null);;
 		
 		add_name = (TextView)dialogView.findViewById(R.id.accounts_dialog_name);
 		add_balance = (TextView)dialogView.findViewById(R.id.accounts_dialog_balance);
@@ -125,67 +181,12 @@ public class AccountsActivity extends BaseActivity
 				
 			}
 		});
+
 		
 		
-		//Toast.makeText(getApplicationContext(), "User: " + accountsUser, Toast.LENGTH_LONG).show();
-		Log.i("TAG", "User: " + accountsUser);
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		
-		Cursor csr = sqldbase.query(DBHelper.USER_TABLE, new String[]{DBHelper.USERS_ID}, DBHelper.USER_NAME + " = '" + accountsUser + "'", null,null,null,null); 
-		
-		if (csr.getCount() != 0)
-		{
-			csr.moveToFirst();
-			userID = csr.getInt(0);
-			Log.i("User ID: ", ""+userID);	
-		}
-		
-		
-		
-		
-		updateData();
-	
-	}
-	
-	
-	
-	
-	
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
-	{
-	
-		getMenuInflater().inflate(R.menu.menu_accounts, menu);
-		
-		// TODO Auto-generated method stub
-		return super.onCreateOptionsMenu(menu);
-	}
-	
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
-	
-		if(item.getItemId() == R.id.accounts_add)
-		{
-			addAccount();
-			
-			
-		}
-		
-		// TODO Auto-generated method stub
-		return super.onOptionsItemSelected(item);
-	}
-	
-	
-	
-	
-	public void addAccount()
-	{
-		
-		
-		
-			new AlertDialog.Builder(this).setView(dialogView).setPositiveButton("Add", new OnClickListener()
+			builder.setView(dialogView).setPositiveButton("Add", new OnClickListener()
 			{
 				
 				@Override
@@ -194,7 +195,9 @@ public class AccountsActivity extends BaseActivity
 					// TODO Auto-generated method stub
 					
 					//Toast.makeText(getApplicationContext(), choose_bank.getSelectedItem().toString(), Toast.LENGTH_LONG).show();
-						
+					
+					
+					
 					
 					ContentValues caeser = new ContentValues();
 					caeser.put(DBHelper.ACCOUNT_NAME, add_name.getText().toString());
@@ -205,7 +208,18 @@ public class AccountsActivity extends BaseActivity
 					sqldbase.insert(DBHelper.ACCOUNT_TABLE, null, caeser);
 					updateData();
 					//caeser.put(DBHelper.ACCOUNT, value)
+		
 					
+					
+				}
+			}).setTitle("Enter Details").setNegativeButton("Cancel", new OnClickListener(){
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which)
+				{
+						
+					
+						dialog.cancel();
 				}
 			}).show();
 			
@@ -226,23 +240,68 @@ public class AccountsActivity extends BaseActivity
 		
 		
 		String from[] = {DBHelper.ACCOUNT_NAME, DBHelper.ACCOUNT_BANK, DBHelper.ACCOUNT_BALANCE};
-		String query[] = {DBHelper.ACCOUNT_ID, DBHelper.ACCOUNT_NAME, DBHelper.ACCOUNT_BANK, DBHelper.ACCOUNT_BALANCE};
+		String query[] = {DBHelper.ACCOUNT_ID, DBHelper.ACCOUNT_NAME, DBHelper.ACCOUNT_BANK, DBHelper.ACCOUNT_BALANCE, DBHelper.ACCOUNT_COLOR};
 		int to[] = {R.id.account_display_name, R.id.account_display_bank, R.id.account_display_balance};
 		
 		
 		
 		
-		Cursor csr = sqldbase.query(DBHelper.ACCOUNT_TABLE, query, DBHelper.ACCOUNT_USER + " = '" + userID + "'", null, null, null, null);
+		final Cursor csr = sqldbase.query(DBHelper.ACCOUNT_TABLE, query, DBHelper.ACCOUNT_USER + " = '" + userID + "'", null, null, null, null);
 		
 		Log.i("TAG", "Cursor Adap = null: " + csr.getCount());
 		
 		if(csr.getCount() != 0)
 		{
-			adap = new SimpleCursorAdapter(getBaseContext(), R.layout.listblock_accounts, csr, from, to);
+			csr.moveToFirst();
+			adap = new SimpleCursorAdapter(getBaseContext(), R.layout.listblock_accounts, csr, from, to){
 		
+			
+				@Override
+				public View getView(int position, View convertView, ViewGroup parent){
+					
+					View v = super.getView(position, convertView, parent);
+					
+					String color = csr.getString(4);
+					Log.i("color: " , color);
+					int setColor;
+					if(color.equals("Red"))
+						setColor = getResources().getColor(android.R.color.holo_red_light);
+					else if (color.equals("Green"))
+						setColor = getResources().getColor(android.R.color.holo_green_dark);
+					else if (color.equals("Blue"))
+						setColor = getResources().getColor(android.R.color.holo_blue_light);
+					else if (color.equals("Yellow"))
+						setColor = getResources().getColor(android.R.color.holo_green_light);
+					else if (color.equals("Cyan"))
+						setColor = getResources().getColor(android.R.color.holo_blue_bright);
+					else if (color.equals("Magenta"))
+						setColor = getResources().getColor(android.R.color.holo_purple);
+					else 
+						setColor = getResources().getColor(android.R.color.white);
+					
+					
+					v.setBackgroundColor(setColor);
+					csr.moveToNext();
+					
+					return v;
+					
+					
+				}
+				
+				
+			};
+			
+			
+			
 			
 			list.setAdapter(adap);
 		}
+		
+		
+		
+		
+		
+		
 	}
 
 	

@@ -19,12 +19,13 @@
     </string-array>
 
     <string-array name="Colors">
-        <item >Red</item>
-        <item >Green</item>
-        <item> Orange</item>
-        <item> Cyan</item>
-        
-        
-    </string-array>
-    
+        <item >White </item>
+        <item >Red </item>
+        <item >Green </item>
+        <item >Blue </item>
+        <item >Yellow </item>
+        <item >Cyan </item>
+        <item >Magenta </item>
+     </string-array>
+
 </resources>
