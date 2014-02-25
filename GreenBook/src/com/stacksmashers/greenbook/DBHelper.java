@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * we use this method to extend the SQliteopenhelper 
@@ -30,7 +31,8 @@ public class DBHelper extends SQLiteOpenHelper {
 	public static final String ACCOUNT_USER = "ACCOUNT_USER";
 	public static final String ACCOUNT_BALANCE= "ACCOUNT_BALANCE";
 	public static final String ACCOUNT_INTEREST = "ACCOUNT_INTEREST";
-	
+	public static final String ACCOUNT_COLOR = "ACCOUNT_COLOR";
+	public static final String ACCOUNT_BANK = "ACCOUNT_BANK";
 	
 	public static final String TRANSACTION_TABLE = "TRANSACTIONS";
 	public static final String TRANSACTION_ID = TRANSACTION_TABLE + ".id";
@@ -92,7 +94,9 @@ public class DBHelper extends SQLiteOpenHelper {
 		final String createAccountTable = "CREATE TABLE " + ACCOUNT_TABLE + "( " + _id + " INTEGER PRIMARY KEY AUTOINCREMENT," + 
 																						  ACCOUNT_USER + " INTEGER," + 
 				                                                                          ACCOUNT_NAME + " TEXT," + 
-																						  ACCOUNT_BALANCE + " INTEGER," + 
+																						  ACCOUNT_BALANCE + " INTEGER," +
+				                                                                          ACCOUNT_COLOR + " TEXT," +
+				                                                                          ACCOUNT_BANK + " TEXT," +
 																						  "FOREIGN KEY(" + ACCOUNT_USER + ") REFERENCES " + USER_TABLE + "(" + _id + ") ON DELETE CASCADE" +
 																						  ");";
 		
@@ -129,9 +133,13 @@ public class DBHelper extends SQLiteOpenHelper {
 	 * @param args2 - value 
 	 * @return void 
 	 */
-	public void onUpgrade(SQLiteDatabase dbse, int arg1, int arg2) {
+	public void onUpgrade(SQLiteDatabase dbse, int oldV, int newV) {
 		// TODO Auto-generated method stub
 		
+		
+		
+		
+			
 	
 	}
 
