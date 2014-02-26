@@ -227,6 +227,7 @@ public class LoginActivity extends BaseActivity
 		
 			
 			accountsIntent.putExtra("Account User", name);
+			finish();
 			startActivity(accountsIntent);  // start activity 
 		
 		}

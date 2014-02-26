@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -76,7 +77,9 @@ public class AccountsActivity extends BaseActivity
 
 		setContentView(R.layout.activity_accounts); // calling setcontentview
 													// from res
-
+		
+		sqldbase.execSQL("ALTER TABLE " + DBHelper.ACCOUNT_TABLE + " ADD " + DBHelper.ACCOUNT_INTEREST + " INTEGER");
+		
 		Bundle extras = getIntent().getExtras();
 
 		userType = extras.getString("Account Type");
@@ -333,6 +336,10 @@ public class AccountsActivity extends BaseActivity
 						{
 							sqldbase.insert(DBHelper.ACCOUNT_TABLE, null,
 									caeser);
+							
+							Log.d("cv: ", caeser.toString());
+							Log.d("cv: ", caeser.getAsString(DBHelper.ACCOUNT_NAME));
+							
 							ArtDialog.dismiss();
 							updateData(DBHelper.ACCOUNT_ID);
 						}
@@ -381,7 +388,7 @@ public class AccountsActivity extends BaseActivity
 					View v = super.getView(position, convertView, parent);
 
 					String color = csr.getString(4);
-					Log.i("color: ", color);
+					
 					int setColor;
 					if (color.equals("Red"))
 						setColor = getResources().getColor(
