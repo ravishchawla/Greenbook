@@ -1,15 +1,15 @@
 package com.stacksmashers.greenbook;
 
 
-import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -19,7 +19,7 @@ import android.widget.Toast;
  * it make sure all login activity 
  */
 
-public class LoginActivity extends BaseActivity
+public class LoginActivity extends BaseFragment
 {
 	private EditText login_name;      // edit login name 
 	private EditText login_pass;      
@@ -40,29 +40,31 @@ public class LoginActivity extends BaseActivity
 	 * @return void 
 	 */
 	@Override
-	protected void onCreate(Bundle savedInstanceState)
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		// TODO Auto-generated method stub
-		super.onCreate(savedInstanceState);    // create savedinstancestate 
+		super.onCreateView(inflater, container, savedInstanceState);    // create savedinstancestate 
 		
-		setContentView(R.layout.activity_login);  // setcontentview 
-	
+		//setContentView(R.layout.activity_login);  // setcontentview 
+		Log.i("a", "0");
+		View view = inflater.inflate(R.layout.activity_login, container, false);
 
-		
-		login_name = (EditText)findViewById(R.id.login_name);    //login name 
-		login_pass = (EditText)findViewById(R.id.login_password);
-		
-		login_button = (Button)findViewById(R.id.login_button);  // login button 
+		Log.i("a", "1");
+		login_name = (EditText)view.findViewById(R.id.login_name);    //login name 
+		Log.i("a", "2");
+		login_pass = (EditText)view.findViewById(R.id.login_password);
+		Log.i("a", "3");
+		login_button = (Button)view.findViewById(R.id.login_button);  // login button 
 		login_button.setEnabled(false);
 		
-		Bundle extras = getIntent().getExtras();
+		/*Bundle extras = getIntent().getExtras();
 		if(extras != null)
 		{
 			login_name.setText(extras.getString("Login Email"));  //login email 
 			name_bool = true;
 		}
 		
-		
+		*/
 		login_name.addTextChangedListener(new TextWatcher()    // text change listener 
 		
 		{
@@ -80,7 +82,7 @@ public class LoginActivity extends BaseActivity
 			{
 				// TODO Auto-generated method stub
 				
-				if(login_name.getEditableText().toString().matches(".+@[a-z]+[.]com"))
+				if(login_name.getEditableText().toString().matches(".+@[a-z]+[.](com|edu|org|gov|batman)"))
 					name_bool = true;
 				else
 					name_bool = false;
@@ -187,6 +189,19 @@ public class LoginActivity extends BaseActivity
 			}
 		});
 		
+		Log.i("a", "6");
+		return view;
+		
+	}
+	
+	@Override
+	public void onResume()
+	{
+		// TODO Auto-generated method stub
+		super.onResume();
+		
+		login_name.setText("");
+		login_pass.setText("");
 	}
 	
 	
@@ -196,6 +211,9 @@ public class LoginActivity extends BaseActivity
 	 * @return void 
 	 * this method to click on login activity and see it 
 	 */
+	
+	
+	
 	public void onClickLoginActivityButton(View view)
 	{
 		String name = login_name.getEditableText().toString();
@@ -215,7 +233,7 @@ public class LoginActivity extends BaseActivity
 		if(caeser.getCount() != 0)
 		{
 			caeser.moveToFirst();
-			Intent accountsIntent = new Intent(getApplicationContext(), AccountsActivity.class);  // get application cotext from accountsactivity class 
+			Intent accountsIntent = new Intent(getActivity(), AccountsActivity.class);  // get application cotext from accountsactivity class 
 			if(name.equals("sudo@root.com"))    // if account type is specific 
 			{
 				accountsIntent.putExtra("Account Type", "Sudoer");  // return sudoer
@@ -227,16 +245,17 @@ public class LoginActivity extends BaseActivity
 		
 			
 			accountsIntent.putExtra("Account User", name);
-			finish();
+			//getActivity().finish();
 			startActivity(accountsIntent);  // start activity 
 		
 		}
 		else
 		{
-			Toast.makeText(getApplicationContext(),"User not found", Toast.LENGTH_LONG).show();  // user not found if id and password wrong 
+			Toast.makeText(getActivity(),"User not found", Toast.LENGTH_LONG).show();  // user not found if id and password wrong 
 		}
 		
 	}
 
 
+	
 }

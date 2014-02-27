@@ -78,7 +78,7 @@ public class AccountsActivity extends BaseActivity
 		setContentView(R.layout.activity_accounts); // calling setcontentview
 													// from res
 		
-		sqldbase.execSQL("ALTER TABLE " + DBHelper.ACCOUNT_TABLE + " ADD " + DBHelper.ACCOUNT_INTEREST + " INTEGER");
+	
 		
 		Bundle extras = getIntent().getExtras();
 

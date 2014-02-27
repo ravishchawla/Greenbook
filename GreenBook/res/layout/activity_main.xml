@@ -16,26 +16,15 @@
         android:layout_alignParentTop="true"
         android:layout_marginLeft="18dp"
         android:layout_marginTop="23dp"
-        android:text="@string/welcome"
+        android:text="Welcome\n\t\t\t\tTo\n\t\t\t\t\t\t\tGreenBook!"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <Button
-        android:id="@+id/loginButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/nameCheck"
-        android:layout_below="@+id/nameCheck"
-        android:layout_marginTop="66dp"
-        android:onClick="onClickLoginMainButton"
-        android:text="Login" />
-
-    <Button
-        android:id="@+id/registerButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/loginButton"
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:onClick="onClickRegisterMainButton"
-        android:text="Register" />
+        android:src="@drawable/greenbooklauncher" />
 
 </RelativeLayout>
