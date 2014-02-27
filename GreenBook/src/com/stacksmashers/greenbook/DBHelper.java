@@ -97,6 +97,7 @@ public class DBHelper extends SQLiteOpenHelper {
 																						  ACCOUNT_BALANCE + " INTEGER," +
 				                                                                          ACCOUNT_COLOR + " TEXT," +
 				                                                                          ACCOUNT_BANK + " TEXT," +
+				                                                                          ACCOUNT_INTEREST + " TEXT," +
 																						  "FOREIGN KEY(" + ACCOUNT_USER + ") REFERENCES " + USER_TABLE + "(" + _id + ") ON DELETE CASCADE" +
 																						  ");";
 		
