@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger>
+
+    <dataSet config="main" >
+        <source path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res" >
+            <file
+                name="content_new"
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\drawable-hdpi\content_new.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="content_sort"
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\drawable-hdpi\content_sort.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="greenbooklauncher"
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\drawable-hdpi\greenbooklauncher.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="ic_launcher"
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\drawable-hdpi\ic_launcher.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="person"
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\drawable-hdpi\person.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="content_new"
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\drawable-mdpi\content_new.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="content_sort"
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\drawable-mdpi\content_sort.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="greenbooklauncher"
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\drawable-mdpi\greenbooklauncher.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="ic_launcher"
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\drawable-mdpi\ic_launcher.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="content_new"
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\drawable-xhdpi\content_new.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="content_sort"
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\drawable-xhdpi\content_sort.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="greenbooklauncher"
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\drawable-xhdpi\greenbooklauncher.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="ic_launcher"
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\drawable-xhdpi\ic_launcher.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="greenbooklauncher"
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\drawable-xxhdpi\greenbooklauncher.png"
+                qualifiers="xxhdpi"
+                type="drawable" />
+            <file
+                name="ic_launcher"
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\drawable-xxhdpi\ic_launcher.png"
+                qualifiers="xxhdpi"
+                type="drawable" />
+            <file
+                name="activity_accounts"
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\layout\activity_accounts.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="activity_login"
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\layout\activity_login.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="activity_main"
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\layout\activity_main.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="activity_register"
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\layout\activity_register.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="activity_transactions"
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\layout\activity_transactions.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="dialog_accounts"
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\layout\dialog_accounts.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="listblock_accounts"
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\layout\listblock_accounts.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="main"
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\menu\main.xml"
+                qualifiers=""
+                type="menu" />
+            <file
+                name="menu_accounts"
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\menu\menu_accounts.xml"
+                qualifiers=""
+                type="menu" />
+            <file
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\values\dimens.xml"
+                qualifiers="" >
+                <dimen name="activity_horizontal_margin" >16dp
+                </dimen>
+                <dimen name="activity_vertical_margin" >16dp
+                </dimen>
+            </file>
+            <file
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\values\strings.xml"
+                qualifiers="" >
+                <string name="action_settings" >Settings
+                </string>
+                <string name="welcome" >Welcome to GreenBook.
+                </string>
+                <string name="app_name" >GreenBook
+                </string>
+
+                <string-array name="Colors" >
+                    <item>
+White 
+                    </item>
+                    <item>
+Red 
+                    </item>
+                    <item>
+Green 
+                    </item>
+                    <item>
+Blue 
+                    </item>
+                    <item>
+Yellow 
+                    </item>
+                    <item>
+Cyan 
+                    </item>
+                    <item>
+Magenta 
+                    </item>
+                </string-array>
+                <string-array name="Banks" >
+                    <item>
+American Expres Credit Card
+                    </item>
+                    <item>
+Bank of America
+                    </item>
+                    <item>
+Capital One
+                    </item>
+                    <item>
+Chase Bank
+                    </item>
+                    <item>
+Citibank Banking
+                    </item>
+                    <item>
+Discover Card
+                    </item>
+                    <item>
+Fifth Third Bank
+                    </item>
+                    <item>
+SunTrust Bank
+                    </item>
+                    <item>
+US Bank
+                    </item>
+                    <item>
+Wells Fargo
+                    </item>
+                    <item>
+Other
+                    </item>
+                </string-array>
+            </file>
+            <file
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\values\styles.xml"
+                qualifiers="" >
+
+                <style
+                    name="AppBaseTheme"
+                    parent="android:Theme.Light" >
+
+                    <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+                    -->
+                </style>
+            </file>
+            <file
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\values\themes.xml"
+                qualifiers="" >
+
+                <style
+                    name="AppTheme"
+                    parent="@android:style/Theme.Holo.Light" >
+                </style>
+            </file>
+            <file
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\values-sw720dp-land\dimens.xml"
+                qualifiers="sw720dp-land" >
+                <dimen name="activity_horizontal_margin" >128dp
+                </dimen>
+            </file>
+            <file
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\values-v11\styles.xml"
+                qualifiers="v11" >
+
+                <style
+                    name="AppBaseTheme"
+                    parent="android:Theme.Holo.Light" >
+
+                    <!-- API 11 theme customizations can go here. -->
+                </style>
+            </file>
+            <file
+                path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\res\values-v14\styles.xml"
+                qualifiers="v14" >
+
+                <style
+                    name="AppBaseTheme"
+                    parent="android:Theme.Holo.Light.DarkActionBar" >
+
+                    <!-- API 14 theme customizations can go here. -->
+                </style>
+            </file>
+        </source>
+        <source path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\build\res\rs\release" />
+        <source path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\build\res\generated\release" />
+    </dataSet>
+    <dataSet config="release" >
+        <source path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\src\release\res" />
+    </dataSet>
+
+</merger>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal" >
+
+    <EditText
+        android:id="@+id/register_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="50dp"
+        android:ems="10"
+        android:hint="Name" >
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/register_username"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/register_name"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="15dp"
+        android:ems="10"
+        android:hint="Email" />
+
+    <EditText
+        android:id="@+id/register_password"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/register_username"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="15dp"
+        android:ems="10"
+        android:hint="Password"
+        android:inputType="textPassword" />
+
+    <TextView
+        android:id="@+id/nameCheck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/register_name"
+        android:layout_alignParentRight="true"
+        android:text="✗"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/emailCheck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/register_username"
+        android:layout_alignParentRight="true"
+        android:text="✗"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/passwordCheck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/register_password"
+        android:layout_alignParentRight="true"
+        android:text="✗"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <Button
+        android:id="@+id/register_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/register_checkpassword"
+        android:layout_marginTop="25dp"
+        android:onClick="onClickRegisterActivityButton"
+        android:text="register" />
+
+    <TextView
+        android:id="@+id/checkpasswordCheck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/register_password"
+        android:layout_marginTop="19dp"
+        android:text="✗"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <EditText
+        android:id="@+id/register_checkpassword"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/checkpasswordCheck"
+        android:layout_alignBottom="@+id/checkpasswordCheck"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="15dp"
+        android:ems="10"
+        android:hint="Reenter Password"
+        android:inputType="textPassword" />
+
+    <ImageView
+        android:id="@+id/register_pic"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/person" />
+
+</RelativeLayout><!-- From: file:/D:/Users/Ravish/SkyDrive/Workspace/CurrentProjects/2340/Android%20Design%20Project/GreenBook/res/layout/activity_register.xml -->

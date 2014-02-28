@@ -86,7 +86,6 @@ public class DBHelper extends SQLiteOpenHelper {
 		final String createUserTable = "CREATE TABLE " + USER_TABLE + "( " + _id + " INTEGER PRIMARY KEY AUTOINCREMENT," + 
 																						  USER_TYPE + " TEXT," +
 																						  USER_NAME + " TEXT," +
-																						  USER_DISPLAY_NAME + " TEXT," +
 																						  USER_EMAIL + " TEXT," +
 																						  USER_PIC + " TEXT," +
 																						  USER_PASS + " TEXT" + ");";

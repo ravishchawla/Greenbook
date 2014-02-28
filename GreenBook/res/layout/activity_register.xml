@@ -6,13 +6,12 @@
 
     <EditText
         android:id="@+id/register_name"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_marginBottom="15dp"
         android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
         android:layout_marginTop="50dp"
+        android:layout_toLeftOf="@+id/nameCheck"
         android:ems="10"
         android:hint="Name" >
 
@@ -101,10 +100,10 @@
 
     <ImageView
         android:id="@+id/register_pic"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_alignBottom="@+id/register_name"
+        android:layout_alignLeft="@+id/register_username"
         android:src="@drawable/person" />
 
 </RelativeLayout>

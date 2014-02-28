@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger>
+
+    <dataSet config="main" >
+        <source path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\assets" />
+    </dataSet>
+    <dataSet config="debug" >
+        <source path="D:\Users\Ravish\SkyDrive\Workspace\CurrentProjects\2340\Android Design Project\GreenBook\src\debug\assets" />
+    </dataSet>
+
+</merger>

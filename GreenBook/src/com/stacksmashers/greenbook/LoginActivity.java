@@ -54,7 +54,8 @@ public class LoginActivity extends BaseFragment
 		Log.i("a", "2");
 		login_pass = (EditText)view.findViewById(R.id.login_password);
 		Log.i("a", "3");
-		login_button = (Button)view.findViewById(R.id.login_button);  // login button 
+		login_button = (Button)view.findViewById(R.id.login_button);  // login button
+		
 		login_button.setEnabled(false);
 		
 		/*Bundle extras = getIntent().getExtras();

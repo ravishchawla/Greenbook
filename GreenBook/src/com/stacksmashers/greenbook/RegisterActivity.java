@@ -1,8 +1,12 @@
 package com.stacksmashers.greenbook;
 
-import android.app.ActionBar;
+import java.io.File;
+import java.io.FileOutputStream;
+
 import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -19,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,17 +46,20 @@ public class RegisterActivity extends BaseFragment
 																			// check
 	Button register_button; // calling register button
 	ImageView badge;
-	
+
+	static boolean dismiss = false;
 	static int PICTURE_REQUEST = 1;
 	static int CROP_REQUEST = 2;
 	/**
 	 * @param args
 	 */
 
-	String text;
-	public Cursor caeser;
-	boolean name_bool = false, email_bool = false, password_bool = false,
-			checkpassword_bool = false;
+	private String text;
+	private Cursor caeser;
+	private boolean name_bool = false, email_bool = false,
+			password_bool = false, checkpassword_bool = false;
+
+	private Bitmap photo;
 
 	/**
 	 * called this method to start the activity. Maintain the activity and
@@ -61,37 +69,43 @@ public class RegisterActivity extends BaseFragment
 	 * @return void
 	 */
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState)
 	{
 		// TODO Auto-generated method stub
-		super.onCreateView(inflater, container, savedInstanceState); // create savedinstancestate
+		super.onCreateView(inflater, container, savedInstanceState); // create
+																		// savedinstancestate
 
-		View view = inflater.inflate(R.layout.activity_register, container, false);// calling activity register
-													// from layour
+		View view = inflater.inflate(R.layout.activity_register, container,
+				false);// calling activity register
+		// from layour
 
 		register_name = (EditText) view.findViewById(R.id.register_name); // calling
-																		// name
-																		// from
-																		// res
-		register_username = (EditText) view.findViewById(R.id.register_username); // calling
-																				// username
-																				// button
-		register_password = (EditText) view.findViewById(R.id.register_password); // calling
-																				// password
-																				// button
-		register_checkpassword = (EditText) view.findViewById(R.id.register_checkpassword);
+																			// name
+																			// from
+																			// res
+		register_username = (EditText) view
+				.findViewById(R.id.register_username); // calling
+														// username
+														// button
+		register_password = (EditText) view
+				.findViewById(R.id.register_password); // calling
+														// password
+														// button
+		register_checkpassword = (EditText) view
+				.findViewById(R.id.register_checkpassword);
 
 		name_check = (TextView) view.findViewById(R.id.nameCheck); // check name
-		email_check = (TextView) view.findViewById(R.id.emailCheck); // check email
+		email_check = (TextView) view.findViewById(R.id.emailCheck); // check
+																		// email
 		password_check = (TextView) view.findViewById(R.id.passwordCheck); // check
-																		// password
-		checkpassword_check = (TextView) view.findViewById(R.id.checkpasswordCheck);
+																			// password
+		checkpassword_check = (TextView) view
+				.findViewById(R.id.checkpasswordCheck);
 
 		register_button = (Button) view.findViewById(R.id.register_button);
 		register_button.setEnabled(false);
 
-	
-		
 		register_name.addTextChangedListener(new TextWatcher()
 		{
 			/**
@@ -346,8 +360,6 @@ public class RegisterActivity extends BaseFragment
 			{
 				// TODO Auto-generated method stub
 
-				
-				
 				Intent intent = new Intent();
 				intent.setType("image/*");
 				intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -370,8 +382,8 @@ public class RegisterActivity extends BaseFragment
 			if (request == PICTURE_REQUEST)
 
 			{
-				Toast.makeText(getActivity(), "Selected",
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(getActivity(), "Selected", Toast.LENGTH_LONG)
+						.show();
 
 				Uri selectedImage = data.getData();
 				String path = selectedImage.getPath();
@@ -381,8 +393,8 @@ public class RegisterActivity extends BaseFragment
 
 				final Intent crop = new Intent("com.android.camera.action.CROP");
 				crop.setData(selectedImage);
-				crop.putExtra("outputX", 50);
-				crop.putExtra("outputY", 50);
+				crop.putExtra("outputX", 75);
+				crop.putExtra("outputY", 75);
 				crop.putExtra("aspectX", 1);
 				crop.putExtra("aspectY", 1);
 				crop.putExtra("scale", true);
@@ -390,20 +402,20 @@ public class RegisterActivity extends BaseFragment
 				crop.putExtra("return-data", true);
 				startActivityForResult(crop, CROP_REQUEST);
 			}
-	
+
 			else if (request == CROP_REQUEST)
 			{
 				Bundle extras = data.getExtras();
-				if(extras != null)
+				if (extras != null)
 				{
-					Bitmap photo = extras.getParcelable("data");
-					badge.setImageBitmap(photo);
+					photo = extras.getParcelable("data");
+					// badge.setImageBitmap(photo);
+
 				}
 			}
-		
+
 		}
-		
-		
+
 	}
 
 	@Override
@@ -415,6 +427,17 @@ public class RegisterActivity extends BaseFragment
 		register_username.setText(""); // set text username
 		register_password.setText(""); // set text password
 		register_checkpassword.setText("");// set text check password
+
+		if (dismiss)
+		{
+			dismiss = false;
+			// getActivity().getActionBar().setSelectedNavigationItem(0);
+			Toast.makeText(getActivity(), "logging", Toast.LENGTH_LONG);
+			TabHost tabhost = (TabHost) getView().findViewById(
+					android.R.id.tabhost);
+			tabhost.setCurrentTab(0);
+		}
+
 	}
 
 	/**
@@ -440,12 +463,15 @@ public class RegisterActivity extends BaseFragment
 		String checkPassword = register_checkpassword.getEditableText()
 				.toString(); // hold string called check password
 
+
+		
 		ContentValues brutus = new ContentValues(); // get new content value
-		brutus.put(DBHelper.USER_NAME, username);
+		brutus.put(DBHelper.USER_NAME, name);
+		brutus.put(DBHelper.USER_EMAIL, username);
 		brutus.put(DBHelper.USER_PASS, password);
 
 		caeser = sqldbase.query(DBHelper.USER_TABLE, new String[] {
-				DBHelper.USERS_ID, DBHelper.USER_NAME }, DBHelper.USER_NAME
+				DBHelper.USERS_ID, DBHelper.USER_EMAIL }, DBHelper.USER_EMAIL
 				+ " = '" + username + "'", null, null, null, null);
 
 		if (caeser.getCount() != 0)
@@ -472,22 +498,26 @@ public class RegisterActivity extends BaseFragment
 								{
 									// TODO Auto-generated method stub
 
-									Intent LoginIntent = new Intent(
-											getActivity(),
-											LoginActivity.class); // get
-																	// application
-																	// context
-																	// from
-																	// loginactivity
-																	// class
-									LoginIntent.putExtra("Login Email",
-											caeser.getString(1)); // get string
+//									Intent LoginIntent = new Intent(
+	//										getActivity(), LoginActivity.class); // get
+																					// application
+																					// context
+																					// from
+																					// loginactivity
+																					// class
+		//							LoginIntent.putExtra("Login Email",
+			//								caeser.getString(1)); // get string
 																	// call
 																	// login
 																	// email
-									getActivity().finish(); // finish
-									startActivity(LoginIntent); // start
-																// activity
+									// getActivity().finish(); // finish
+
+									TabHost tabhost = (TabHost) getView()
+											.findViewById(android.R.id.tabhost);
+
+									tabhost.setCurrentTab(0);
+									dismiss = true;
+									// activity
 
 								}
 							})
@@ -517,11 +547,36 @@ public class RegisterActivity extends BaseFragment
 		else
 		{
 
+			
+			ContextWrapper wrapper = new ContextWrapper(getActivity());
+			File imagesPath = wrapper.getDir("images", Context.MODE_PRIVATE);
+			File filePath = new File(imagesPath, normalizeEmail(username));
+			Toast.makeText(getActivity(), "Normalized: " + normalizeEmail(username), Toast.LENGTH_LONG);
+			
+			FileOutputStream output = null;
+			
+			try{
+				
+				
+				output = new FileOutputStream(filePath);
+				photo.compress(Bitmap.CompressFormat.PNG, 100, output);
+				
+				output.close();
+			}
+			
+			catch(Exception e){
+				
+				Toast.makeText(getActivity(), "Couldn't save photo", Toast.LENGTH_SHORT);
+				Log.wtf("exception", e.getStackTrace().toString());
+			}
+			
+			
+			
 			sqldbase.insert(DBHelper.USER_TABLE, null, brutus); // use dbhelper
 																// user table
-			Toast.makeText(getActivity(), "User added to database",
-					Toast.LENGTH_LONG).show();
-
+			
+			
+			
 			new AlertDialog.Builder(getActivity())
 					.setTitle("Login Now?")
 					.setPositiveButton("Yes",
@@ -539,17 +594,19 @@ public class RegisterActivity extends BaseFragment
 								{
 									// TODO Auto-generated method stub
 
-									/*Intent LoginIntent = new Intent(
-											getActivity(),
-											LoginActivity.class);
-									getActivity().finish();
-									startActivity(LoginIntent); // start
-										*/						// activity
-									
+									/*
+									 * Intent LoginIntent = new Intent(
+									 * getActivity(), LoginActivity.class);
+									 * getActivity().finish();
+									 * startActivity(LoginIntent); // start
+									 */// activity
+
+									dismiss = true;
 									dialog.dismiss();
-									//getActivity().getActionBar().setSelectedNavigationItem(0);
+									// getActivity().getActionBar().setSelectedNavigationItem(0);
+
 									Log.i("mua", "haha");
-									
+
 								}
 							})
 					.setNegativeButton("No",
@@ -573,6 +630,20 @@ public class RegisterActivity extends BaseFragment
 							}).show(); // show the activity
 
 		}
+	}
+
+	private String normalizeEmail(String email)
+	{
+		
+		
+		if(email.matches(".+@[a-z]+[.](com|edu|org|gov|batman)"))
+		{
+			return email.replace("@", "").replace(".", "");
+			
+		}
+		
+		else
+			return null;
 	}
 
 }
