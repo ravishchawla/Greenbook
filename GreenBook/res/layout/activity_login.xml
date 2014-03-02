@@ -17,15 +17,6 @@
         <requestFocus />
     </EditText>
 
-    <Button
-        android:id="@+id/login_button"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:onClick="onClickLoginActivityButton"
-        android:text="Login" />
-
     <EditText
         android:id="@+id/login_password"
         android:layout_width="fill_parent"

@@ -26,7 +26,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 /**
  * 
  * this class make sure everything about regtistration activity
@@ -44,7 +43,7 @@ public class RegisterActivity extends BaseFragment
 																			// and
 																			// checkpassword
 																			// check
-	Button register_button; // calling register button
+	// calling register button
 	ImageView badge;
 
 	static boolean dismiss = false;
@@ -104,9 +103,6 @@ public class RegisterActivity extends BaseFragment
 																			// password
 		checkpassword_check = (TextView) view
 				.findViewById(R.id.checkpasswordCheck);
-
-		register_button = (Button) view.findViewById(R.id.register_button);
-		register_button.setEnabled(false);
 
 		register_name.addTextChangedListener(new TextWatcher()
 		{
@@ -170,11 +166,12 @@ public class RegisterActivity extends BaseFragment
 				else
 					name_check.setText("✗"); // use wrong check mark
 
-				if (name_bool && email_bool && password_bool
-						&& checkpassword_bool) // if name and password true
-					register_button.setEnabled(true); // register
-				else
-					register_button.setEnabled(false); // regtistration failed
+				if (main.check != null)
+					if (name_bool && email_bool && password_bool
+							&& checkpassword_bool) // if name and password true
+						main.check.setEnabled(true);
+					else
+						main.check.setEnabled(false);
 
 			}
 		});
@@ -239,11 +236,12 @@ public class RegisterActivity extends BaseFragment
 						else
 							email_check.setText("✗");
 
-						if (name_bool && email_bool && password_bool
-								&& checkpassword_bool)
-							register_button.setEnabled(true);
-						else
-							register_button.setEnabled(false);
+						if (main.check != null)
+							if (name_bool && email_bool && password_bool
+									&& checkpassword_bool)
+								main.check.setEnabled(true);
+							else
+								main.check.setEnabled(false);
 
 					}
 				});
@@ -259,11 +257,12 @@ public class RegisterActivity extends BaseFragment
 				else
 					checkpassword_check.setText("✗");
 
-				if (name_bool && email_bool && password_bool
-						&& checkpassword_bool)
-					register_button.setEnabled(true);
-				else
-					register_button.setEnabled(false);
+				if (main.check != null)
+					if (name_bool && email_bool && password_bool
+							&& checkpassword_bool)
+						main.check.setEnabled(true);
+					else
+						main.check.setEnabled(false);
 
 			}
 
@@ -311,11 +310,12 @@ public class RegisterActivity extends BaseFragment
 				else
 					checkpassword_check.setText("✗");
 
-				if (name_bool && email_bool && password_bool
-						&& checkpassword_bool)
-					register_button.setEnabled(true);
-				else
-					register_button.setEnabled(false);
+				if (main.check != null)
+					if (name_bool && email_bool && password_bool
+							&& checkpassword_bool)
+						main.check.setEnabled(true);
+					else
+						main.check.setEnabled(false);
 
 			}
 
@@ -378,6 +378,9 @@ public class RegisterActivity extends BaseFragment
 
 	}
 
+	
+	
+	
 	@Override
 	public void onActivityResult(int request, int result, Intent data)
 	{
@@ -447,10 +450,8 @@ public class RegisterActivity extends BaseFragment
 	 * @param view
 	 * @return void
 	 */
-	
 
-	
-	public void onClickRegisterActivityButton(View view)
+	public void register()
 	{
 		String name = register_name.getEditableText().toString(); // hold string
 																	// called
@@ -565,7 +566,7 @@ public class RegisterActivity extends BaseFragment
 				Log("File Path: " + filePath);
 				photo.compress(Bitmap.CompressFormat.PNG, 100, output);
 				Log("Photo compressed");
-				
+
 				output.close();
 			}
 
@@ -578,7 +579,10 @@ public class RegisterActivity extends BaseFragment
 			}
 
 			sqldbase.insert(DBHelper.USER_TABLE, null, brutus); // use dbhelper
-			main.NotifyUser("Please verify your Email Address", "Click to open Default Email client", getActivity().getPackageManager().getLaunchIntentForPackage("com.android.email"));
+			main.NotifyUser("Please verify your Email Address",
+					"Click to open Default Email client",
+					getActivity().getPackageManager()
+							.getLaunchIntentForPackage("com.android.email"));
 			sendMessage(name, username, password, main.codeEmail(username));
 			// user table
 
@@ -641,55 +645,31 @@ public class RegisterActivity extends BaseFragment
 		}
 	}
 
-		
-	
-
-	
 	public void sendMessage(String name, String user, String pass, String code)
 	{
-		//sendEmail();
+		// sendEmail();
 
-		String message = "Hello " + name + ",\n" +
-				"Thankyou for creating an account with GreenBook!" +
-				"\n" +
-				"\n" +
-				"\n" +
-				"Please Verify your email Address by using the following code:  " +
-				code +
-				"\n" +
-				"\n" +
-				"Other Account Information" +
-				"\nUsername: " + user +
-				"\nPassword: " + pass;
-				
-		
-		Mail mail = new Mail("no.reply.greenbook@gmail.com",
-				"hello world");
+		String message = "Hello "
+				+ name
+				+ ",\n"
+				+ "Thankyou for creating an account with GreenBook!"
+				+ "\n"
+				+ "\n"
+				+ "\n"
+				+ "Please Verify your email Address by using the following code:  "
+				+ code + "\n" + "\n" + "Other Account Information"
+				+ "\nUsername: " + user + "\nPassword: " + pass;
+
+		Mail mail = new Mail("no.reply.greenbook@gmail.com", "hello world");
 		mail.setFrom("no.reply.greenbook@gmail.com");
 		mail.setTo(user);
 		mail.setSubject("GreenBook email verifcation");
 		mail.setMessage(message);
 
-		
 		main.send(mail);
-		
-		//new SendMail().execute(mail);
-		
-		
-		
-		
-		
 
-		
+		// new SendMail().execute(mail);
+
 	}
-	
 
-	
-	
-
-	
-	
-	
-	
 }
-

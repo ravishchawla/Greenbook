@@ -26,7 +26,8 @@
             
         </activity>
         <activity
-            android:name="com.stacksmashers.greenbook.MainActivity" >
+            android:name="com.stacksmashers.greenbook.MainActivity" 
+            android:uiOptions="splitActionBarWhenNarrow" >
         </activity>
         <activity
             android:name="com.stacksmashers.greenbook.RegisterActivity" >

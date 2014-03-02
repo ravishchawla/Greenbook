@@ -66,16 +66,6 @@
         android:text="✗"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <Button
-        android:id="@+id/register_button"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/register_checkpassword"
-        android:layout_marginTop="25dp"
-        android:onClick="onClickRegisterActivityButton"
-        android:text="register" />
-
     <TextView
         android:id="@+id/checkpasswordCheck"
         android:layout_width="wrap_content"

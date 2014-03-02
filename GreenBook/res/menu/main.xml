@@ -8,6 +8,15 @@
         android:title="Forgot Password" >
         
     </item>
+
+    <item
+        android:id="@+id/action_check"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/content_check"
+        android:title="Login" >
         
+        
+    </item>
+    
 
 </menu>
