@@ -1,13 +1,19 @@
 package com.stacksmashers.greenbook;
 
 import android.app.AlertDialog;
-import android.content.ClipData.Item;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -77,9 +83,7 @@ public class AccountsActivity extends BaseActivity
 
 		setContentView(R.layout.activity_accounts); // calling setcontentview
 													// from res
-		
-	
-		
+
 		Bundle extras = getIntent().getExtras();
 
 		userType = extras.getString("Account Type");
@@ -92,7 +96,7 @@ public class AccountsActivity extends BaseActivity
 		Log.i("TAG", "User: " + accountsUser);
 
 		Cursor csr = sqldbase.query(DBHelper.USER_TABLE,
-				new String[] { DBHelper.USERS_ID }, DBHelper.USER_NAME + " = '"
+				new String[] { DBHelper.USERS_ID }, DBHelper.USER_EMAIL + " = '"
 						+ accountsUser + "'", null, null, null, null);
 
 		if (csr.getCount() != 0)
@@ -123,9 +127,17 @@ public class AccountsActivity extends BaseActivity
 		if (item.getItemId() == R.id.accounts_add)
 		{
 			addAccount();
+			
 
 		}
 
+		else if(item.getItemId() == R.id.accounts_settings)
+		{
+			Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+			intent.putExtra("User ID", userID);
+			startActivity(intent);
+		}
+		
 		else if (item.getItemId() == R.id.accounts_name_sort)
 		{
 
@@ -153,8 +165,19 @@ public class AccountsActivity extends BaseActivity
 		return super.onOptionsItemSelected(item);
 	}
 
+
 	public void addAccount()
 	{
+		Intent in = new Intent(this, SplashScreen.class);
+		PendingIntent pIntent = PendingIntent.getActivity(this, 0, in, 0);
+
+		Notification noti = new NotificationCompat.Builder(this)
+				.setContentTitle("Verify Email").setContentText("Please verify your email address")
+				.setContentIntent(pIntent)
+				.setSmallIcon(R.drawable.greenbooklauncher).build();
+		NotificationManager nManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		nManager.notify(1, noti);
+
 
 		dialogView = getLayoutInflater()
 				.inflate(R.layout.dialog_accounts, null);
@@ -172,31 +195,30 @@ public class AccountsActivity extends BaseActivity
 
 		check_interst = (CheckBox) dialogView
 				.findViewById(R.id.accounts_interst);
-		
+
 		add_interst = (TextView) dialogView
 				.findViewById(R.id.accounts_interst_name);
-		
+
 		add_interst.setVisibility(View.GONE);
-		
+
 		check_interst.setOnCheckedChangeListener(new OnCheckedChangeListener()
 		{
-			
+
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked)
 			{
 				// TODO Auto-generated method stub
-				
-				if(!isChecked)
+
+				if (!isChecked)
 				{
 					add_interst.setVisibility(View.GONE);
 				}
 				else
 					add_interst.setVisibility(View.VISIBLE);
-				
+
 			}
 		});
-		
-		
 
 		add_custom.setVisibility(View.GONE);
 
@@ -294,15 +316,14 @@ public class AccountsActivity extends BaseActivity
 								.getSelectedItem().toString());
 						caeser.put(DBHelper.ACCOUNT_USER, userID);
 
-						if(check_interst.isChecked())
+						if (check_interst.isChecked())
 						{
-							caeser.put(DBHelper.ACCOUNT_INTEREST, add_interst.getText().toString());
+							caeser.put(DBHelper.ACCOUNT_INTEREST, add_interst
+									.getText().toString());
 						}
 						else
 							caeser.put(DBHelper.ACCOUNT_INTEREST, "-1");
-						
-						
-						
+
 						Cursor csr = sqldbase.query(DBHelper.ACCOUNT_TABLE,
 								new String[] { DBHelper.ACCOUNT_NAME },
 								DBHelper.ACCOUNT_USER + " = '" + userID
@@ -336,10 +357,11 @@ public class AccountsActivity extends BaseActivity
 						{
 							sqldbase.insert(DBHelper.ACCOUNT_TABLE, null,
 									caeser);
-							
+
 							Log.d("cv: ", caeser.toString());
-							Log.d("cv: ", caeser.getAsString(DBHelper.ACCOUNT_NAME));
-							
+							Log.d("cv: ",
+									caeser.getAsString(DBHelper.ACCOUNT_NAME));
+
 							ArtDialog.dismiss();
 							updateData(DBHelper.ACCOUNT_ID);
 						}
@@ -388,7 +410,7 @@ public class AccountsActivity extends BaseActivity
 					View v = super.getView(position, convertView, parent);
 
 					String color = csr.getString(4);
-					
+
 					int setColor;
 					if (color.equals("Red"))
 						setColor = getResources().getColor(

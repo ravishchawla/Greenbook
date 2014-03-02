@@ -1,6 +1,9 @@
 package com.stacksmashers.greenbook;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -25,7 +28,7 @@ public class LoginActivity extends BaseFragment
 	private EditText login_pass;      
 	private Button login_button;      // edit login button 
 	private Cursor caeser;     // cursor 
-	
+	private MainActivity main;
 	
 	
 	boolean name_bool = false, pass_bool = false;
@@ -35,6 +38,9 @@ public class LoginActivity extends BaseFragment
 		// TODO Auto-generated constructor stub
 	}
 
+	
+	
+	
 	/**called this method to start the activity.  
 	 * @param savedInstanceState
 	 * @return void 
@@ -191,10 +197,14 @@ public class LoginActivity extends BaseFragment
 		});
 		
 		Log.i("a", "6");
+		main = (MainActivity)getActivity();
+		
 		return view;
 		
 	}
 	
+	
+		
 	@Override
 	public void onResume()
 	{
@@ -220,7 +230,7 @@ public class LoginActivity extends BaseFragment
 		String name = login_name.getEditableText().toString();
 		String pass = login_pass.getEditableText().toString();
 		
-		caeser = sqldbase.query(DBHelper.USER_TABLE, new String[]{DBHelper.USERS_ID, DBHelper.USER_NAME, DBHelper.USER_PASS}, DBHelper.USER_NAME + " = '" + name + "' AND " + DBHelper.USER_PASS + " = '" + pass + "'", null, null, null, null);
+		caeser = sqldbase.query(DBHelper.USER_TABLE, new String[]{DBHelper.USERS_ID, DBHelper.USER_EMAIL, DBHelper.USER_PASS}, DBHelper.USER_EMAIL + " = '" + name + "' AND " + DBHelper.USER_PASS + " = '" + pass + "'", null, null, null, null);
 				
 				/*
 				 * fields = sqldbase.query(DBHelper.COURSE_TABLE, new String[]

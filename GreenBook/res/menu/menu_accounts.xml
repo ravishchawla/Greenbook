@@ -7,6 +7,14 @@
           android:title="Add"
           android:icon="@drawable/content_new"></item>
     
+    <item android:id="@+id/accounts_settings"
+           android:text="Settings"
+           android:title="Settings"
+           android:visible="true" >
+    </item>       
+    
+    
+    
      <item android:id="@+id/accounts_sort" 
           android:text="Sort"
           android:visible="true"
@@ -14,6 +22,8 @@
           android:title="Add"
           android:icon="@drawable/content_sort">
          
+     
+           
          <menu>
 			<item 
 			    android:id="@+id/accounts_color_sort"
@@ -30,19 +40,14 @@
 			<item
 			    android:id="@+id/accounts_bank_sort"
 			    android:title="Bank" />
+			
+			
              
              
          </menu>
+         </item>
+         
+     </menu>
          
          
-         
-     </item> 
-
-    <!--  --><Spinner android:id="@+id/accounts_spinner"
-        	 android:layout_width="fill_parent"
-        	 android:layout_height="wrap_content"
-        	 android:drawSelectorOnTop="true"
-        	 android:visible="true"
-        	 android:showAsAction="always"></Spinner>
-    -->
-</menu>
+    

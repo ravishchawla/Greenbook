@@ -38,6 +38,13 @@
         <activity
             android:name="com.stacksmashers.greenbook.AccountsActivity" >
         </activity>
+        <activity 
+            android:name="com.stacksmashers.greenbook.SettingsActivity">
+        </activity>
+        <activity 
+            android:name="com.stacksmashers.greenbook.VerifyEmail">
+            </activity>
+        
         
     </application>
 

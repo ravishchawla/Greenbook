@@ -5,25 +5,34 @@ import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnClickListener;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTabHost;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 /**
  * called when the activity first created 
  */
 public class MainActivity extends BaseActivity
 {
-	Button loginButton, registerButton;     // call loginbutton and register button from res 
+	private Button loginButton, registerButton;     // call loginbutton and register button from res 
 	
-	public final String TAG = "activity_main";
+	private final String TAG = "activity_main";
 	
-	RegisterActivity registerFragment;
-	LoginActivity loginFragment;
+	private RegisterActivity registerFragment;
+	private LoginActivity loginFragment;
+	public ActionBar actionBar;
+	
+	
 	/**
 	 * @param savedInstanceState
 	 * @return void 
@@ -35,7 +44,10 @@ public class MainActivity extends BaseActivity
 		super.onCreate(savedInstanceState);  // create saveinstancestate 
 		//setContentView(R.layout.activity_main);
 		
-		ActionBar actionBar = getActionBar();
+		
+		
+		
+		actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		
 		actionBar.setDisplayShowTitleEnabled(true);
@@ -45,6 +57,7 @@ public class MainActivity extends BaseActivity
 		
 		tab = actionBar.newTab().setText("Register").setTabListener(new HomeTabListener<RegisterActivity>(this, "Register", RegisterActivity.class));
 		actionBar.addTab(tab);
+		
 		
 		
 		
@@ -66,6 +79,77 @@ public class MainActivity extends BaseActivity
 		
 		return true;
 	}
+	
+	@Override
+	public boolean onOptionsItemSelected(android.view.MenuItem item) {
+		
+		if(item.getItemId() == R.id.action_forgot_password)
+		{
+			View view = getLayoutInflater().inflate(R.layout.settings_verify, null);
+			final EditText textviewer = (EditText)view.findViewById(R.id.verify_email);
+			textviewer.setHint("Email");
+			AlertDialog dialog = new AlertDialog.Builder(this).setView(view).setMessage("Enter your Email").setPositiveButton("Send verification Email", new OnClickListener()
+			{
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which)
+				{
+					// TODO Auto-generated method stub
+					
+					Cursor caeser = sqldbase.query(DBHelper.USER_TABLE, new String[] {DBHelper.USER_NAME, DBHelper.USER_TYPE,  DBHelper.USER_PASS}, DBHelper.USER_EMAIL + " = '" + textviewer.getText().toString() + "'", null, null, null, null);
+					
+					if(caeser.getCount() != 0)
+					{
+						caeser.moveToFirst();
+						
+						if(!caeser.getString(1).equals("auth"))
+						{
+							String name = caeser.getString(0);
+							String email = textviewer.getText().toString();
+							String pass = caeser.getString(2);
+							
+							String message = "Hello " + name + ",\n" +
+									"Hi " + name + ",\n" +
+									"Here's your Password!" +
+									"\n" +
+									"\n" +
+									"\n" +
+									 pass +
+									"\n" +
+									"\n" +
+									"--" +
+									"The GreenBook Team";
+									
+									
+									
+									
+							
+							Mail mail = new Mail("no.reply.greenbook@gmail.com",
+									"hello world");
+							mail.setFrom("no.reply.greenbook");
+							mail.setTo(email);
+							mail.setSubject("GreenBook email verifcation");
+							mail.setMessage(message);
+
+							send(mail);
+						}
+						
+						
+					}
+					
+					
+				}
+			}).create();
+			
+			dialog.show();
+			
+		}
+		
+		
+		return false;
+		
+	};
+
 	
 	/**
 	 * @param view 
