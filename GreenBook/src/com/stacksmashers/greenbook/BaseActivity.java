@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -23,12 +24,12 @@ import com.parse.codec.binary.StringUtils;
  * basic stuff about activity life cycle
  * 
  */
-public class BaseActivity extends Activity
+public class BaseActivity extends FragmentActivity
 {
 
 	DBHelper dbase;
 	SQLiteDatabase sqldbase;
-
+	String currency = "£";
 	public BaseActivity()
 	{
 		// TODO Auto-generated constructor stub

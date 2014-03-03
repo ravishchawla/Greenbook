@@ -35,11 +35,11 @@ public class DBHelper extends SQLiteOpenHelper {
 	public static final String ACCOUNT_BANK = "ACCOUNT_BANK";
 	
 	public static final String TRANSACTION_TABLE = "TRANSACTIONS";
-	public static final String TRANSACTION_ID = TRANSACTION_TABLE + ".id";
+	public static final String TRANSACTION_ID = TRANSACTION_TABLE + "._id";
 	public static final String TRANSACTION_USER = "TRANSACTION_USER";
 	public static final String TRANSACTION_ACCOUNT = "TRANSACTION_ACCOUNT";
+	public static final String TRANSACTION_ACCOUNT_NAME = "TRANSACTION_ACCOUNT_NAME";
 	public static final String TRANSACTION_NAME = "TRANSACTION_NAME";
-	public static final String TRANSACTION_TYPE = "TRANSACTION_TYPE";
 	public static final String TRANSACTION_VALUE = "TRANSACTION_VALUE";
 	public static final String TRANSACTION_WITHRAWAL_REASON = "TRANSACTION_WITHRAWAL_REASON";
 	public static final String TRANSACTION_DEPOSIT_SOURCE = "TRANSACTION_DEPOSIT_SOURCE";
@@ -105,8 +105,8 @@ public class DBHelper extends SQLiteOpenHelper {
 		final String createTransactionTable = "CREATE TABLE " + TRANSACTION_TABLE + "( " + _id + " INTEGER PRIMARY KEY AUTOINCREMENT," + 
 		                                                                                  TRANSACTION_USER + " INTEGER," + 
 		                                                                                  TRANSACTION_ACCOUNT + " INTEGER," + 
+		                                                                                  TRANSACTION_ACCOUNT_NAME + " TEXT," +
 		                                                                                  TRANSACTION_NAME + " TEXT," + 
-		                                                                                  TRANSACTION_TYPE + " TEXT," + 
 		                                                                                  TRANSACTION_VALUE + " INTEGER," +
 		                                                                                  TRANSACTION_WITHRAWAL_REASON + " TEXT," +
 		                                                                                  TRANSACTION_DEPOSIT_SOURCE + " TEXT," + 

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+  
+    
+    <item android:id="@+id/accounts_settings"
+           android:text="Settings"
+           android:title="Settings"
+           android:visible="true" >
+    </item>       
+    
+    
+    
+          
+       <item android:id="@+id/transactions_add" 
+          android:text="Add"
+          android:visible="true"
+          android:showAsAction="always"
+          android:title="Add"
+          android:icon="@drawable/content_new"></item>
+     
+     
+               
+                   
+           
+           
+           
+       
+           
+       
+       
+		
+     </menu>
+         
+         
+    

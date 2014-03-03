@@ -124,9 +124,9 @@ public class SettingsActivity extends BaseActivity
 				
 				
 				View row = inflater.inflate(R.layout.nice_list_layout, parent, false);
-				TextView text = (TextView)row.findViewById(R.id.nice_title);
-				TextView description = (TextView)row.findViewById(R.id.nice_description);
-				ImageView image = (ImageView)row.findViewById(R.id.icon);
+				TextView text = (TextView)row.findViewById(R.id.transaction_title);
+				TextView description = (TextView)row.findViewById(R.id.transactions_total_balance);
+				ImageView image = (ImageView)row.findViewById(R.id.transactions_total_icon);
 				
 				text.setText(setting_names[position]);
 				description.setText(settings_description[position]);

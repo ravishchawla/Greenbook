@@ -45,8 +45,17 @@
         <activity 
             android:name="com.stacksmashers.greenbook.VerifyEmail">
             </activity>
+        <activity
+            android:name="com.stacksmashers.greenbook.HomeActivity"
+            android:uiOptions="splitActionBarWhenNarrow" >>
+            
+        </activity>
         
+        <activity
+            android:name="com.stacksmashers.greenbook.TransactionsActivity" >
+        </activity>
         
+    
     </application>
 
 </manifest>

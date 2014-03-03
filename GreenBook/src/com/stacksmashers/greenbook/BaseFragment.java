@@ -16,7 +16,7 @@ import com.parse.ParseObject;
  * it make sure basic stuff about activity life cycle 
  *
  */
-public class BaseFragment extends Fragment
+public class BaseFragment extends android.support.v4.app.Fragment
 {
 
 	DBHelper dbase;

@@ -6,8 +6,6 @@ import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -19,6 +17,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 
 /**
  * called when the activity first created
@@ -30,10 +31,9 @@ public class MainActivity extends BaseActivity
 
 	protected final String TAG = "activity_main";
 
-	protected RegisterActivity registerFragment;
-	protected LoginActivity loginFragment;
+	protected RegisterFragment registerFragment;
+	protected LoginFragment loginFragment;
 	protected ActionBar actionBar;
-
 	protected MenuItem check;
 
 	/**
@@ -55,16 +55,16 @@ public class MainActivity extends BaseActivity
 				.newTab()
 				.setText("Login")
 				.setTabListener(
-						new HomeTabListener<LoginActivity>(this, "Login",
-								LoginActivity.class));
+						new SimpleTabListener<LoginFragment>(this, "Login",
+								LoginFragment.class, 0, null));
 		actionBar.addTab(tab);
 
 		tab = actionBar
 				.newTab()
 				.setText("Register")
 				.setTabListener(
-						new HomeTabListener<RegisterActivity>(this, "Register",
-								RegisterActivity.class));
+						new SimpleTabListener<RegisterFragment>(this, "Register",
+								RegisterFragment.class, 1, null));
 		actionBar.addTab(tab);
 
 		// loginButton = (Button)findViewById(R.id.loginButton); // login button
@@ -172,13 +172,13 @@ public class MainActivity extends BaseActivity
 		{
 			if (actionBar.getSelectedNavigationIndex() == 0)
 			{
-				loginFragment = (LoginActivity) getFragmentManager()
+				loginFragment = (LoginFragment) getSupportFragmentManager()
 						.findFragmentByTag("Login");
 				loginFragment.logon();
 			}
 			else
 			{
-				registerFragment = (RegisterActivity)getFragmentManager().findFragmentByTag("Register");
+				registerFragment = (RegisterFragment)getSupportFragmentManager().findFragmentByTag("Register");
 				registerFragment.register();
 			}
 		}
@@ -199,7 +199,7 @@ public class MainActivity extends BaseActivity
 	{
 
 		Intent loginIntent = new Intent(getApplicationContext(),
-				LoginActivity.class); // intent login
+				LoginFragment.class); // intent login
 		startActivity(loginIntent); // login activity
 
 	}
@@ -212,68 +212,10 @@ public class MainActivity extends BaseActivity
 	{
 
 		Intent registerIntent = new Intent(getApplicationContext(),
-				RegisterActivity.class); // intent register
+				RegisterFragment.class); // intent register
 		startActivity(registerIntent); // register activity
 
 	}
 
-	private class HomeTabListener<Tab extends Fragment> implements TabListener
-	{
-
-		private Fragment fragment;
-		private final Activity activity;
-		private final String tag;
-		private final Class<Tab> clas;
-
-		public HomeTabListener(Activity activity, String tag, Class<Tab> clas)
-		{
-			this.activity = activity;
-			this.tag = tag;
-			this.clas = clas;
-
-		}
-
-		@Override
-		public void onTabReselected(android.app.ActionBar.Tab tab,
-				FragmentTransaction ft)
-		{
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void onTabSelected(android.app.ActionBar.Tab tab,
-				FragmentTransaction ft)
-		{
-			// TODO Auto-generated method stub
-
-			if (fragment == null)
-			{
-				fragment = Fragment.instantiate(activity, clas.getName());
-				ft.add(android.R.id.content, fragment, tag);
-			}
-			else
-			{
-
-				ft.attach(fragment);
-			}
-
-		}
-
-		@Override
-		public void onTabUnselected(android.app.ActionBar.Tab tab,
-				FragmentTransaction ft)
-		{
-			// TODO Auto-generated method stub
-
-			if (fragment != null)
-				ft.detach(fragment);
-
-		}
-
-		/*
-		 *		 */
-
-	}
 
 }
