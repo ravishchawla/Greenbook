@@ -37,7 +37,7 @@ public class BaseActivity extends FragmentActivity
 
 	/**
 	 * @param args
-	 *            main method
+	 *   main method
 	 */
 	public static void main(String[] args)
 	{
@@ -54,7 +54,8 @@ public class BaseActivity extends FragmentActivity
 	{
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-
+		
+        //  calling bese context from dbhelper
 		dbase = new DBHelper(getBaseContext());
 		sqldbase = dbase.getWritableDatabase();
 
@@ -74,20 +75,34 @@ public class BaseActivity extends FragmentActivity
 
 	}
 
+	/**
+	 * @param messege
+	 * @return void 
+	 * 
+	 */
 	public void Log(String message)
 	{
 		Log.i("GreenBook", message);
 	}
 	
+	/**
+	 * 
+	 * in this method we notify our user about title, messege and intent
+	 * @param title
+	 * @param messege
+	 * @param intent 
+	 */
 	public void NotifyUser(String title, String message, Intent intent)
 	{
-		
+		// get pending activity 
 		PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
 		Notification noti = new NotificationCompat.Builder(this)
-				.setContentTitle(title).setContentText(message)
-				.setContentIntent(pIntent)
-				.setSmallIcon(R.drawable.greenbooklauncher).build();
+		// send new notification 
+				.setContentTitle(title).setContentText(message)  // setcontent title and text 
+				.setContentIntent(pIntent)     // setcontent intent 
+				.setSmallIcon(R.drawable.greenbooklauncher).build();  //set small icon 
+		// manage notification 
 		NotificationManager nManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		nManager.notify(1, noti);
 
@@ -95,25 +110,37 @@ public class BaseActivity extends FragmentActivity
 		
 	}
 	
+	/**
+	 * @param email
+	 * this method normalize email for all string type eail 
+	 */
+	
 	public String normalizeEmail(String email)
 	{
 
 		if (email.matches(".+@[a-z]+[.](com|edu|org|gov|batman)"))
+			// if email is .com,.edu, .org, .gov, .batman 
 		{
 			return email.replace("@", "").replace(".", "");
+			// return that its true 
 
 		}
 
 		else
-			return null;
+			return null;   // return nothing 
 	}
 
+	/**
+	 * this method talk about code email for string email 
+	 * @param mail 
+	 */
 	public String codeEmail(String email)
 	{
-		String norm = normalizeEmail(email);
+		String norm = normalizeEmail(email);   // normalize email 
 		String code = "";
-		//ravishchawlagmailcom
+		//ravishchawlagmailcom 
 		
+		// descrive all different char, string, int , etc 
 		char a = norm.charAt(0);
 		String b = Character.toString(norm.charAt(norm.length() -1)).toUpperCase();
 		int c = norm.length()%9;
@@ -122,7 +149,7 @@ public class BaseActivity extends FragmentActivity
 		
 		code = a + b + c + d + e;
 		
-		return code;
+		return code;        // return code 
 		
 		
 		
@@ -130,37 +157,43 @@ public class BaseActivity extends FragmentActivity
 		
 	}
 	
+	/**
+	 * this method send mail
+	 * @param mail
+	 * @return void 
+	 */
 	public void send(Mail mail)
 	{
-		new SendMail().execute(mail);
+		new SendMail().execute(mail);    // execute mail
 	}
+	
 	
 	
 	public class SendMail extends AsyncTask
 	{
 		
 		
-
+         // this method runs in backgrond for object mail 
 		@Override
 		protected Object doInBackground(Object... mails)
 		{
 
-			if (mails[0] instanceof Mail)
+			if (mails[0] instanceof Mail)       // if not mail 
 			{
 				try
 				{
 
 					
-					Mail mail = (Mail) mails[0];
+					Mail mail = (Mail) mails[0];     // there are no mails 
 
-					boolean progress = mail.send();
+					boolean progress = mail.send();  // send mail 
 					
-					publishProgress(progress);
+					publishProgress(progress);       // progress 
 
 				}
 				catch (Exception e)
-				{
-					Log("Could not send email - " + e);
+				{  
+					Log("Could not send email - " + e);   // cant send email 
 					Log(e.getStackTrace().toString());
 				}
 			}
@@ -171,31 +204,44 @@ public class BaseActivity extends FragmentActivity
 			}
 
 			// TODO Auto-generated method stub
-			return null;
+			return null;     // return null 
 		}
 		
+		
+		/**
+		 * @param values
+		 * @return void
+		 * this method check on progress update for object values 
+		 */
 		@Override
 		protected void onProgressUpdate(Object... values)
 		{
 			// TODO Auto-generated method stub
 			super.onProgressUpdate(values);
 		
-			boolean val = (Boolean)values[0];
+			boolean val = (Boolean)values[0];     // check boolean val 
 		
-			if(val)
+			if(val)      
 			{
-				Toast.makeText(getApplicationContext(),
+				Toast.makeText(getApplicationContext(),   // get application context 
 						"Email Sent Successfully", Toast.LENGTH_LONG)
-						.show();
+						// email sent successfully 
+						.show();  // we can see it 
 			}
 			else
 			{
 				Toast.makeText(getApplicationContext(),"Email Not Sent", Toast.LENGTH_LONG).show();	
+				// email not sent 
 			}
 		
 		}
 		
 
+		/**
+		 * @param result
+		 * @return void 
+		 * this method execute result for any object 
+		 */
 		protected void onPostExecute(Object result)
 		{
 

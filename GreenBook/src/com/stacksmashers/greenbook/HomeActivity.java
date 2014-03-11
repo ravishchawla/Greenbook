@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 
+// this class make sure everything about homeactivity 
 public class HomeActivity extends BaseActivity
 {
 
@@ -41,46 +42,52 @@ public class HomeActivity extends BaseActivity
 
 	}
 
+	/**
+	 * @param savedinstancestate
+	 * @param void 
+	 * 
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 
 		// TODO Auto-generated method stub
-		super.onCreate(savedInstanceState);
+		super.onCreate(savedInstanceState);    // create savedinstancestate 
 
-		setContentView(R.layout.activity_home);
+		setContentView(R.layout.activity_home); // call activity home from layout 
 
-		viewpager = (ViewPager) findViewById(R.id.viewpager);
+		viewpager = (ViewPager) findViewById(R.id.viewpager);   
 
 		initializePaging();
 
-		actionBar = getActionBar();
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-		actionBar.setDisplayShowTitleEnabled(true);
+		actionBar = getActionBar();    // get action bar 
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS); 
+		actionBar.setDisplayShowTitleEnabled(true);   //set display show title enabled 
 
-		Bundle extras = getIntent().getExtras();
+		Bundle extras = getIntent().getExtras();  // getintent 
 
-		userType = extras.getString("Account Type");
-		accountsUser = extras.getString("Account User");
+		userType = extras.getString("Account Type");      // get string account type 
+		accountsUser = extras.getString("Account User");  // get string account user 
 
 		Cursor csr = sqldbase.query(DBHelper.USER_TABLE,
 				new String[] { DBHelper.USERS_ID }, DBHelper.USER_EMAIL
 						+ " = '" + accountsUser + "'", null, null, null, null);
+		// use sqldbase for query 
 
 		if (csr.getCount() != 0)
 		{
 			csr.moveToFirst();
-			userID = csr.getInt(0);
+			userID = csr.getInt(0);          // get int csr 
 			Log.i("User ID: ", "" + userID);
 		}
 
-		Tab tab = actionBar
+		Tab tab = actionBar      // action bar 
 				.newTab()
 				.setText("Accounts")
-				.setTabListener(
+				.setTabListener(         
 						new SimpleTabListener<AccountsFragment>(this,
 								"Accounts", AccountsFragment.class, 0,
-								viewpager));
+								viewpager));   // set tablistener 
 		actionBar.addTab(tab);
 
 		tab = actionBar
@@ -91,12 +98,17 @@ public class HomeActivity extends BaseActivity
 								"Transactions", TransactionsFragment.class, 1,
 								viewpager));
 
-		actionBar.addTab(tab);
+		actionBar.addTab(tab);   // add tab for actionbar 
 
 		viewpager
 				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener()
 				{
 
+	 /**
+	  * we use this method to select the page
+	  * @param position
+	  * @return void 
+	  */
 					@Override
 					public void onPageSelected(int position)
 					{
@@ -110,6 +122,11 @@ public class HomeActivity extends BaseActivity
 
 	}
 
+/**
+ * @param menu
+ * @return boolean
+ * we can create optionmenu by using this method 
+ */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
@@ -118,8 +135,9 @@ public class HomeActivity extends BaseActivity
 		// TODO Auto-generated method stub
 		Log.i("Debug", "Create");
 		if (getActionBar().getSelectedNavigationIndex() == 0)
+			// get actionbar and get selected navigation index = 0 
 			getMenuInflater().inflate(R.menu.menu_accounts, menu);
-
+           // getmenuinflater 
 		else
 		{
 			getMenuInflater().inflate(R.menu.menu_transactions, menu);
@@ -132,9 +150,14 @@ public class HomeActivity extends BaseActivity
 
 		}
 
-		return super.onCreateOptionsMenu(menu);
+		return super.onCreateOptionsMenu(menu);  // return oncreateoprtion menu 
 	}
 
+/**
+ * @param item
+ * @return boolean
+ * we use this method to select the option item 
+ */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
@@ -143,6 +166,7 @@ public class HomeActivity extends BaseActivity
 		if (viewpager.getCurrentItem() == 0)
 		{
 
+		// get supportfragementmanager from accounts fragmemnt 
 			accountsFragment = (AccountsFragment) getSupportFragmentManager()
 					.findFragmentByTag("Accounts");
 			accountsFragment.addAccount();
@@ -150,6 +174,7 @@ public class HomeActivity extends BaseActivity
 		}
 		else
 		{
+			//get supportfragmentmanager from transaction fragement 
 			transactionFragment = (TransactionsFragment) getSupportFragmentManager()
 					.findFragmentByTag("Transactions");
 			transactionFragment.addTransaction();
@@ -174,13 +199,18 @@ public class HomeActivity extends BaseActivity
 		{
 
 			@Override
-			public int getCount()
+			public int getCount()     // get count 
 			{
 
 				// TODO Auto-generated method stub
-				return finalFragments.size();
+				return finalFragments.size();  // return final fragment size 
 			}
 
+			/**
+			 * @param pos
+			 * @return fragment 
+			 * this method get fragment getitem 
+			 */
 			@Override
 			public Fragment getItem(int pos)
 			{
@@ -189,7 +219,7 @@ public class HomeActivity extends BaseActivity
 			}
 		};
 
-		viewpager.setAdapter(pageAdapter);
+		viewpager.setAdapter(pageAdapter);   // setadapter from viewpager 
 
 	}
 

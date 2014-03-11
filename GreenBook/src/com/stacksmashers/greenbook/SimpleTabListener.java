@@ -31,7 +31,12 @@ import android.support.v4.view.ViewPager;
 		}
 
 
-		
+	/**
+	 * called this method when tab is already selected 
+	 * @return void
+	 * @param tab
+	 * @param ft 
+	 */
 		
 		@Override
 		public void onTabReselected(android.app.ActionBar.Tab tab,
@@ -41,6 +46,14 @@ import android.support.v4.view.ViewPager;
 			
 		}
 
+
+		/**
+		 * called this method when tab is enters the selected state  
+		 * @return void
+		 * @param tab
+		 * @param ft 
+		 */
+			
 		@Override
 		public void onTabSelected(android.app.ActionBar.Tab tab,
 				android.app.FragmentTransaction ft)
@@ -72,6 +85,14 @@ import android.support.v4.view.ViewPager;
 		
 		}
 
+
+		/**
+		 * called this method when tab exit the state 
+		 * @return void
+		 * @param tab
+		 * @param ft 
+		 */
+			
 		@Override
 		public void onTabUnselected(android.app.ActionBar.Tab tab,
 				android.app.FragmentTransaction ft)
@@ -83,7 +104,7 @@ import android.support.v4.view.ViewPager;
 			if (fragment != null)
 			{
 				fTr.detach(fragment);
-				fTr.commit();
+				fTr.commit();        
 			}
 			
 

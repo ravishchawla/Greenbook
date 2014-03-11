@@ -66,7 +66,9 @@ public class RegisterFragment extends BaseFragment
 	 * called this method to start the activity. Maintain the activity and
 	 * application.
 	 * 
-	 * @param savedInstanceState
+	 * @param inflamer
+	 * @param container
+	 * @param savedinstancestate 
 	 * @return void
 	 */
 	@Override
@@ -83,7 +85,7 @@ public class RegisterFragment extends BaseFragment
 
 		
 		
-		main = (MainActivity) getActivity();
+		main = (MainActivity) getActivity();    // get activity from mainactivity 
 		
 		register_name = (EditText) view.findViewById(R.id.register_name); // calling
 																			// name
@@ -250,9 +252,13 @@ public class RegisterFragment extends BaseFragment
 					}
 				});
 
-		register_checkpassword.addTextChangedListener(new TextWatcher()
+		register_checkpassword.addTextChangedListener(new TextWatcher() 
 		{
-
+/**
+ * @param arg0
+ * @param void
+ * we use this method to change the text 
+ */
 			@Override
 			public void afterTextChanged(Editable arg0)
 			{
@@ -261,15 +267,22 @@ public class RegisterFragment extends BaseFragment
 				else
 					checkpassword_check.setText("✗");
 
-				if (main.check != null)
+				if (main.check != null)   // main check not null 
 					if (name_bool && email_bool && password_bool
 							&& checkpassword_bool)
-						main.check.setEnabled(true);
+						main.check.setEnabled(true);   // set main check enabled  true 
 					else
-						main.check.setEnabled(false);
+						main.check.setEnabled(false); // set main check enabled false 
 
 			}
 
+			/**
+			 * @param arg0
+			 * @param arg1
+			 * @param arg2
+			 * @param arg3
+			 * @return void 
+			 */
 			@Override
 			public void beforeTextChanged(CharSequence arg0, int arg1,
 					int arg2, int arg3)
@@ -278,6 +291,13 @@ public class RegisterFragment extends BaseFragment
 
 			}
 
+			/**
+			 * @param arg0
+			 * @param arg1
+			 * @param arg2
+			 * @param arg3
+			 * @return void 
+			 */
 			@Override
 			public void onTextChanged(CharSequence arg0, int arg1, int arg2,
 					int arg3)
@@ -300,6 +320,10 @@ public class RegisterFragment extends BaseFragment
 		register_password.addTextChangedListener(new TextWatcher()
 		{
 
+			/**
+			 * @param arg0
+			 * @param void 
+			 */
 			@Override
 			public void afterTextChanged(Editable arg0)
 			{
@@ -323,6 +347,13 @@ public class RegisterFragment extends BaseFragment
 
 			}
 
+			/**
+			 * @param arg0
+			 * @param arg1
+			 * @param arg2
+			 * @param arg3
+			 * @return void 
+			 */
 			@Override
 			public void beforeTextChanged(CharSequence arg0, int arg1,
 					int arg2, int arg3)
@@ -331,6 +362,13 @@ public class RegisterFragment extends BaseFragment
 
 			}
 
+			/**
+			 * @param arg0
+			 * @param arg1
+			 * @param arg2
+			 * @param arg3
+			 * @return void 
+			 */
 			@Override
 			public void onTextChanged(CharSequence arg0, int arg1, int arg2,
 					int arg3)
@@ -361,16 +399,21 @@ public class RegisterFragment extends BaseFragment
 		badge.setOnClickListener(new OnClickListener()
 		{
 
+		/**
+		 * @param v
+		 * @return void
+		 * 
+		 */
 			@Override
 			public void onClick(View v)
 			{
 				// TODO Auto-generated method stub
 
-				Intent intent = new Intent();
-				intent.setType("image/*");
-				intent.setAction(Intent.ACTION_GET_CONTENT);
+				Intent intent = new Intent(); // get new intent 
+				intent.setType("image/*");    // set intext type image 
+				intent.setAction(Intent.ACTION_GET_CONTENT);  
 				startActivityForResult(
-						Intent.createChooser(intent, "Select Picture"),
+						Intent.createChooser(intent, "Select Picture"), // select picture 
 						PICTURE_REQUEST);
 
 			}
@@ -382,20 +425,26 @@ public class RegisterFragment extends BaseFragment
 
 	}
 
-	
+	/**
+	 * @param request
+	 * @param result
+	 * @param data
+	 * @return void 
+	 * this method returns result from activity 
+	 */
 	
 	
 	@Override
 	public void onActivityResult(int request, int result, Intent data)
 	{
 
-		if (result == getActivity().RESULT_OK)
+		if (result == getActivity().RESULT_OK)   // if result for getactivity is ok 
 		{
-			if (request == PICTURE_REQUEST)
+			if (request == PICTURE_REQUEST)    // request picture 
 
 			{
 				Toast.makeText(getActivity(), "Selected", Toast.LENGTH_LONG)
-						.show();
+						.show();     // select get activity 
 
 				Uri selectedImage = data.getData();
 				String path = selectedImage.getPath();
@@ -417,7 +466,7 @@ public class RegisterFragment extends BaseFragment
 
 			else if (request == CROP_REQUEST)
 			{
-				Bundle extras = data.getExtras();
+				Bundle extras = data.getExtras();  
 				if (extras != null)
 				{
 					photo = extras.getParcelable("data");
@@ -577,7 +626,7 @@ public class RegisterFragment extends BaseFragment
 			catch (Exception e)
 			{
 
-				Toast.makeText(getActivity(), "Couldn't save photo",
+				Toast.makeText(getActivity(), "Couldn't save photo", // make text 
 						Toast.LENGTH_SHORT);
 				e.printStackTrace();
 			}
@@ -632,6 +681,7 @@ public class RegisterFragment extends BaseFragment
 
 								/**
 								 * @param which
+								 * @param dialog 
 								 * @return number call this method when user
 								 *         touches the item
 								 */
@@ -648,6 +698,14 @@ public class RegisterFragment extends BaseFragment
 
 		}
 	}
+	
+	/**
+	 * @param name
+	 * @param user
+	 * @param code 
+	 * @return void 
+	 * this method send messege to string 
+	 */
 
 	public void sendMessage(String name, String user, String pass, String code)
 	{

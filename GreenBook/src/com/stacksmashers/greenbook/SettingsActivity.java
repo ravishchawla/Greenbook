@@ -23,6 +23,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * 
+ * this method make sure about settings activity 
+ *
+ */
+
 public class SettingsActivity extends BaseActivity
 {
 
@@ -36,6 +42,7 @@ public class SettingsActivity extends BaseActivity
 	private final static int SETTINGS_VERIFY_EMAIL = 0x0;
 	
 
+	// settings activity 
 	public SettingsActivity()
 	{
 		// TODO Auto-generated constructor stub
@@ -50,27 +57,42 @@ public class SettingsActivity extends BaseActivity
 
 	}
 
+	/**
+	 * @param savedinstancestate
+	 * @return void
+	 * this method create savedinstancestate 
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.activity_settings);
+		setContentView(R.layout.activity_settings);   // setcontentview 
 
-		Bundle extras = getIntent().getExtras();
+		Bundle extras = getIntent().getExtras();   // getintent from bundle extras 
 		user_id = extras.getInt("User ID");
 		
-		list = (ListView)findViewById(R.id.settings_list);
+		list = (ListView)findViewById(R.id.settings_list);  //find view id 
 		
 		//ArrayList<String> items = (ArrayList<String>) Arrays.asList(setting_names);
 		
+		// call new customerarrayadapater 
 		final CustomArrayAdapter adapter = new CustomArrayAdapter(this, setting_names);
 		list.setAdapter(adapter);
 
+	
 		list.setOnItemClickListener(new AdapterView.OnItemClickListener()
 		{
 
+			/**
+			 * @param parent
+			 * @param view
+			 * @param position
+			 * @param id
+			 * @return void
+			 * 
+			 */
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position,
 					long id)
@@ -79,7 +101,7 @@ public class SettingsActivity extends BaseActivity
 				
 				if(position == SETTINGS_VERIFY_EMAIL)
 				{
-					verify(user_id);
+					verify(user_id);       // varify user id 
 					
 				}
 			
@@ -98,7 +120,12 @@ public class SettingsActivity extends BaseActivity
 		
 		}
 	
-	
+
+	/**
+	 * 
+	 * this class make sure about array adapter 
+	 *
+	 */
 	private class CustomArrayAdapter extends ArrayAdapter<String>
 	{
 		
@@ -107,7 +134,11 @@ public class SettingsActivity extends BaseActivity
 			private final String[] values;
 			private LayoutInflater inflater;
 			
-			
+			/**
+			 * @param context
+			 * @param values
+			 * 
+			 */
 			public CustomArrayAdapter(Context context, String[] values)
 			{
 				super(context, R.layout.nice_list_layout, values);
@@ -118,6 +149,14 @@ public class SettingsActivity extends BaseActivity
 					
 			}
 			
+			/**
+			 * @param position
+			 * @param convertview
+			 * @param parent 
+			 * @return views
+			 * we can view different things from this methid 
+			 * 
+			 */
 			@Override
 			public View getView(int position, View convertView, ViewGroup parent)
 			{
@@ -139,7 +178,11 @@ public class SettingsActivity extends BaseActivity
 			
 		
 	}
-	
+
+	/**
+	 * @param user_id
+	 * @return void 
+	 */
 	
 	public void verify(final int user_id)
 	{
@@ -165,6 +208,10 @@ public class SettingsActivity extends BaseActivity
 					.setView(view).setPositiveButton("Resend", new DialogInterface.OnClickListener()
 					{
 						
+						/**
+						 * @param dialog
+						 * @param which 
+						 */
 						@Override
 						public void onClick(DialogInterface dialog, int which)
 						{
@@ -177,10 +224,11 @@ public class SettingsActivity extends BaseActivity
 							{
 								caeser.moveToFirst();
 								
-								String name = caeser.getString(0);
-								String email = caeser.getString(1);
-								String code = codeEmail(email);
+								String name = caeser.getString(0);  // get string name 
+								String email = caeser.getString(1); // get string email 
+								String code = codeEmail(email);    // get string code 
 								
+								// string messege 
 								String message = "Hello " + name + ",\n" +
 										"Here's your code!" +
 										"\n" +
@@ -194,14 +242,14 @@ public class SettingsActivity extends BaseActivity
 										
 										
 										
-										
+								// get new messege 		
 								
 								Mail mail = new Mail("no.reply.greenbook@gmail.com",
 										"hello world");
 								mail.setFrom("no.reply.greenbook");
-								mail.setTo(email);
-								mail.setSubject("GreenBook email verifcation");
-								mail.setMessage(message);
+								mail.setTo(email);    // set to email 
+								mail.setSubject("GreenBook email verifcation");  // varify 
+								mail.setMessage(message);  // set messege 
 
 								send(mail);
 							}
@@ -209,7 +257,7 @@ public class SettingsActivity extends BaseActivity
 							
 							
 						}
-					}).create();
+					}).create();     // create 
 
 			dialog.show();
 
@@ -219,6 +267,10 @@ public class SettingsActivity extends BaseActivity
 			textView.addTextChangedListener(new TextWatcher()
 			{
 
+				/**
+				 * @param s
+				 * @return void
+				 */
 				@Override
 				public void afterTextChanged(Editable s)
 				{
@@ -226,6 +278,14 @@ public class SettingsActivity extends BaseActivity
 
 				}
 
+				/**
+				 * @param s
+				 * @param start
+				 * @param count
+				 * @param after
+				 * @reutrn void 
+				 * 
+				 */
 				@Override
 				public void beforeTextChanged(CharSequence s, int start,
 						int count, int after)
@@ -234,6 +294,12 @@ public class SettingsActivity extends BaseActivity
 
 				}
 
+				/**
+				 * @param s
+				 * @param start
+				 * @param before
+				 * @param count 
+				 */
 				@Override
 				public void onTextChanged(CharSequence s, int start,
 						int before, int count)
@@ -247,7 +313,7 @@ public class SettingsActivity extends BaseActivity
 								Toast.LENGTH_LONG).show();
 						
 						
-						ContentValues brutus = new ContentValues();
+						ContentValues brutus = new ContentValues(); // get new contentvalyes from brutus 
 						brutus.put(DBHelper.USER_TYPE, "auth");
 						sqldbase.update(DBHelper.USER_TABLE, brutus, DBHelper.USERS_ID + " = '" + user_id + "'", null);
 						
@@ -261,7 +327,7 @@ public class SettingsActivity extends BaseActivity
 		}
 		else
 			Toast.makeText(getApplicationContext(), "Email Alreaddy Verified", Toast.LENGTH_LONG).show();
-		
+		// show messege that email is already verified 
 	}
 
 	

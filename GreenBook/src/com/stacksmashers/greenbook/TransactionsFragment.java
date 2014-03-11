@@ -89,7 +89,10 @@ public class TransactionsFragment extends BaseFragment
 		
 		return view;
 	}
-
+/**
+ * @return void 
+ * we use this method to updatedata 
+ */
 	public void updateData()
 	{
 		if (isHome)
@@ -128,10 +131,16 @@ public class TransactionsFragment extends BaseFragment
 
 		Log(DatabaseUtils.dumpCursorToString(caeser));
 
-		adap = new SimpleCursorAdapter(getActivity(),
+		adap = new SimpleCursorAdapter(getActivity(),  // call new simplecursoradapter from adap
 				R.layout.transactions_list_block, caeser, from, to)
 		{
 
+	/**
+	 * @param position
+	 * @param convertview
+	 * @param parent
+	 * this method displays the data to data set  
+	 */
 			@Override
 			public View getView(int position, View convertView, ViewGroup parent)
 			{
@@ -145,7 +154,7 @@ public class TransactionsFragment extends BaseFragment
 						.findViewById(R.id.transactions_total_balance);
 
 				int balances = caeser.getInt(7);
-				if (balances > 0)
+				if (balances > 0)      // balances less than 0 
 				{
 
 					title.setText("Deposit " + currency + balances);
@@ -185,6 +194,10 @@ public class TransactionsFragment extends BaseFragment
 
 	}
 
+	/**
+	 * return void
+	 * we use this method to add transction 
+	 */
 	public void addTransaction()
 	{
 
@@ -225,7 +238,11 @@ public class TransactionsFragment extends BaseFragment
 
 		whichSwitch.setOnCheckedChangeListener(new OnCheckedChangeListener()
 		{
-
+/**
+ * @param buttonview
+ * @return void
+ * @return boolean 
+ */
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked)
@@ -234,12 +251,12 @@ public class TransactionsFragment extends BaseFragment
 
 				if (isChecked)
 				{
-					sourceText.setHint("Spending Category");
+					sourceText.setHint("Spending Category");  // set hint text 
 					reasonText.setVisibility(View.VISIBLE);
 				}
 				else
 				{
-					sourceText.setHint("Money Source");
+					sourceText.setHint("Money Source");    //set hint text 
 					reasonText.setVisibility(View.GONE);
 				}
 
@@ -251,6 +268,12 @@ public class TransactionsFragment extends BaseFragment
 				.setPositiveButton("Enter", new DialogInterface.OnClickListener()
 				{
 
+
+	/**
+	 * @param dialog
+	 * @param which
+	 * @return void 
+	 */
 					@Override
 					public void onClick(DialogInterface dialog, int which)
 					{
@@ -260,8 +283,13 @@ public class TransactionsFragment extends BaseFragment
 					
 					
 				}).setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+				// set navigate button 
 				{
-					
+	/**
+	 * @param dialog
+	 * @param which
+	 * @return void 
+	 */
 					@Override
 					public void onClick(DialogInterface dialog, int which)
 					{
@@ -272,26 +300,35 @@ public class TransactionsFragment extends BaseFragment
 				}).create();
 		dialog.setOnShowListener(new OnShowListener()
 		{
-
+    /**
+     * @param dyalog
+     * @return void 
+     * we use this method to show 
+     */
 			@Override
 			public void onShow(DialogInterface dyalog)
 			{
 
-				Button plus = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+				Button plus = dialog.getButton(AlertDialog.BUTTON_POSITIVE); // get dialog button 
 
-				plus.setOnClickListener(new OnClickListener()
+				plus.setOnClickListener(new OnClickListener()  // set on click listener 
 				{
 
 					@SuppressLint("NewApi")
 					@Override
 					
+					/**
+					 * @param v
+					 * @return void 
+					 */
 					public void onClick(View v)
 					{
 						// TODO Auto-generated method stub
 
 						Integer balance = Integer.parseInt(balanceText
 								.getText().toString());
-						String source = sourceText.getText().toString();
+						String source = sourceText.getText().toString(); 
+						// string souce from to string 
 						String reason = reasonText.getText().toString();
 						boolean checked = whichSwitch.isChecked();
 
@@ -303,20 +340,20 @@ public class TransactionsFragment extends BaseFragment
 						if(balance.equals(""))
 						{
 							balanceText.setBackground(getResources().getDrawable(R.drawable.error_edittext));
-							exit_now = true;
+							exit_now = true;    // exit now
 						}
 						
 						if (source.equals(""))
 						{
 							sourceText.setBackground(getResources()
 									.getDrawable(R.drawable.error_edittext));
-							exit_now = true;
+							exit_now = true;     // exit now 
 						}
 
 						if(checked && reason.equals(""))
 						{
 							reasonText.setBackground(getResources().getDrawable(R.drawable.error_edittext));
-							exit_now = true;
+							exit_now = true;    // exit now 
 						}
 						
 						if(exit_now)
@@ -325,7 +362,7 @@ public class TransactionsFragment extends BaseFragment
 							return;
 						}
 						
-						if (checked)
+						if (checked)   // checked everything
 						{
 							csr.put(DBHelper.TRANSACTION_CATEGORY, source);
 							csr.put(DBHelper.TRANSACTION_WITHRAWAL_REASON,
@@ -363,8 +400,8 @@ public class TransactionsFragment extends BaseFragment
 
 						sqldbase.insert(DBHelper.TRANSACTION_TABLE, null, csr);
 
-						updateData();
-						dialog.dismiss();
+						updateData();    //update data 
+						dialog.dismiss(); // dismiss dialog 
 
 					}
 				});
@@ -374,10 +411,16 @@ public class TransactionsFragment extends BaseFragment
 			}
 		});
 
-		dialog.show();
+		dialog.show();      // show dialog 
 
 	}
 
+	/**
+	 * @parm userid
+	 * @param accountID
+	 * @return int 
+	 * 
+	 */
 	public int getBalance(int userId, int accountID)
 	{
 		Cursor caeser = sqldbase.query(DBHelper.ACCOUNT_TABLE,
@@ -399,6 +442,11 @@ public class TransactionsFragment extends BaseFragment
 
 	}
 
+	/**
+	 * @param userid
+	 * @return int
+	 * we use this method to getblanace sum 
+	 */
 	public int getBalanceSum(int userId)
 	{
 		Cursor caeser = sqldbase.query(DBHelper.ACCOUNT_TABLE,
@@ -420,10 +468,18 @@ public class TransactionsFragment extends BaseFragment
 			}
 		}
 
-		return sum;
+		return sum;       // return sum 
 
 	}
 
+/**
+ * @param userID
+ * @param account ID
+ * @param change
+ * @eturn void
+ * we use this method to fix the balance 
+ * 
+ */
 	public void fixBalance(int userID, int accountID, int change)
 	{
 		Cursor caeser = sqldbase.query(DBHelper.ACCOUNT_TABLE,
@@ -435,10 +491,10 @@ public class TransactionsFragment extends BaseFragment
 		int bal = getBalance(userID, accountID);
 		bal += change;
 
-		ContentValues cv = new ContentValues();
+		ContentValues cv = new ContentValues();  // get new content values from cv 
 		cv.put(DBHelper.ACCOUNT_BALANCE, bal);
 
-		sqldbase.update(DBHelper.ACCOUNT_TABLE, cv, DBHelper.ACCOUNT_USER
+		sqldbase.update(DBHelper.ACCOUNT_TABLE, cv, DBHelper.ACCOUNT_USER   // update sqldbase 
 				+ " = '" + userID + "' AND " + DBHelper.ACCOUNT_ID + " = '"
 				+ accountID + "'", null);
 

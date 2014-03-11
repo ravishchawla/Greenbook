@@ -36,13 +36,10 @@ public class RegisterActivity extends BaseFragment
 
 	EditText register_name, register_username, register_password,
 			register_checkpassword; // name, username, password, checkpassword
-	TextView name_check, email_check, password_check, checkpassword_check; // we
-																			// can
-																			// see
-																			// name,email,password
-																			// and
-																			// checkpassword
-																			// check
+	TextView name_check, email_check, password_check, checkpassword_check;
+	// check  name, email, password and check password 		
+																			
+															
 	// calling register button
 	ImageView badge;
 
@@ -54,7 +51,7 @@ public class RegisterActivity extends BaseFragment
 	 */
 
 	private String text;
-	private Cursor caeser;
+	private Cursor caeser;    // cursor 
 	private boolean name_bool = false, email_bool = false,
 			password_bool = false, checkpassword_bool = false;
 
@@ -67,7 +64,9 @@ public class RegisterActivity extends BaseFragment
 	 * application.
 	 * 
 	 * @param savedInstanceState
-	 * @return void
+	 * @param inflater
+	 * @param container
+	 * 
 	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -81,10 +80,9 @@ public class RegisterActivity extends BaseFragment
 				false);// calling activity register
 		// from layour
 
-		register_name = (EditText) view.findViewById(R.id.register_name); // calling
-																			// name
-																			// from
-																			// res
+		register_name = (EditText) view.findViewById(R.id.register_name); 
+		//calling name from register 
+																			
 		register_username = (EditText) view
 				.findViewById(R.id.register_username); // calling
 														// username
@@ -94,17 +92,17 @@ public class RegisterActivity extends BaseFragment
 														// password
 														// button
 		register_checkpassword = (EditText) view
-				.findViewById(R.id.register_checkpassword);
+				.findViewById(R.id.register_checkpassword);   // find Id 
 
 		name_check = (TextView) view.findViewById(R.id.nameCheck); // check name
-		email_check = (TextView) view.findViewById(R.id.emailCheck); // check
-																		// email
-		password_check = (TextView) view.findViewById(R.id.passwordCheck); // check
-																			// password
-		checkpassword_check = (TextView) view
+		email_check = (TextView) view.findViewById(R.id.emailCheck); // check email 
+																		
+		password_check = (TextView) view.findViewById(R.id.passwordCheck); // check password
+																		 p
+		checkpassword_check = (TextView) view     // check check password 
 				.findViewById(R.id.checkpasswordCheck);
 
-		register_name.addTextChangedListener(new TextWatcher()
+		register_name.addTextChangedListener(new TextWatcher()    // new text watcher 
 		{
 			/**
 			 * @param s
@@ -246,9 +244,13 @@ public class RegisterActivity extends BaseFragment
 					}
 				});
 
+		
 		register_checkpassword.addTextChangedListener(new TextWatcher()
 		{
-
+           /**
+            * @param arg0
+            * @return void 
+            */
 			@Override
 			public void afterTextChanged(Editable arg0)
 			{
@@ -260,19 +262,34 @@ public class RegisterActivity extends BaseFragment
 				if (main.check != null)
 					if (name_bool && email_bool && password_bool
 							&& checkpassword_bool)
-						main.check.setEnabled(true);
+						main.check.setEnabled(true);    // set enable true 
 					else
-						main.check.setEnabled(false);
+						main.check.setEnabled(false);   //set unable false 
 
 			}
 
 			@Override
+			/**
+			 * @param arg0
+			 * @param arg1
+			 * @param arg2
+			 * @param arg3
+			 * @return void 
+			 */
 			public void beforeTextChanged(CharSequence arg0, int arg1,
 					int arg2, int arg3)
 			{
 				// TODO Auto-generated method stub
 
 			}
+			
+			/**
+			 * @param arg0
+			 * @param arg1
+			 * @param arg2
+			 * @param arg3
+			 * @return void 
+			 */
 
 			@Override
 			public void onTextChanged(CharSequence arg0, int arg1, int arg2,
@@ -282,20 +299,26 @@ public class RegisterActivity extends BaseFragment
 				// TODO Auto-generated method stub
 				text = register_password.getEditableText().toString();
 				// TODO Auto-generated method stub
-				if (text.length() > 0
+				if (text.length() > 0      
 						&& text.equals(register_checkpassword.getEditableText()
 								.toString()))
-					checkpassword_bool = true;
+	// if text.length >0 and text = register check password 
+					checkpassword_bool = true;     // true 
 				else
-					checkpassword_bool = false;
+					checkpassword_bool = false;    // false 
 
 			}
 
 		});
-
+  
+		// addtextchangedlistened for register password 
 		register_password.addTextChangedListener(new TextWatcher()
 		{
 
+			/**
+			 * @param arg0
+			 * @return void 
+			 */
 			@Override
 			public void afterTextChanged(Editable arg0)
 			{
@@ -319,6 +342,13 @@ public class RegisterActivity extends BaseFragment
 
 			}
 
+			/**
+			 * @param arg0
+			 * @param arg1
+			 * @param arg2
+			 * @param arg3
+			 * @return void 
+			 */
 			@Override
 			public void beforeTextChanged(CharSequence arg0, int arg1,
 					int arg2, int arg3)
@@ -327,6 +357,13 @@ public class RegisterActivity extends BaseFragment
 
 			}
 
+			/**
+			 * @param arg0
+			 * @param arg1
+			 * @param arg2
+			 * @param arg3
+			 * @return void 
+			 */
 			@Override
 			public void onTextChanged(CharSequence arg0, int arg1, int arg2,
 					int arg3)
@@ -354,51 +391,65 @@ public class RegisterActivity extends BaseFragment
 		});
 
 		badge = (ImageView) view.findViewById(R.id.register_pic);
+		// findview by ID
 		badge.setOnClickListener(new OnClickListener()
+		// set Onclick listener for new onclicklistener 
 		{
-
+           
+			/**
+			 * @param v
+			 * @return void 
+			 */
 			@Override
 			public void onClick(View v)
 			{
 				// TODO Auto-generated method stub
 
-				Intent intent = new Intent();
-				intent.setType("image/*");
-				intent.setAction(Intent.ACTION_GET_CONTENT);
-				startActivityForResult(
+				Intent intent = new Intent();   // calling new intent 
+				intent.setType("image/*");      // set image 
+				intent.setAction(Intent.ACTION_GET_CONTENT);  // setaction 
+				startActivityForResult(                       // start activity 
 						Intent.createChooser(intent, "Select Picture"),
 						PICTURE_REQUEST);
 
 			}
 		});
 
-		main = (MainActivity) getActivity();
+		main = (MainActivity) getActivity();    // get main activity 
 
-		return view;
+		return view;        // return view 
 
 	}
 
 	
-	
+	/**
+	 * @param request
+	 * @param result
+	 * @param data
+	 * @return void
+	 * we can use this method to get activity result 
+	 */
 	
 	@Override
 	public void onActivityResult(int request, int result, Intent data)
 	{
 
-		if (result == getActivity().RESULT_OK)
+		if (result == getActivity().RESULT_OK)     // result is good 
 		{
-			if (request == PICTURE_REQUEST)
+			if (request == PICTURE_REQUEST)       // request picture 
 
 			{
 				Toast.makeText(getActivity(), "Selected", Toast.LENGTH_LONG)
-						.show();
+						.show();               // get the picture that we requested 
 
-				Uri selectedImage = data.getData();
-				String path = selectedImage.getPath();
+				Uri selectedImage = data.getData();        // get data from selected image 
+				String path = selectedImage.getPath();    
+				//get string path from selected string path 
 				Log.d("path: ", path);
 
 				// badge.setImageURI(selectedImage);
 
+				// call for new intent cop 
 				final Intent crop = new Intent("com.android.camera.action.CROP");
 				crop.setData(selectedImage);
 				crop.putExtra("outputX", 75);
@@ -411,14 +462,14 @@ public class RegisterActivity extends BaseFragment
 				startActivityForResult(crop, CROP_REQUEST);
 			}
 
-			else if (request == CROP_REQUEST)
+			else if (request == CROP_REQUEST)     // if we crop request 
 			{
 				Bundle extras = data.getExtras();
-				if (extras != null)
+				if (extras != null)           // extras not null 
 				{
-					photo = extras.getParcelable("data");
-					badge.setImageBitmap(photo);
-					dismiss = false;
+					photo = extras.getParcelable("data");   // get data 
+					badge.setImageBitmap(photo);        // set picture 
+					dismiss = false;                 // if not, than dismiss 
 
 				}
 			}
@@ -427,6 +478,9 @@ public class RegisterActivity extends BaseFragment
 
 	}
 
+	/**
+	 * this method calls to resume the activity 
+	 */
 	@Override
 	public void onResume() // resume work
 	{
@@ -447,7 +501,7 @@ public class RegisterActivity extends BaseFragment
 	 * called this method to start the regristration activity Maintain the
 	 * regristration activity and application.
 	 * 
-	 * @param view
+	 * 
 	 * @return void
 	 */
 
@@ -551,13 +605,14 @@ public class RegisterActivity extends BaseFragment
 		{
 
 			ContextWrapper wrapper = new ContextWrapper(getActivity());
+			// get new contextwrapper from  wrapper
 			File imagesPath = wrapper.getDir("images", Context.MODE_PRIVATE);
 			File filePath = new File(imagesPath, main.normalizeEmail(username));
-			Toast.makeText(getActivity(),
+			Toast.makeText(getActivity(),        // get activity 
 					"Normalized: " + main.normalizeEmail(username),
 					Toast.LENGTH_LONG).show();
 
-			FileOutputStream output = null;
+			FileOutputStream output = null;   // output== null 
 
 			try
 			{
@@ -573,9 +628,9 @@ public class RegisterActivity extends BaseFragment
 			catch (Exception e)
 			{
 
-				Toast.makeText(getActivity(), "Couldn't save photo",
+				Toast.makeText(getActivity(), "Couldn't save photo",   // we cant save photo 
 						Toast.LENGTH_SHORT);
-				e.printStackTrace();
+				e.printStackTrace();       // print stack trace 
 			}
 
 			sqldbase.insert(DBHelper.USER_TABLE, null, brutus); // use dbhelper
@@ -587,7 +642,7 @@ public class RegisterActivity extends BaseFragment
 			// user table
 
 			new AlertDialog.Builder(getActivity())
-					.setTitle("Login Now?")
+					.setTitle("Login Now?")                // set title 
 					.setPositiveButton("Yes",
 							new DialogInterface.OnClickListener()
 							{
@@ -622,7 +677,7 @@ public class RegisterActivity extends BaseFragment
 
 								}
 							})
-					.setNegativeButton("Exit",
+					.setNegativeButton("Exit",                     // set exit button 
 							new DialogInterface.OnClickListener()
 							{
 
@@ -645,6 +700,14 @@ public class RegisterActivity extends BaseFragment
 		}
 	}
 
+	/**
+	 * @param name
+	 * @param user
+	 * @param pass
+	 * @param code
+	 * @return void
+	 * this method send messege to the app 
+	 */
 	public void sendMessage(String name, String user, String pass, String code)
 	{
 		// sendEmail();

@@ -46,10 +46,10 @@ public class MainActivity extends BaseActivity
 		super.onCreate(savedInstanceState); // create saveinstancestate
 		// setContentView(R.layout.activity_main);
 
-		actionBar = getActionBar();
+		actionBar = getActionBar();  // get action bar 
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-		actionBar.setDisplayShowTitleEnabled(true);
+		actionBar.setDisplayShowTitleEnabled(true);  // set display show title  
 
 		Tab tab = actionBar
 				.newTab()
@@ -74,8 +74,8 @@ public class MainActivity extends BaseActivity
 
 	/**
 	 * @param menu
-	 * @return true or false call this method to show the cotextmenu for the
-	 *         menu
+	 * @return true or false call this method to show the cotextmenu for the menu 
+	 *  this method create option menu 
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
@@ -83,42 +83,53 @@ public class MainActivity extends BaseActivity
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 
-		ActionBar actionBar = getActionBar();
-		actionBar.setBackgroundDrawable(new ColorDrawable(getResources()
-				.getColor(android.R.color.holo_blue_light)));
+		ActionBar actionBar = getActionBar();   // get action bar 
+		actionBar.setBackgroundDrawable(new ColorDrawable(getResources()  // set background drawble 
+				.getColor(android.R.color.holo_blue_light))); 
 
-		check = menu.findItem(R.id.action_check);
+		check = menu.findItem(R.id.action_check); // find menu item 
 
-		check.setEnabled(false);
+		check.setEnabled(false);   
 
-		return true;
-	}
+		return true    // return true 
+	
+	/**
+	 * this method calls for true or false for seleted items 
+	 */
 
 	@Override
 	public boolean onOptionsItemSelected(android.view.MenuItem item)
 	{
 
-		if (item.getItemId() == R.id.action_forgot_password)
+		if (item.getItemId() == R.id.action_forgot_password)  // get item id 
 		{
 			View view = getLayoutInflater().inflate(R.layout.settings_verify,
 					null);
+			// view layoutinglamer 
 			final EditText textviewer = (EditText) view
 					.findViewById(R.id.verify_email);
-			textviewer.setHint("Email");
+			textviewer.setHint("Email");  // set hint called email 
 			AlertDialog dialog = new AlertDialog.Builder(this)
 					.setView(view)
-					.setMessage("Enter your Email")
-					.setPositiveButton("Send verification Email",
-							new OnClickListener()
+					.setMessage("Enter your Email")   // set messege 
+					.setPositiveButton("Send verification Email",  // set button 
+							new OnClickListener()   // new click listener 
 							{
 
+						/**
+						 *  @param dialog
+						 *  @param which
+						 *  @reutrn which
+						 *  
+						 */
 								@Override
 								public void onClick(DialogInterface dialog,
 										int which)
 								{
 									// TODO Auto-generated method stub
-
+                                   // we call sqldbase query 
 									Cursor caeser = sqldbase.query(
+											// use dbuser table 
 											DBHelper.USER_TABLE, new String[] {
 													DBHelper.USER_NAME,
 													DBHelper.USER_TYPE,
@@ -129,17 +140,21 @@ public class MainActivity extends BaseActivity
 															.toString() + "'",
 											null, null, null, null);
 
-									if (caeser.getCount() != 0)
+									if (caeser.getCount() != 0) // caeser.getcount is not 0 
 									{
-										caeser.moveToFirst();
+										caeser.moveToFirst();   // move to first 
 
 										if (!caeser.getString(1).equals("auth"))
 										{
 											String name = caeser.getString(0);
+											// string name 
 											String email = textviewer.getText()
 													.toString();
+											view text from tostring 
 											String pass = caeser.getString(2);
+											// pass the string 
 
+											// string messege 
 											String message = "Hello " + name
 													+ ",\n" + "Hi " + name
 													+ ",\n"
@@ -148,6 +163,7 @@ public class MainActivity extends BaseActivity
 													+ "\n" + "\n" + "--"
 													+ "The GreenBook Team";
 
+											// get new mail 
 											Mail mail = new Mail(
 													"no.reply.greenbook@gmail.com",
 													"hello world");
@@ -156,34 +172,35 @@ public class MainActivity extends BaseActivity
 											mail.setSubject("GreenBook email verifcation");
 											mail.setMessage(message);
 
-											send(mail);
+											send(mail);      // send mail 
 										}
 
 									}
 
 								}
-							}).create();
+							}).create();      
 
-			dialog.show();
+			dialog.show();      // show the dialog 
 
 		}
 
-		else if (item.getItemId() == R.id.action_check)
+		else if (item.getItemId() == R.id.action_check)   // get item id 
 		{
 			if (actionBar.getSelectedNavigationIndex() == 0)
 			{
 				loginFragment = (LoginFragment) getSupportFragmentManager()
+						// get support fragment manager from login fragment 
 						.findFragmentByTag("Login");
-				loginFragment.logon();
+				loginFragment.logon();   // logon loginfragment 
 			}
 			else
 			{
 				registerFragment = (RegisterFragment)getSupportFragmentManager().findFragmentByTag("Register");
-				registerFragment.register();
+				registerFragment.register();      // register 
 			}
 		}
 
-		return false;
+		return false;    // return false 
 
 	};
 
@@ -207,6 +224,7 @@ public class MainActivity extends BaseActivity
 	/**
 	 * @param view
 	 * @return void called when view has been clicked. (register)
+	 * 
 	 */
 	public void onClickRegisterMainButton(View view)
 	{

@@ -75,38 +75,45 @@ public class AccountsFragment extends BaseFragment
 	/**called this method to start the activity.  
 	 * Maintain the activity and application.
 	 *@param savedInstanceState 
+	 *@param inflater
+	 *@param container
 	 * @return void 
 	 */
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState)
 	{
 		// TODO Auto-generated method stub
-		super.onCreate(savedInstanceState);
+		super.onCreate(savedInstanceState); // create savedinstancestate 
 
 		
 		View view = inflater.inflate(R.layout.activity_accounts, container, false);
 		
 													// from res
 
-		home = (HomeActivity)getActivity();
+		home = (HomeActivity)getActivity();  // get activity from home 
 		
-		list = (ListView) view.findViewById(R.id.accounts_list);
+		list = (ListView) view.findViewById(R.id.accounts_list);  // listview from accounts_list 
 
 		
-		list.setOnItemClickListener(new OnItemClickListener()
+		list.setOnItemClickListener(new OnItemClickListener()   
 		{
-
+/**
+ * @param parent
+ * @param view
+ * @param pos
+ * @param id 
+ */
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int pos,
 					long id)
 			{
 				// TODO Auto-generated method stub
-				
+				// get new intent from intent 
 				Intent intent = new Intent(getActivity(), TransactionsActivity.class);
 				intent.putExtra("User ID", userID);
 				intent.putExtra("Account ID", (int)id);
 				Log.i("Account ID: ", "" + id);
-				startActivity(intent);
+				startActivity(intent);    // start intent activity 
 				
 				
 			}
@@ -126,44 +133,51 @@ public class AccountsFragment extends BaseFragment
 
 	}
 
+/**
+ * @param item
+ * @return boolean
+ * we use this method to select option intem 
+ */
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
 
-		if (item.getItemId() == R.id.accounts_add)
+		if (item.getItemId() == R.id.accounts_add)  
 		{
-			addAccount();
+			addAccount();      // add acount 
 			
 
 		}
 
-		else if(item.getItemId() == R.id.accounts_settings)
+		else if(item.getItemId() == R.id.accounts_settings) 
+			//get item id from account_settings 
 		{
+			// get new intent from intent 
 			Intent intent = new Intent(getActivity(), SettingsActivity.class);
 			intent.putExtra("User ID", userID);
-			startActivity(intent);
-		}
+			startActivity(intent);   // start intent activity 
+		} 
 		
-		else if (item.getItemId() == R.id.accounts_name_sort)
+		else if (item.getItemId() == R.id.accounts_name_sort)   // name sort 
 		{
 
-			updateData(DBHelper.ACCOUNT_NAME);
+			updateData(DBHelper.ACCOUNT_NAME);      // update account name 
 
 		}
 
-		else if (item.getItemId() == R.id.accounts_balance_sort)
+		else if (item.getItemId() == R.id.accounts_balance_sort)  // balance sort 
 		{
 
 			updateData(DBHelper.ACCOUNT_BALANCE);
 		}
 
-		else if (item.getItemId() == R.id.accounts_color_sort)
+		else if (item.getItemId() == R.id.accounts_color_sort)  // color sort 
 		{
 			updateData(DBHelper.ACCOUNT_COLOR);
 		}
 
-		else if (item.getItemId() == R.id.accounts_bank_sort)
+		else if (item.getItemId() == R.id.accounts_bank_sort)  // bank sort 
 		{
 			updateData(DBHelper.ACCOUNT_BANK);
 		}
@@ -173,11 +187,15 @@ public class AccountsFragment extends BaseFragment
 	}
 
 
+	/**
+	 * @return void 
+	 */
 	public void addAccount()
 	{
-		Intent in = new Intent(getActivity(), SplashScreen.class);
+		Intent in = new Intent(getActivity(), SplashScreen.class); // get new intent 
 		PendingIntent pIntent = PendingIntent.getActivity(getActivity(), 0, in, 0);
 
+		// get notificationcompat from notification 
 		Notification noti = new NotificationCompat.Builder(getActivity())
 				.setContentTitle("Verify Email").setContentText("Please verify your email address")
 				.setContentIntent(pIntent)
@@ -185,25 +203,25 @@ public class AccountsFragment extends BaseFragment
 		NotificationManager nManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
 		nManager.notify(1, noti);
 
-
+         
 		dialogView = getActivity().getLayoutInflater()
 				.inflate(R.layout.dialog_accounts, null);
 
-		add_name = (TextView) dialogView
+		add_name = (TextView) dialogView         // add name 
 				.findViewById(R.id.accounts_dialog_name);
-		add_balance = (TextView) dialogView
+		add_balance = (TextView) dialogView     // add balance 
 				.findViewById(R.id.accounts_dialog_balance);
-		add_custom = (AutoCompleteTextView) dialogView
+		add_custom = (AutoCompleteTextView) dialogView  // add custom 
 				.findViewById(R.id.accounts_display_custom);
-		choose_bank = (Spinner) dialogView
+		choose_bank = (Spinner) dialogView        // choose bank 
 				.findViewById(R.id.accounts_dialog_bank);
-		choose_color = (Spinner) dialogView
+		choose_color = (Spinner) dialogView        // choose color 
 				.findViewById(R.id.accounts_dialog_color);
 
-		check_interst = (CheckBox) dialogView
+		check_interst = (CheckBox) dialogView      // check interest 
 				.findViewById(R.id.accounts_interst);
 
-		add_interst = (TextView) dialogView
+		add_interst = (TextView) dialogView       // add interest 
 				.findViewById(R.id.accounts_interst_name);
 
 		add_interst.setVisibility(View.GONE);
@@ -211,23 +229,28 @@ public class AccountsFragment extends BaseFragment
 		check_interst.setOnCheckedChangeListener(new OnCheckedChangeListener()
 		{
 
+			/**
+			 * @param buttonview
+			 * @return void
+			 * @return boolean 
+			 */
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked)
 			{
 				// TODO Auto-generated method stub
 
-				if (!isChecked)
+				if (!isChecked)    
 				{
-					add_interst.setVisibility(View.GONE);
+					add_interst.setVisibility(View.GONE);  // not visible 
 				}
 				else
-					add_interst.setVisibility(View.VISIBLE);
+					add_interst.setVisibility(View.VISIBLE);  // visible 
 
 			}
 		});
 
-		add_custom.setVisibility(View.GONE);
+		add_custom.setVisibility(View.GONE);   // 
 
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
 				getActivity(), R.array.Banks, android.R.layout.simple_spinner_item);
@@ -241,6 +264,14 @@ public class AccountsFragment extends BaseFragment
 		choose_bank.setOnItemSelectedListener(new OnItemSelectedListener()
 		{
 
+			/**
+			 * @param adapter
+			 * @param view
+			 * @param pos
+			 * @param id 
+			 * @return void
+			 * we call this method to select the item 
+			 */
 			@Override
 			public void onItemSelected(AdapterView<?> adapter, View view,
 					int pos, long id)
@@ -249,11 +280,11 @@ public class AccountsFragment extends BaseFragment
 
 				if (pos == (choose_bank.getCount() - 1))
 				{
-					add_custom.setVisibility(View.VISIBLE);
+					add_custom.setVisibility(View.VISIBLE);  // visible 
 				}
 
 				else
-					add_custom.setVisibility(View.GONE);
+					add_custom.setVisibility(View.GONE);    // not visible 
 
 				Log.i("Selected id: ", choose_bank.getCount() + " - " + pos);
 
@@ -273,6 +304,12 @@ public class AccountsFragment extends BaseFragment
 				.setPositiveButton("Add", new OnClickListener()
 				{
 
+					/**
+					 * @param dialog
+					 * @param which
+					 * @return void 
+					 * we use this method to click. 
+					 */
 					@Override
 					public void onClick(DialogInterface dialog, int which)
 					{
@@ -282,41 +319,54 @@ public class AccountsFragment extends BaseFragment
 						// choose_bank.getSelectedItem().toString(),
 						// Toast.LENGTH_LONG).show();
 					}
-				}).setTitle("Enter Details")
-				.setNegativeButton("Cancel", new OnClickListener()
+				}).setTitle("Enter Details")   // set title 
+				.setNegativeButton("Cancel", new OnClickListener()  // set navigation button 
 				{
 
+		/**
+		 * @param dialog
+		 * @param which
+		 * @return void 
+		 */
 					@Override
 					public void onClick(DialogInterface dialog, int which)
 					{
 
-						dialog.cancel();
+						dialog.cancel();    // cancle dialog 
 					}
-				}).create();
+				}).create();   // create 
 
 		ArtDialog.setOnShowListener(new DialogInterface.OnShowListener()
 		{
 
+		/**
+		 * @return void
+		 * @param dialog 
+		 */
 			@Override
 			public void onShow(DialogInterface dialog)
 			{
 				// TODO Auto-generated method stub
 
-				Button plus = ArtDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+				Button plus = ArtDialog.getButton(AlertDialog.BUTTON_POSITIVE); // alert dialog 
 
 				plus.setOnClickListener(new View.OnClickListener()
 				{
 
 					@SuppressLint("NewApi")
 					@Override
+					/**
+					 * @param v
+					 * @return void 
+					 */
 					public void onClick(View v)
 					{
 						// TODO Auto-generated method stub
 
-						String addName = add_name.getText().toString();
-						String addBal = add_balance.getText().toString();
-						String addInt = add_interst.getText().toString();
-						
+						String addName = add_name.getText().toString(); // add name 
+						String addBal = add_balance.getText().toString(); // and bal 
+						String addInt = add_interst.getText().toString(); // add int 
+						 
 						
 						final ContentValues caeser = new ContentValues();
 						caeser.put(DBHelper.ACCOUNT_NAME, add_name.getText()
@@ -331,13 +381,13 @@ public class AccountsFragment extends BaseFragment
 
 						
 						boolean exit_now = false;
-						if(addName.equals(""))
+						if(addName.equals(""))   // addname 
 						{
 							add_name.setBackground(getResources().getDrawable(R.drawable.error_edittext));
 							exit_now = true;
 						}
 						
-						if(addBal.equals(""))
+						if(addBal.equals(""))   // addbal 
 						{
 							add_balance.setBackground(getResources().getDrawable(R.drawable.error_edittext));
 							exit_now = true;
@@ -346,21 +396,21 @@ public class AccountsFragment extends BaseFragment
 						if(check_interst.isChecked() && addInt.equals(""))
 							{
 								add_interst.setBackground(getResources().getDrawable(R.drawable.error_edittext));
-								exit_now = true;
+								exit_now = true;    // exit now 
 							}
 						
 						
 						if(exit_now)
 							{
 							
-							exit_now = false;
+							exit_now = false;   // dont exit 
 							return;
 							
 							
 							}
 						
 						
-						if (check_interst.isChecked())
+						if (check_interst.isChecked())   // check interest is checked 
 						{
 							
 							
@@ -423,6 +473,11 @@ public class AccountsFragment extends BaseFragment
 
 	}
 
+	/**
+	 * @param sort
+	 * @return void 
+	 * we use this method to update data 
+	 */
 	@SuppressWarnings("deprecation")
 	public void updateData(String Sort)
 	{
@@ -457,7 +512,7 @@ public class AccountsFragment extends BaseFragment
 
 					String color = csr.getString(4);
 					
-
+                  // set different colors 
 					int setColor;
 					if (color.equals("Red"))
 						setColor = getResources().getColor(
@@ -486,14 +541,14 @@ public class AccountsFragment extends BaseFragment
 					
 					csr.moveToNext();
 
-					return v;
+					return v;              // return v 
 
 				}
 
 			};
 
-			list.setAdapter(adap);
-		}
+			list.setAdapter(adap);    // set adapter 
+		} 
 
 	}
 

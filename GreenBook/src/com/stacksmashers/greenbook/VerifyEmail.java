@@ -11,14 +11,23 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * we use this method to verify email 
+ * @author CARE
+ *
+ */
 public class VerifyEmail extends BaseActivity
 {
 
+/**
+ * @param savedinstance state
+ * @return void 
+ */
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		// TODO Auto-generated method stub
-		super.onCreate(savedInstanceState);
+		super.onCreate(savedInstanceState);  // int savedinstancestate 
 	}
 
 }

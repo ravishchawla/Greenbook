@@ -41,6 +41,8 @@ public class LoginActivity extends BaseFragment
 	 * called this method to start the activity.
 	 * 
 	 * @param savedInstanceState
+	 * @param Inflater
+	 * @param  container 
 	 * @return void
 	 */
 	@Override
@@ -48,8 +50,7 @@ public class LoginActivity extends BaseFragment
 			Bundle savedInstanceState)
 	{
 		// TODO Auto-generated method stub
-		super.onCreateView(inflater, container, savedInstanceState); // create
-																		// savedinstancestate
+		super.onCreateView(inflater, container, savedInstanceState); // createview inflater,container, savedinstancestate 
 		main = (MainActivity) getActivity();
 		
 		
@@ -70,6 +71,7 @@ public class LoginActivity extends BaseFragment
 		 * Bundle extras = getIntent().getExtras(); if(extras != null) {
 		 * login_name.setText(extras.getString("Login Email")); //login email
 		 * name_bool = true; }
+		 * 
 		 */
 		login_name.addTextChangedListener(new TextWatcher() // text change
 															// listener
@@ -207,11 +209,14 @@ public class LoginActivity extends BaseFragment
 		Log.i("a", "6");
 		
 
-		return view;
+		return view;      // return view 
 
 	}
 
 	@Override
+	/**
+	 * this method calls to resume method 
+	 */
 	public void onResume()
 	{
 		// TODO Auto-generated method stub
@@ -229,8 +234,8 @@ public class LoginActivity extends BaseFragment
 
 	public void logon()
 	{
-		String name = login_name.getEditableText().toString();
-		String pass = login_pass.getEditableText().toString();
+		String name = login_name.getEditableText().toString();   // calling string name 
+		String pass = login_pass.getEditableText().toString();  // calling string pass 
 
 		caeser = sqldbase.query(DBHelper.USER_TABLE, new String[] {
 				DBHelper.USERS_ID, DBHelper.USER_EMAIL, DBHelper.USER_PASS },
@@ -248,7 +253,7 @@ public class LoginActivity extends BaseFragment
 		if (caeser.getCount() != 0)
 		{
 			caeser.moveToFirst();
-			Intent accountsIntent = new Intent(getActivity(),
+			Intent accountsIntent = new Intent(getActivity(),     // calling new intent from accountsintent 
 					AccountsActivity.class); // get application cotext from
 												// accountsactivity class
 			if (name.equals("sudo@root.com")) // if account type is specific

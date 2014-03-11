@@ -56,6 +56,12 @@ public class BaseFragment extends android.support.v4.app.Fragment
 	
 	}
 	
+	/**
+	 * @param messege
+	 * @return void
+	 * we use this method to log string messege  
+	 */
+	
 	
 	public void Log(String message)
 	{

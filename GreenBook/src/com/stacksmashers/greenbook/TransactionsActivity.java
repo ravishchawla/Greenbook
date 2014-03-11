@@ -25,7 +25,10 @@ public class TransactionsActivity extends BaseActivity
 	protected int userID;
 	protected int accountID;
 	protected String accountName;
-	
+	 
+	/**
+	 * this class make sure about transction activity 
+	 */
 	public TransactionsActivity()
 	{
 		// TODO Auto-generated constructor stub
@@ -39,25 +42,29 @@ public class TransactionsActivity extends BaseActivity
 		// TODO Auto-generated method stub
 
 	}
-
+/**
+ * @param savedinstancestate
+ * @return void
+ * we call this method to initalize this activity 
+ */
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 
 		// TODO Auto-generated method stub
-		super.onCreate(savedInstanceState);
+		super.onCreate(savedInstanceState);  // initalize savedinstancestate 
 
-		setContentView(R.layout.activity_transactions_r);
+		setContentView(R.layout.activity_transactions_r);  // call setcontentview 
 
 		viewpager = (ViewPager) findViewById(R.id.transactoins_viewpager);
 
 		initializePaging();
 
-		actionBar = getActionBar();
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-		actionBar.setDisplayShowTitleEnabled(true);
+		actionBar = getActionBar();   // get action bar 
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);   
+		actionBar.setDisplayShowTitleEnabled(true);  // enabled display show title 
 
-		Bundle extras = getIntent().getExtras();
+		Bundle extras = getIntent().getExtras(); // get intent bundle extras 
 
 		userID = extras.getInt("User ID");
 		accountID = extras.getInt("Account ID");
@@ -77,8 +84,8 @@ public class TransactionsActivity extends BaseActivity
 		
 				Tab tab = actionBar
 				.newTab()
-				.setText(accountName)
-				.setTabListener(
+				.setText(accountName)    // set account name 
+				.setTabListener(         // tab li
 						new SimpleTabListener<TransactionsFragment>(this,
 								"Transactions", TransactionsFragment.class, 0,
 								viewpager));
@@ -89,6 +96,11 @@ public class TransactionsActivity extends BaseActivity
 				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener()
 				{
 
+	  /**
+	   * @param position
+	   * @return void 
+	   * we use this method when new page become selected 
+	   */
 					@Override
 					public void onPageSelected(int position)
 					{
@@ -102,6 +114,11 @@ public class TransactionsActivity extends BaseActivity
 
 	}
 
+/**
+ * @param menu 
+ * @return boolean 
+ * we use this method to create option menu  
+ */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
@@ -127,6 +144,11 @@ public class TransactionsActivity extends BaseActivity
 		return super.onCreateOptionsMenu(menu);
 	}
 
+/**
+ * @return boolean
+ * @param iten
+ * we use this method to select items 
+ */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
@@ -142,6 +164,10 @@ public class TransactionsActivity extends BaseActivity
 		return super.onOptionsItemSelected(item);
 	}
 
+	/**
+	 * @return void
+	 * we use this method to initialize age 
+	 */
 	private void initializePaging()
 	{
 		// TODO Auto-generated method stub
@@ -152,9 +178,13 @@ public class TransactionsActivity extends BaseActivity
 
 		final List<Fragment> finalFragments = fragments;
 
+		// get new fragmentpageradapter from pageadapter 
 		pageAdapter = new FragmentPagerAdapter(getSupportFragmentManager())
 		{
 
+			/**
+			 * @return int 
+			 */
 			@Override
 			public int getCount()
 			{
@@ -163,15 +193,20 @@ public class TransactionsActivity extends BaseActivity
 				return finalFragments.size();
 			}
 
+		/**
+		 * @param pos
+		 * @return fragment 
+		 * 
+		 */
 			@Override
 			public Fragment getItem(int pos)
 			{
 				// TODO Auto-generated method stub
-				return finalFragments.get(pos);
+				return finalFragments.get(pos);  // return final fragments 
 			}
 		};
 
-		viewpager.setAdapter(pageAdapter);
+		viewpager.setAdapter(pageAdapter);   // set adapter 
 
 	}
 

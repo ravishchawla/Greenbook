@@ -41,6 +41,8 @@ public class LoginFragment extends BaseFragment
 	 * called this method to start the activity.
 	 * 
 	 * @param savedInstanceState
+	 * @param inflater
+	 * @param container 
 	 * @return void
 	 */
 	@Override
@@ -206,6 +208,10 @@ public class LoginFragment extends BaseFragment
 
 	}
 
+	/**
+	 * @reutn void
+	 * this method resume the activity 
+	 */
 	@Override
 	public void onResume()
 	{

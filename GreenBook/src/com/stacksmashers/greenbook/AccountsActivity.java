@@ -54,6 +54,8 @@ public class AccountsActivity extends BaseActivity
 	private String accountsUser, userType;
 	private int userID;
 	private static boolean redo = false;
+	
+	// acount activity 
 
 	public AccountsActivity()
 	{
@@ -110,6 +112,11 @@ public class AccountsActivity extends BaseActivity
 
 	}
 
+	/**
+	 * @param menu
+	 * @return boolean 
+	 * we call this method for option menu 
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
@@ -120,6 +127,10 @@ public class AccountsActivity extends BaseActivity
 		return super.onCreateOptionsMenu(menu);
 	}
 
+	/**
+	 * @param item 
+	 * @return boolean 
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
@@ -138,25 +149,25 @@ public class AccountsActivity extends BaseActivity
 			startActivity(intent);
 		}
 		
-		else if (item.getItemId() == R.id.accounts_name_sort)
+		else if (item.getItemId() == R.id.accounts_name_sort)   // sort name 
 		{
 
 			updateData(DBHelper.ACCOUNT_NAME);
 
 		}
 
-		else if (item.getItemId() == R.id.accounts_balance_sort)
+		else if (item.getItemId() == R.id.accounts_balance_sort)  // sort balance 
 		{
 
 			updateData(DBHelper.ACCOUNT_BALANCE);
 		}
 
-		else if (item.getItemId() == R.id.accounts_color_sort)
+		else if (item.getItemId() == R.id.accounts_color_sort)   // sort color accounts 
 		{
 			updateData(DBHelper.ACCOUNT_COLOR);
 		}
 
-		else if (item.getItemId() == R.id.accounts_bank_sort)
+		else if (item.getItemId() == R.id.accounts_bank_sort)  // sort bank accounts 
 		{
 			updateData(DBHelper.ACCOUNT_BANK);
 		}
@@ -166,44 +177,53 @@ public class AccountsActivity extends BaseActivity
 	}
 
 
-	public void addAccount()
+	public void addAccount()    // add account 
 	{
 		Intent in = new Intent(this, SplashScreen.class);
 		PendingIntent pIntent = PendingIntent.getActivity(this, 0, in, 0);
 
-		Notification noti = new NotificationCompat.Builder(this)
+		Notification noti = new NotificationCompat.Builder(this) 
+		// get new notoficationcomplar builder from notification 
 				.setContentTitle("Verify Email").setContentText("Please verify your email address")
-				.setContentIntent(pIntent)
+				.setContentIntent(pIntent)  // set contentintent 
 				.setSmallIcon(R.drawable.greenbooklauncher).build();
 		NotificationManager nManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		nManager.notify(1, noti);
 
 
-		dialogView = getLayoutInflater()
+		dialogView = getLayoutInflater()  // dialogview 
 				.inflate(R.layout.dialog_accounts, null);
 
-		add_name = (TextView) dialogView
+		add_name = (TextView) dialogView  // add name 
 				.findViewById(R.id.accounts_dialog_name);
-		add_balance = (TextView) dialogView
+		add_balance = (TextView) dialogView   // add balance 
 				.findViewById(R.id.accounts_dialog_balance);
-		add_custom = (AutoCompleteTextView) dialogView
+		add_custom = (AutoCompleteTextView) dialogView  // add custom 
 				.findViewById(R.id.accounts_display_custom);
-		choose_bank = (Spinner) dialogView
+		choose_bank = (Spinner) dialogView        // choose bank 
 				.findViewById(R.id.accounts_dialog_bank);
-		choose_color = (Spinner) dialogView
+		choose_color = (Spinner) dialogView      // choose color 
 				.findViewById(R.id.accounts_dialog_color);
 
-		check_interst = (CheckBox) dialogView
+		check_interst = (CheckBox) dialogView    // check interest 
 				.findViewById(R.id.accounts_interst);
 
-		add_interst = (TextView) dialogView
+		add_interst = (TextView) dialogView      // add interst 
 				.findViewById(R.id.accounts_interst_name);
 
 		add_interst.setVisibility(View.GONE);
 
 		check_interst.setOnCheckedChangeListener(new OnCheckedChangeListener()
+		// set checkedchangelistener 
 		{
 
+			/**
+			 * @param buttonview
+			 * @param  ischecked
+			 * @return void
+			 * @return boolean 
+			 * we use this method to check 
+			 */
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked)
@@ -225,15 +245,22 @@ public class AccountsActivity extends BaseActivity
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
 				this, R.array.Banks, android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		choose_bank.setAdapter(adapter);
+		choose_bank.setAdapter(adapter);     
 
 		adapter = ArrayAdapter.createFromResource(this, R.array.Colors,
 				android.R.layout.simple_spinner_item);
 		choose_color.setAdapter(adapter);
 
+		
 		choose_bank.setOnItemSelectedListener(new OnItemSelectedListener()
 		{
-
+/**
+ * @param adapter
+ * @param view
+ * @param pos
+ * @param id
+ * @void return 
+ */
 			@Override
 			public void onItemSelected(AdapterView<?> adapter, View view,
 					int pos, long id)
@@ -252,6 +279,11 @@ public class AccountsActivity extends BaseActivity
 
 			}
 
+		/**
+		 * @param arg0
+		 * @return void 
+		 * we use this method to select nothing 
+		 */
 			@Override
 			public void onNothingSelected(AdapterView<?> arg0)
 			{
@@ -266,6 +298,11 @@ public class AccountsActivity extends BaseActivity
 				.setPositiveButton("Add", new OnClickListener()
 				{
 
+	/**
+	 * @param dialog
+	 * @param which
+	 * @return void 
+	 */
 					@Override
 					public void onClick(DialogInterface dialog, int which)
 					{
@@ -275,10 +312,15 @@ public class AccountsActivity extends BaseActivity
 						// choose_bank.getSelectedItem().toString(),
 						// Toast.LENGTH_LONG).show();
 					}
-				}).setTitle("Enter Details")
+				}).setTitle("Enter Details")    // set title 
 				.setNegativeButton("Cancel", new OnClickListener()
 				{
 
+	/**
+	 * @param dialog
+	 * @param which 
+	 * @return void 
+	 */
 					@Override
 					public void onClick(DialogInterface dialog, int which)
 					{
@@ -290,22 +332,32 @@ public class AccountsActivity extends BaseActivity
 		ArtDialog.setOnShowListener(new DialogInterface.OnShowListener()
 		{
 
+			/**
+			 * @param dialog
+			 * @return void
+			 */
 			@Override
 			public void onShow(DialogInterface dialog)
 			{
 				// TODO Auto-generated method stub
 
-				Button plus = ArtDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+				Button plus = ArtDialog.getButton(AlertDialog.BUTTON_POSITIVE);  // get alert dialog 
 
 				plus.setOnClickListener(new View.OnClickListener()
 				{
 
+	/**
+	 * @return void
+	 * @param v
+	 * we use this method to make sure about click meth
+	 */
 					@Override
 					public void onClick(View v)
 					{
 						// TODO Auto-generated method stub
 
-						final ContentValues caeser = new ContentValues();
+						final ContentValues caeser = new ContentValues(); 
+						// get new content values from content values 
 						caeser.put(DBHelper.ACCOUNT_NAME, add_name.getText()
 								.toString());
 						caeser.put(DBHelper.ACCOUNT_BALANCE, add_balance
@@ -356,13 +408,13 @@ public class AccountsActivity extends BaseActivity
 						else
 						{
 							sqldbase.insert(DBHelper.ACCOUNT_TABLE, null,
-									caeser);
-
+									caeser);   // inseart sqldbase 
+ 
 							Log.d("cv: ", caeser.toString());
 							Log.d("cv: ",
 									caeser.getAsString(DBHelper.ACCOUNT_NAME));
 
-							ArtDialog.dismiss();
+							ArtDialog.dismiss();   // dismiss artlog 
 							updateData(DBHelper.ACCOUNT_ID);
 						}
 						// caeser.put(DBHelper.ACCOUNT, value)
@@ -376,6 +428,12 @@ public class AccountsActivity extends BaseActivity
 		ArtDialog.show();
 
 	}
+	
+	/**
+	 * @param sort
+	 * @return void
+	 * we update our data by using this method 
+	 */
 
 	@SuppressWarnings("deprecation")
 	public void updateData(String Sort)
@@ -398,10 +456,17 @@ public class AccountsActivity extends BaseActivity
 		if (csr.getCount() != 0)
 		{
 			csr.moveToFirst();
-			adap = new SimpleCursorAdapter(getBaseContext(),
+			adap = new SimpleCursorAdapter(getBaseContext(),  // get new simplecurseradp from adap 
 					R.layout.listblock_accounts, csr, from, to)
 			{
 
+/**
+ * @return view
+ * @param position
+ * @param convertview
+ * @param parent 
+ * 
+ */
 				@Override
 				public View getView(int position, View convertView,
 						ViewGroup parent)
@@ -411,39 +476,39 @@ public class AccountsActivity extends BaseActivity
 
 					String color = csr.getString(4);
 
-					int setColor;
-					if (color.equals("Red"))
+					int setColor;     // set color 
+					if (color.equals("Red"))   //red 
 						setColor = getResources().getColor(
 								android.R.color.holo_red_light);
-					else if (color.equals("Green"))
+					else if (color.equals("Green"))    // green 
 						setColor = getResources().getColor(
 								android.R.color.holo_green_dark);
-					else if (color.equals("Blue"))
+					else if (color.equals("Blue"))     // blue 
 						setColor = getResources().getColor(
 								android.R.color.holo_blue_light);
-					else if (color.equals("Yellow"))
+					else if (color.equals("Yellow"))   // yellow 
 						setColor = getResources().getColor(
 								android.R.color.holo_green_light);
-					else if (color.equals("Cyan"))
+					else if (color.equals("Cyan"))     // cyan
 						setColor = getResources().getColor(
 								android.R.color.holo_blue_bright);
-					else if (color.equals("Magenta"))
+					else if (color.equals("Magenta"))  // magenta 
 						setColor = getResources().getColor(
 								android.R.color.holo_purple);
 					else
 						setColor = getResources().getColor(
-								android.R.color.white);
+								android.R.color.white);    // white
 
-					v.setBackgroundColor(setColor);
-					csr.moveToNext();
+					v.setBackgroundColor(setColor);      //set color 
+					csr.moveToNext();                   // move curser to next 
 
-					return v;
+					return v;                          // return v 
 
 				}
 
 			};
 
-			list.setAdapter(adap);
+			list.setAdapter(adap);                  // list set adapter 
 		}
 
 	}

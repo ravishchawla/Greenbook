@@ -20,7 +20,7 @@ import javax.mail.internet.MimeMultipart;
 import android.os.AsyncTask;
 
 
-
+// extends mail from javax 
 public class Mail extends javax.mail.Authenticator 
 {
 	
@@ -44,7 +44,7 @@ public class Mail extends javax.mail.Authenticator
 	private Multipart multipart;
 	
 
-	public Mail()
+	public Mail()     // public mail 
 	{
 		// TODO Auto-generated constructor stub
 	
@@ -67,7 +67,7 @@ public class Mail extends javax.mail.Authenticator
 	
 	}
 	
-	
+	// get public mail usermane and password 
 	public Mail (String username, String password)
 	{
 		this();
@@ -75,21 +75,39 @@ public class Mail extends javax.mail.Authenticator
 		this.password = password;
 	}
 	
+	/**
+	 * @param from
+	 * @return void 
+	 */
 	public void setFrom(String from)
 	{
 		this.addressFrom = from;
 	}
 	
+	/**
+	 * @return void
+	 * @param to 
+	 */
 	public void setTo(String to)
 	{
 		this.addressTo = to;
 	}
 	
+	/**
+	 * @param sub
+	 * @return void 
+	 * this methos setsubject 
+	 */
 	public void setSubject(String sub)
 	{
 		this.subject = sub;
 	}
 	
+	/**
+	 * @param body
+	 * @reutn void 
+	 * this method setmessge 
+	 */
 	public void setMessage(String body)
 	{
 		this.body = body;
@@ -104,7 +122,7 @@ public class Mail extends javax.mail.Authenticator
 	
 	public boolean send() throws Exception {
 		
-		Properties properties = setProperties();
+		Properties properties = setProperties(); // set properties 
 		
 		
 		if(!username.equals("") && !password.equals("") && !addressTo.equals("") && !addressFrom.equals("") && !subject.equals("") && !body.equals(""))
@@ -117,12 +135,12 @@ public class Mail extends javax.mail.Authenticator
 			message.setSubject(subject);
 			message.setSentDate(new Date());
 			
-			MimeBodyPart bodyPart = new MimeBodyPart();
-			bodyPart.setText(body);
+			MimeBodyPart bodyPart = new MimeBodyPart();  // get new minebodypart from bodypart 
+			bodyPart.setText(body);      
 			multipart.addBodyPart(bodyPart);
 			message.setContent(multipart);
 			
-			Transport.send(message);
+			Transport.send(message);    // send messege 
 			
 			return true;
 			
@@ -135,13 +153,13 @@ public class Mail extends javax.mail.Authenticator
 		
 	}
 	
-	private Properties setProperties()
+	private Properties setProperties()     // set properties 
 	
 	{
 		
 		
 		
-		Properties properties = new Properties();
+		Properties properties = new Properties();   // get new properties 
 		
 		properties.put("mail.smtp.host", host);
 		
