@@ -40,7 +40,7 @@
         android:layout_marginBottom="37dp" >
     </ImageSwitcher>
 
-    <TextClock
+    <!--  <TextClock
         android:id="@+id/textClock1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
         android:layout_marginBottom="22dp"
         android:text="TextClock"
         android:textColor="#009900" />
-
+-->
     <ImageView
         android:id="@+id/imageView1"
         android:layout_width="wrap_content"
@@ -58,6 +58,6 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="46dp"
         android:scaleType="fitXY"
-        android:src="@drawable/greenbooklauncher" />
+        android:src="@drawable/greenbooklauncher" /> 
 
 </RelativeLayout>

@@ -98,7 +98,7 @@ public class RegisterActivity extends BaseFragment
 		email_check = (TextView) view.findViewById(R.id.emailCheck); // check email 
 																		
 		password_check = (TextView) view.findViewById(R.id.passwordCheck); // check password
-																		 p
+																		 
 		checkpassword_check = (TextView) view     // check check password 
 				.findViewById(R.id.checkpasswordCheck);
 

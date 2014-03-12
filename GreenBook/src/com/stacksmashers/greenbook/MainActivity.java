@@ -91,7 +91,8 @@ public class MainActivity extends BaseActivity
 
 		check.setEnabled(false);   
 
-		return true    // return true 
+		return true;
+	}// return true 
 	
 	/**
 	 * this method calls for true or false for seleted items 
@@ -150,7 +151,7 @@ public class MainActivity extends BaseActivity
 											// string name 
 											String email = textviewer.getText()
 													.toString();
-											view text from tostring 
+											//view text from tostring 
 											String pass = caeser.getString(2);
 											// pass the string 
 
