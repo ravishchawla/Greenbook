@@ -25,7 +25,7 @@
         android:gravity="center"
         android:hint="Login Password"
         android:inputType="textPassword"
-        android:textColor="#006600"
+        android:textColor="#009900"
         android:textColorHint="#C0C0C0"
         android:textStyle="italic" />
 

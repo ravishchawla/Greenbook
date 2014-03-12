@@ -41,7 +41,7 @@ public class SplashScreen extends Activity
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);  // create savedinstancestate 
 	
-		setContentView(R.layout.activity_main); // set contentview 
+		setContentView(R.layout.splash_screen); // set contentview 
 		
 new Handler().postDelayed(new Runnable(){
 			
