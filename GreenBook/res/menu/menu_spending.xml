@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+   
+   <item
+       android:id="@+id/spending_view_type" 
+          android:text="View Type"
+          android:visible="true"
+          android:showAsAction="always"
+          android:title="View Type"
+          android:icon="@drawable/content_sort">
+   <menu>
+			<item 
+			    android:id="@+id/spending_graph_view"
+			    android:title="Graph View" >
+			    
+			</item>
+			
+			<item
+			    android:id="@+id/spending_list_view"
+			    android:title="List View" >
+			    
+			</item>
+			
+                   
+           
+           </menu>
+               
+   </item>
+
+</menu>

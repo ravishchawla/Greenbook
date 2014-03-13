@@ -1,10 +1,13 @@
 package com.stacksmashers.greenbook;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.Vector;
 
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
+import android.app.FragmentTransaction;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,7 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class TransactionsActivity extends BaseActivity
+public class TransactionsActivity extends BaseActivity implements ActionBar.TabListener
 {
 
 	private FragmentPagerAdapter pageAdapter;
@@ -25,6 +28,12 @@ public class TransactionsActivity extends BaseActivity
 	protected int userID;
 	protected int accountID;
 	protected String accountName;
+    //private TabsPageAdapter tabsPageAdapter;
+	protected SimpleDateFormat dateFormat;
+	int spendingMode;
+	String SPENDING_TAG;
+	
+	protected SpendingReportsFragment spendingReportsFragment;
 	 
 	/**
 	 * this class make sure about transction activity 
@@ -54,11 +63,11 @@ public class TransactionsActivity extends BaseActivity
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);  // initalize savedinstancestate 
 
-		setContentView(R.layout.activity_transactions_r);  // call setcontentview 
+		setContentView(R.layout.activity_transaction);  // call setcontentview 
 
 		viewpager = (ViewPager) findViewById(R.id.transactoins_viewpager);
 
-		initializePaging();
+	//	initializePaging();
 
 		actionBar = getActionBar();   // get action bar 
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);   
@@ -69,7 +78,7 @@ public class TransactionsActivity extends BaseActivity
 		userID = extras.getInt("User ID");
 		accountID = extras.getInt("Account ID");
 		
-		
+		dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());		
 		
 		Cursor caeser = sqldbase.query(DBHelper.ACCOUNT_TABLE, new String[]{DBHelper.ACCOUNT_NAME}, DBHelper.ACCOUNT_ID + " = '" + accountID + " '", null, null, null, null);
 		String titleText = "Transactions";
@@ -82,17 +91,12 @@ public class TransactionsActivity extends BaseActivity
 			
 		}
 		
-				Tab tab = actionBar
-				.newTab()
-				.setText(accountName)    // set account name 
-				.setTabListener(         // tab li
-						new SimpleTabListener<TransactionsFragment>(this,
-								"Transactions", TransactionsFragment.class, 0,
-								viewpager));
 
-		actionBar.addTab(tab);
+				
+					
+	//	actionBar.addTab(tab);
 
-		viewpager
+		/*viewpager
 				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener()
 				{
 
@@ -101,7 +105,7 @@ public class TransactionsActivity extends BaseActivity
 	   * @return void 
 	   * we use this method when new page become selected 
 	   */
-					@Override
+		/*			@Override
 					public void onPageSelected(int position)
 					{
 						getActionBar().setSelectedNavigationItem(position);
@@ -111,6 +115,89 @@ public class TransactionsActivity extends BaseActivity
 					}
 
 				});
+		
+		*/
+		
+	
+	pageAdapter = new FragmentPagerAdapter(getSupportFragmentManager())
+	{
+		
+		@Override
+		public int getCount()
+		{
+			// TODO Auto-generated method stub
+			return 2;
+		}
+		
+		@Override
+		public Fragment getItem(int index)
+		{
+			switch(index)
+			{
+				case 0:
+					return transactionFragment = new TransactionsFragment();
+					
+				case 1:
+					spendingReportsFragment = new SpendingReportsFragment();
+					SPENDING_TAG = spendingReportsFragment.getTag();
+					spendingReportsFragment.setRetainInstance(true);
+					return spendingReportsFragment;
+					
+					
+			}
+			
+			return null;
+			
+			// TODO Auto-generated method stub
+
+		}
+	};
+	viewpager.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
+	{
+		
+		@Override
+		public void onPageSelected(int position)
+		{
+			// TODO Auto-generated method stub
+			
+			actionBar.setSelectedNavigationItem(position);
+			
+			if(position == 1)
+				{
+				Log.i("Transct", "calling onREsume()");
+				pageAdapter.getItem(position).onResume();
+				}
+			
+			invalidateOptionsMenu();
+		}
+		
+		@Override
+		public void onPageScrolled(int arg0, float arg1, int arg2)
+		{
+			// TODO Auto-generated method stub
+			
+		}
+		
+		@Override
+		public void onPageScrollStateChanged(int arg0)
+		{
+			// TODO Auto-generated method stub
+			
+		}
+	});
+
+	
+	
+	
+	viewpager.setAdapter(pageAdapter);
+	actionBar.setHomeButtonEnabled(false);
+	actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+	
+		
+	
+	actionBar.addTab(actionBar.newTab().setText("Transactions").setTabListener(this));
+	actionBar.addTab(actionBar.newTab().setText("Spending Report").setTabListener(this));
+				
 
 	}
 
@@ -126,12 +213,12 @@ public class TransactionsActivity extends BaseActivity
 		
 		// TODO Auto-generated method stub
 		Log.i("Debug", "Create");
-		//if (getActionBar().getSelectedNavigationIndex() == 0)
-			//getMenuInflater().inflate(R.menu.menu_accounts, menu);
-
-	//	else
-		//{
+		if (getActionBar().getSelectedNavigationIndex() == 0)
 			getMenuInflater().inflate(R.menu.menu_transactions, menu);
+
+		else
+		
+			getMenuInflater().inflate(R.menu.menu_spending, menu);
 
 			
 			
@@ -156,11 +243,24 @@ public class TransactionsActivity extends BaseActivity
 
 		if (viewpager.getCurrentItem() == 0)
 		{
-			transactionFragment = (TransactionsFragment) getSupportFragmentManager()
-					.findFragmentByTag("Transactions");
+			
+			
 			transactionFragment.addTransaction();
 		}
 
+		
+		
+		if(getActionBar().getSelectedNavigationIndex() == 1)
+		{
+			spendingReportsFragment = (SpendingReportsFragment)getSupportFragmentManager().findFragmentByTag("Spending");
+		}
+		
+		if(item.getItemId() == R.id.spending_list_view)
+			spendingReportsFragment.updateData(null, null, 1);
+		else if (item.getItemId() == R.id.spending_graph_view)
+			spendingReportsFragment.updateData(null, null, 0);
+			
+		
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -210,4 +310,29 @@ public class TransactionsActivity extends BaseActivity
 
 	}
 
+	@Override
+	public void onTabReselected(Tab tab, FragmentTransaction ft)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onTabSelected(Tab tab, FragmentTransaction ft)
+	{
+		// TODO Auto-generated method stub
+	
+		viewpager.setCurrentItem(tab.getPosition());
+		
+	}
+
+	@Override
+	public void onTabUnselected(Tab tab, FragmentTransaction ft)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+	
 }

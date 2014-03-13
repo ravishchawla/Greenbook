@@ -56,7 +56,7 @@ public class LoginFragment extends BaseFragment
 		
 		
 		// setContentView(R.layout.activity_login); // setcontentview
-		View view = inflater.inflate(R.layout.activity_login, container, false);
+		View view = inflater.inflate(R.layout.fragment_login, container, false);
 
 		login_name = (EditText) view.findViewById(R.id.login_name); // login
 																	// name
@@ -218,8 +218,8 @@ public class LoginFragment extends BaseFragment
 		// TODO Auto-generated method stub
 		super.onResume();
 
-		login_name.setText("");
-		login_pass.setText("");
+		//login_name.setText("");
+		//login_pass.setText("");
 	}
 
 	/**

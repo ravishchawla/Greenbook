@@ -1,5 +1,9 @@
 package com.stacksmashers.greenbook;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ContentValues;
@@ -8,6 +12,7 @@ import android.content.DialogInterface.OnShowListener;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +40,8 @@ public class TransactionsFragment extends BaseFragment
 	private int accountID;
 	private String accountName;
 	private TextView totalBalance;
-
+	
+	
 	public TransactionsFragment()
 	{
 		// TODO Auto-generated constructor stub
@@ -58,9 +64,14 @@ public class TransactionsFragment extends BaseFragment
 		super.onCreateView(inflater, container, savedInstanceState); // create
 		// savedinstancestate
 
-		View view = inflater.inflate(R.layout.activity_transactions, container,
+		
+		
+		View view = inflater.inflate(R.layout.fragment_transactions, container,
 				false);// calling activity register
 
+		
+		
+		
 		list = (ListView) view.findViewById(R.id.transactions_list);
 
 		if (getActivity() instanceof HomeActivity)
@@ -120,6 +131,7 @@ public class TransactionsFragment extends BaseFragment
 						DBHelper.TRANSACTION_DEPOSIT_SOURCE,
 						DBHelper.TRANSACTION_WITHRAWAL_REASON,
 						DBHelper.TRANSACTION_CATEGORY,
+						DBHelper.TRANSACTION_POSTED, 
 						DBHelper.TRANSACTION_VALUE }, condition, null, null, null, null);
 		caeser.moveToFirst();
 		if (caeser.getCount() == 0)
@@ -129,7 +141,7 @@ public class TransactionsFragment extends BaseFragment
 		String[] from = { DBHelper.TRANSACTION_VALUE };
 		int[] to = { R.id.transaction_balancew };
 
-		Log(DatabaseUtils.dumpCursorToString(caeser));
+		
 
 		adap = new SimpleCursorAdapter(getActivity(),  // call new simplecursoradapter from adap
 				R.layout.transactions_list_block, caeser, from, to)
@@ -153,18 +165,16 @@ public class TransactionsFragment extends BaseFragment
 				TextView descriptio = (TextView) v
 						.findViewById(R.id.transactions_total_balance);
 
-				int balances = caeser.getInt(7);
+				int balances = caeser.getInt(8);
 				if (balances > 0)      // balances less than 0 
 				{
 
 					title.setText("Deposit " + currency + balances);
 
-					if (isHome)
+					
 						descriptio.setText(" For " + caeser.getString(4)
-								+ ", From: " + caeser.getString(3));
-					else
-						descriptio.setText(" For " + caeser.getString(4));
-
+								+ " on: " + caeser.getString(7));
+					
 					image.setImageDrawable(getResources().getDrawable(
 							R.drawable.content_positive));
 
@@ -173,12 +183,10 @@ public class TransactionsFragment extends BaseFragment
 				{
 
 					title.setText("Withraw " + currency + ((-1) * balances));
-					if (isHome)
-						descriptio.setText(" For " + caeser.getString(5)
-								+ ", From: " + caeser.getString(3));
-					else
-						descriptio.setText(" For " + caeser.getString(5)
-								+ ", in: " + caeser.getString(6));
+					
+						descriptio.setText(" For " + caeser.getString(6)
+								+ " on: " + caeser.getString(7));
+					
 					image.setImageDrawable(getResources().getDrawable(
 							R.drawable.content_negative));
 				}
@@ -325,8 +333,8 @@ public class TransactionsFragment extends BaseFragment
 					{
 						// TODO Auto-generated method stub
 
-						Integer balance = Integer.parseInt(balanceText
-								.getText().toString());
+						
+						String balanceStr = balanceText.getText().toString();
 						String source = sourceText.getText().toString(); 
 						// string souce from to string 
 						String reason = reasonText.getText().toString();
@@ -337,7 +345,7 @@ public class TransactionsFragment extends BaseFragment
 						
 						boolean exit_now = false;
 						
-						if(balance.equals(""))
+						if(balanceStr.equals("") && !balanceStr.matches("\\d"))
 						{
 							balanceText.setBackground(getResources().getDrawable(R.drawable.error_edittext));
 							exit_now = true;    // exit now
@@ -361,6 +369,9 @@ public class TransactionsFragment extends BaseFragment
 							exit_now = false;
 							return;
 						}
+						
+						Integer balance = Integer.parseInt(balanceText
+								.getText().toString());
 						
 						if (checked)   // checked everything
 						{
@@ -395,7 +406,14 @@ public class TransactionsFragment extends BaseFragment
 							accountID = (int) spinner.getSelectedItemId();
 
 						csr.put(DBHelper.TRANSACTION_ACCOUNT, accountID);
+						csr.put(DBHelper.TRANSACTION_POSTED, trans.dateFormat.format(new Date()));
 
+						Date date = new Date();
+						Log.i("date == null", "" + (date == null));
+						
+						String string = trans.dateFormat.format(date).toString();
+						Log.i("date string", string);
+						
 						fixBalance(userID, accountID, balance);
 
 						sqldbase.insert(DBHelper.TRANSACTION_TABLE, null, csr);
@@ -453,7 +471,7 @@ public class TransactionsFragment extends BaseFragment
 				new String[] { DBHelper.ACCOUNT_ID }, DBHelper.ACCOUNT_USER
 						+ " = '" + userID + "'", null, null, null, null, null);
 		int sum = 0;
-		Log(DatabaseUtils.dumpCursorToString(caeser));
+		
 		if (caeser.getCount() != 0)
 		{
 			// caeser.moveToFirst();

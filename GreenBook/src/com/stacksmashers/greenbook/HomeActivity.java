@@ -1,6 +1,8 @@
 package com.stacksmashers.greenbook;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.Vector;
 
 import android.app.ActionBar;
@@ -13,7 +15,6 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SubMenu;
 
 // this class make sure everything about homeactivity 
 public class HomeActivity extends BaseActivity
@@ -27,6 +28,7 @@ public class HomeActivity extends BaseActivity
 	protected String userType;
 	protected String accountsUser;
 	protected int userID;
+	
 
 	public HomeActivity()
 	{
@@ -64,6 +66,8 @@ public class HomeActivity extends BaseActivity
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS); 
 		actionBar.setDisplayShowTitleEnabled(true);   //set display show title enabled 
 
+		
+		
 		Bundle extras = getIntent().getExtras();  // getintent 
 
 		userType = extras.getString("Account Type");      // get string account type 
