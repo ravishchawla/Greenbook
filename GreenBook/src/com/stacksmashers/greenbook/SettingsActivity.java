@@ -188,9 +188,7 @@ public class SettingsActivity extends BaseActivity
 	{
 		
 
-		Cursor caeser = sqldbase.query(DBHelper.USER_TABLE,
-				new String[] { DBHelper.USER_TYPE }, DBHelper.USERS_ID + " = '"
-						+ user_id + "'", null, null, null, null);
+		Cursor caeser = DBDriver.GET_USER_TYPE(user_id);
 
 		caeser.moveToFirst();
 		if (caeser.getCount() != 0 && !caeser.getString(0).equals("auth")
@@ -217,8 +215,8 @@ public class SettingsActivity extends BaseActivity
 						{
 							// TODO Auto-generated method stub
 							
-							Cursor caeser = sqldbase.query(DBHelper.USER_TABLE, new String[]{DBHelper.USER_NAME, DBHelper.USER_EMAIL},  null, null, null, null, null);
 							
+							Cursor caeser = DBDriver.GET_ALL_USERS();
 							
 							if(caeser.getCount() != 0)
 							{
@@ -229,16 +227,7 @@ public class SettingsActivity extends BaseActivity
 								String code = codeEmail(email);    // get string code 
 								
 								// string messege 
-								String message = "Hello " + name + ",\n" +
-										"Here's your code!" +
-										"\n" +
-										"\n" +
-										"\n" +
-										code +
-										"\n" +
-										"\n" +
-										"--" +
-										"The GreenBook Team";
+								String message = Mail.EMAIL_FOR_RESENDING_VERIFICATION_CODE(name, code);
 										
 										
 										
@@ -313,10 +302,8 @@ public class SettingsActivity extends BaseActivity
 								Toast.LENGTH_LONG).show();
 						
 						
-						ContentValues brutus = new ContentValues(); // get new contentvalyes from brutus 
-						brutus.put(DBHelper.USER_TYPE, "auth");
-						sqldbase.update(DBHelper.USER_TABLE, brutus, DBHelper.USERS_ID + " = '" + user_id + "'", null);
 						
+						DBDriver.UPDATE_USER_TYPE("auth", user_id);
 						
 					}
 

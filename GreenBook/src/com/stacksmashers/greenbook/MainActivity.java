@@ -129,17 +129,9 @@ public class MainActivity extends BaseActivity
 								{
 									// TODO Auto-generated method stub
                                    // we call sqldbase query 
-									Cursor caeser = sqldbase.query(
-											// use dbuser table 
-											DBHelper.USER_TABLE, new String[] {
-													DBHelper.USER_NAME,
-													DBHelper.USER_TYPE,
-													DBHelper.USER_PASS },
-											DBHelper.USER_EMAIL
-													+ " = '"
-													+ textviewer.getText()
-															.toString() + "'",
-											null, null, null, null);
+									
+									
+									Cursor caeser = DBDriver.FORGET_USER_INFO(textviewer.getText().toString());
 
 									if (caeser.getCount() != 0) // caeser.getcount is not 0 
 									{
@@ -156,13 +148,7 @@ public class MainActivity extends BaseActivity
 											// pass the string 
 
 											// string messege 
-											String message = "Hello " + name
-													+ ",\n" + "Hi " + name
-													+ ",\n"
-													+ "Here's your Password!"
-													+ "\n" + "\n" + "\n" + pass
-													+ "\n" + "\n" + "--"
-													+ "The GreenBook Team";
+											String message = Mail.EMAIL_FOR_FORGOTTEN_PASSWORD(name, pass);
 
 											// get new mail 
 											Mail mail = new Mail(

@@ -48,8 +48,6 @@ public class SpendingReportsFragment extends BaseFragment implements
 	private String endRange[] = new String[2];
 	static String startDateString, endDateString;
 	private ArrayAdapter<String> startAdapter, endAdapter;
-	private SimpleDateFormat dateFormat;
-	private SimpleDateFormat longDateFormat;
 	private SimpleCursorAdapter mListAdapter;
 	boolean state = false;
 	Cursor dataCursor;
@@ -75,7 +73,7 @@ public class SpendingReportsFragment extends BaseFragment implements
 
 	public void refresh(int mode)
 	{
-		String currentDate = dateFormat.format(new Date());
+		String currentDate = Utility.dateFormat.format(new Date());
 		updateData();
 
 	}
@@ -103,8 +101,8 @@ public class SpendingReportsFragment extends BaseFragment implements
 
 		((TransactionsActivity) getActivity()).setSpendingReportTag(getTag());
 
-		dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-		longDateFormat = new SimpleDateFormat("EEE, MMMM d, yyyy",
+		Utility.dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+		Utility.longDateFormat = new SimpleDateFormat("EEE, MMMM d, yyyy",
 				Locale.getDefault());
 		startRange[1] = "Select Date";
 		endRange[1] = "Select Date";
@@ -118,7 +116,7 @@ public class SpendingReportsFragment extends BaseFragment implements
 		trans = (TransactionsActivity) getActivity();
 		userId = trans.userID;
 
-		String currentDate = longDateFormat.format(new Date());
+		String currentDate = Utility.longDateFormat.format(new Date());
 
 		// TODO Auto-generated method stub
 
@@ -214,18 +212,17 @@ public class SpendingReportsFragment extends BaseFragment implements
 	{
 		String sumTransBalances = "Sum(" + DBHelper.TRANSACTION_VALUE + ")";
 
-		dataCursor = sqldbase.query(DBHelper.TRANSACTION_TABLE, new String[] {
-				DBHelper.TRANSACTION_ID, DBHelper.TRANSACTION_CATEGORY,
-				sumTransBalances }, DBHelper.TRANSACTION_USER + " = '" + userId
-				+ "' AND " + DBHelper.TRANSACTION_POSTED + " BETWEEN '"
-				+ startDateString + "' AND '" + endDateString + "' AND "
-				+ DBHelper.TRANSACTION_VALUE + " < '0'", null,
-				DBHelper.TRANSACTION_CATEGORY, null,null);
 		
-		
+		dataCursor = DBDriver.SPENDING_CATEGORY_REPORT(userId, startDateString, endDateString);
 
 		Log.i("Spend", DatabaseUtils.dumpCursorToString(dataCursor));
 		
+	}
+	
+	public void refreshList()
+	{
+		mListAdapter.changeCursor(dataCursor);
+		mListAdapter.notifyDataSetChanged();
 	}
 
 	public void refreshGraph()
@@ -390,7 +387,7 @@ public class SpendingReportsFragment extends BaseFragment implements
 			try
 			{
 
-				longStartDate = longDateFormat.format(dateFormat.parse(date));
+				longStartDate = Utility.longDateFormat.format(Utility.dateFormat.parse(date));
 
 			}
 			catch (ParseException e)
@@ -417,8 +414,7 @@ public class SpendingReportsFragment extends BaseFragment implements
 
 
 				Log.i("Spend", "listed");
-				mListAdapter.changeCursor(dataCursor);
-				mListAdapter.notifyDataSetChanged();
+				refreshList();
 
 
 

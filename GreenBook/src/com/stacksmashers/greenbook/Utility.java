@@ -1,5 +1,7 @@
 package com.stacksmashers.greenbook;
 
+import java.text.SimpleDateFormat;
+
 import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
@@ -23,6 +25,10 @@ public class Utility
 			"#6B6882", "#5FAD4E", "#A75740", "#A5FFD2", "#FFB167", "#009BFF",
 			"#E85EBE" };
 
+	public static SimpleDateFormat dateFormat;
+	public static SimpleDateFormat longDateFormat;
+	
+	
 	public Utility()
 	{
 		// TODO Auto-generated constructor stub

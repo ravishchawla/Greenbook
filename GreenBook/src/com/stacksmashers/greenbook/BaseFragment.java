@@ -19,8 +19,8 @@ import com.parse.ParseObject;
 public class BaseFragment extends android.support.v4.app.Fragment
 {
 
-	DBHelper dbase;
-	SQLiteDatabase sqldbase;
+	
+	
 	
 	public BaseFragment()
 	{
@@ -47,8 +47,6 @@ public class BaseFragment extends android.support.v4.app.Fragment
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 	
-		dbase = new DBHelper(getActivity());
-		sqldbase = dbase.getWritableDatabase();
 		
 		
 				

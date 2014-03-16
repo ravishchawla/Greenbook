@@ -27,8 +27,6 @@ import com.parse.codec.binary.StringUtils;
 public class BaseActivity extends FragmentActivity
 {
 
-	DBHelper dbase;
-	SQLiteDatabase sqldbase;
 	String currency = "£";
 	public BaseActivity()
 	{
@@ -56,8 +54,6 @@ public class BaseActivity extends FragmentActivity
 		super.onCreate(savedInstanceState);
 		
         //  calling bese context from dbhelper
-		dbase = new DBHelper(getBaseContext());
-		sqldbase = dbase.getWritableDatabase();
 
 		Parse.initialize(this, "7003TMIrbLL91cSLNAhVD1dkHK2f6Xx1rtrVUtEY",
 				"UooMQDvQLmMbzI2zsm4yHi1BYCTQFnSuSINL9elv");

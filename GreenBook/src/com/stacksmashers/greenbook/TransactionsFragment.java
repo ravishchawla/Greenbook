@@ -1,18 +1,14 @@
 package com.stacksmashers.greenbook;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnShowListener;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.os.Bundle;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +24,8 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
-public class TransactionsFragment extends BaseFragment implements DataFragmentInterface
+public class TransactionsFragment extends BaseFragment implements
+		DataFragmentInterface
 {
 
 	private ListView list;
@@ -40,7 +37,8 @@ public class TransactionsFragment extends BaseFragment implements DataFragmentIn
 	private int accountID;
 	private String accountName;
 	private TextView totalBalance;
-	
+	private Cursor dataCursor;
+	private SimpleCursorAdapter listAdapter;
 	
 	public TransactionsFragment()
 	{
@@ -60,13 +58,11 @@ public class TransactionsFragment extends BaseFragment implements DataFragmentIn
 	public void refresh(int mode)
 	{
 		// TODO Auto-generated method stub
-		
+
 		updateData();
-		
-		
+
 	}
-	
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState)
@@ -75,13 +71,10 @@ public class TransactionsFragment extends BaseFragment implements DataFragmentIn
 		super.onCreateView(inflater, container, savedInstanceState); // create
 		// savedinstancestate
 
-		
-		
 		View view = inflater.inflate(R.layout.fragment_transactions, container,
 				false);// calling activity register
 
-		
-		
+
 		
 		list = (ListView) view.findViewById(R.id.transactions_list);
 
@@ -96,6 +89,7 @@ public class TransactionsFragment extends BaseFragment implements DataFragmentIn
 		}
 		else
 		{
+			((TransactionsActivity)getActivity()).setTransactionTag(getTag());
 			trans = (TransactionsActivity) getActivity();
 			userID = trans.userID;
 			currency = trans.currency;
@@ -108,13 +102,28 @@ public class TransactionsFragment extends BaseFragment implements DataFragmentIn
 				.findViewById(R.id.transactions_total_balance);
 
 		updateData();
-		
+
 		return view;
 	}
-/**
- * @return void 
- * we use this method to updatedata 
- */
+
+	
+	public void query(int accountID, int userID)
+	{
+		dataCursor = DBDriver.GET_ACCOUNT_TRANSACTIONS(accountID, userID);
+		dataCursor.moveToFirst();
+		
+		Log.i("Trans", DatabaseUtils.dumpCursorToString(dataCursor));
+	}
+	
+	public void refreshList()
+	{
+		listAdapter.changeCursor(dataCursor);
+		listAdapter.notifyDataSetChanged();
+	}
+	
+	/**
+	 * @return void we use this method to updatedata
+	 */
 	public void updateData()
 	{
 		if (isHome)
@@ -122,70 +131,60 @@ public class TransactionsFragment extends BaseFragment implements DataFragmentIn
 		else
 			totalBalance.setText(currency + getBalance(userID, accountID));
 
-		
-		
 		Log.i("calling", "updated data");
-		String condition = "";
-		if(isHome)
-			condition = DBHelper.TRANSACTION_USER
-			+ " = '" + userID + "'";
-			
-		else
-			condition = DBHelper.TRANSACTION_USER
-			+ " = '" + userID + "' AND " + DBHelper.TRANSACTION_ACCOUNT + " ='" + accountID + "'";
 		
-		final Cursor caeser = sqldbase.query(DBHelper.TRANSACTION_TABLE,
-				new String[] { DBHelper.TRANSACTION_ID,
-						DBHelper.TRANSACTION_USER,
-						DBHelper.TRANSACTION_ACCOUNT,
-						DBHelper.TRANSACTION_ACCOUNT_NAME,
-						DBHelper.TRANSACTION_DEPOSIT_SOURCE,
-						DBHelper.TRANSACTION_WITHRAWAL_REASON,
-						DBHelper.TRANSACTION_CATEGORY,
-						DBHelper.TRANSACTION_POSTED, 
-						DBHelper.TRANSACTION_VALUE }, condition, null, null, null, null);
-		caeser.moveToFirst();
-		if (caeser.getCount() == 0)
+		query(accountID, userID);
+		
+		if (isHome)
+			dataCursor = DBDriver.GET_ACCOUNT_TRANSACTIONS(0, userID);
+		else
+			dataCursor = DBDriver.GET_ACCOUNT_TRANSACTIONS(accountID, userID);
+
+		
+		if (dataCursor.getCount() == 0)
 			return;
 
-		SimpleCursorAdapter adap;
+		
 		String[] from = { DBHelper.TRANSACTION_VALUE };
 		int[] to = { R.id.transaction_balancew };
 
-		
-
-		adap = new SimpleCursorAdapter(getActivity(),  // call new simplecursoradapter from adap
-				R.layout.transactions_list_block, caeser, from, to)
+		listAdapter = new SimpleCursorAdapter(getActivity(), // call new
+														// simplecursoradapter
+														// from adap
+				R.layout.transactions_list_block, dataCursor, from, to)
 		{
 
-	/**
-	 * @param position
-	 * @param convertview
-	 * @param parent
-	 * this method displays the data to data set  
-	 */
+
+			/**
+			 * @param position
+			 * @param convertview
+			 * @param parent
+			 *            this method displays the data to data set
+			 */
 			@Override
 			public View getView(int position, View convertView, ViewGroup parent)
 			{
+				Log.i("Trans", "Refreshing Data LIst " + position);
+
 				View v = super.getView(position, convertView, parent);
 				ImageView image = (ImageView) v
 						.findViewById(R.id.transactions_total_icon);
+				
 
 				TextView title = (TextView) v
 						.findViewById(R.id.transaction_title);
 				TextView descriptio = (TextView) v
 						.findViewById(R.id.transactions_total_balance);
 
-				int balances = caeser.getInt(8);
-				if (balances > 0)      // balances less than 0 
+				int balances = dataCursor.getInt(8);
+				if (balances > 0) // balances less than 0
 				{
 
 					title.setText("Deposit " + currency + balances);
 
-					
-						descriptio.setText(" For " + caeser.getString(4)
-								+ " on: " + caeser.getString(7));
-					
+					descriptio.setText(" For " + dataCursor.getString(4) + " on: "
+							+ dataCursor.getString(7));
+
 					image.setImageDrawable(getResources().getDrawable(
 							R.drawable.content_positive));
 
@@ -194,10 +193,10 @@ public class TransactionsFragment extends BaseFragment implements DataFragmentIn
 				{
 
 					title.setText("Withraw " + currency + ((-1) * balances));
-					
-						descriptio.setText(" For " + caeser.getString(6)
-								+ " on: " + caeser.getString(7));
-					
+
+					descriptio.setText(" For " + dataCursor.getString(6) + " on: "
+							+ dataCursor.getString(7));
+
 					image.setImageDrawable(getResources().getDrawable(
 							R.drawable.content_negative));
 				}
@@ -208,14 +207,12 @@ public class TransactionsFragment extends BaseFragment implements DataFragmentIn
 
 		};
 
-		list.setAdapter(adap);
-
+		list.setAdapter(listAdapter);
 
 	}
 
 	/**
-	 * return void
-	 * we use this method to add transction 
+	 * return void we use this method to add transction
 	 */
 	public void addTransaction()
 	{
@@ -245,10 +242,7 @@ public class TransactionsFragment extends BaseFragment implements DataFragmentIn
 		String[] from = { DBHelper.ACCOUNT_NAME };
 		int[] to = { android.R.id.text1 };
 
-		Cursor caeser = sqldbase.query(DBHelper.ACCOUNT_TABLE, new String[] {
-				DBHelper.ACCOUNT_ID, DBHelper.ACCOUNT_NAME },
-				DBHelper.ACCOUNT_USER + " = '" + userID + "'", null, null,
-				null, null);
+		final Cursor caeser = DBDriver.GET_ACCOUNT_INFO_FOR_USER(userID);
 
 		SimpleCursorAdapter adap = new SimpleCursorAdapter(getActivity(),
 				android.R.layout.simple_spinner_item, caeser, from, to);
@@ -257,11 +251,11 @@ public class TransactionsFragment extends BaseFragment implements DataFragmentIn
 
 		whichSwitch.setOnCheckedChangeListener(new OnCheckedChangeListener()
 		{
-/**
- * @param buttonview
- * @return void
- * @return boolean 
- */
+			/**
+			 * @param buttonview
+			 * @return void
+			 * @return boolean
+			 */
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked)
@@ -270,12 +264,12 @@ public class TransactionsFragment extends BaseFragment implements DataFragmentIn
 
 				if (isChecked)
 				{
-					sourceText.setHint("Spending Category");  // set hint text 
+					sourceText.setHint("Spending Category"); // set hint text
 					reasonText.setVisibility(View.VISIBLE);
 				}
 				else
 				{
-					sourceText.setHint("Money Source");    //set hint text 
+					sourceText.setHint("Money Source"); // set hint text
 					reasonText.setVisibility(View.GONE);
 				}
 
@@ -283,59 +277,64 @@ public class TransactionsFragment extends BaseFragment implements DataFragmentIn
 		});
 
 		final AlertDialog dialog = new AlertDialog.Builder(getActivity())
-				.setTitle("Add Details").setView(view)
-				.setPositiveButton("Enter", new DialogInterface.OnClickListener()
-				{
+				.setTitle("Add Details")
+				.setView(view)
+				.setPositiveButton("Enter",
+						new DialogInterface.OnClickListener()
+						{
 
+							/**
+							 * @param dialog
+							 * @param which
+							 * @return void
+							 */
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which)
+							{
+								// TODO Auto-generated method stub
 
-	/**
-	 * @param dialog
-	 * @param which
-	 * @return void 
-	 */
-					@Override
-					public void onClick(DialogInterface dialog, int which)
-					{
-						// TODO Auto-generated method stub
-						
-					}
-					
-					
-				}).setNegativeButton("Cancel", new DialogInterface.OnClickListener()
-				// set navigate button 
-				{
-	/**
-	 * @param dialog
-	 * @param which
-	 * @return void 
-	 */
-					@Override
-					public void onClick(DialogInterface dialog, int which)
-					{
-						// TODO Auto-generated method stub
-						
-						dialog.dismiss();
-					}
-				}).create();
+							}
+
+						})
+				.setNegativeButton("Cancel",
+						new DialogInterface.OnClickListener()
+						// set navigate button
+						{
+							/**
+							 * @param dialog
+							 * @param which
+							 * @return void
+							 */
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which)
+							{
+								// TODO Auto-generated method stub
+
+								dialog.dismiss();
+							}
+						}).create();
 		dialog.setOnShowListener(new OnShowListener()
 		{
-    /**
-     * @param dyalog
-     * @return void 
-     * we use this method to show 
-     */
+			/**
+			 * @param dyalog
+			 * @return void we use this method to show
+			 */
 			@Override
 			public void onShow(DialogInterface dyalog)
 			{
 
-				Button plus = dialog.getButton(AlertDialog.BUTTON_POSITIVE); // get dialog button 
+				Button plus = dialog.getButton(AlertDialog.BUTTON_POSITIVE); // get
+																				// dialog
+																				// button
 
-				plus.setOnClickListener(new OnClickListener()  // set on click listener 
+				plus.setOnClickListener(new OnClickListener() // set on click
+																// listener
 				{
 
 					@SuppressLint("NewApi")
 					@Override
-					
 					/**
 					 * @param v
 					 * @return void 
@@ -344,65 +343,49 @@ public class TransactionsFragment extends BaseFragment implements DataFragmentIn
 					{
 						// TODO Auto-generated method stub
 
-						
 						String balanceStr = balanceText.getText().toString();
-						String source = sourceText.getText().toString(); 
-						// string souce from to string 
+						String source = sourceText.getText().toString();
+						// string souce from to string
 						String reason = reasonText.getText().toString();
 						boolean checked = whichSwitch.isChecked();
 
 						// TODO Auto-generated method stub
-						ContentValues csr = new ContentValues();
 						
+
 						boolean exit_now = false;
-						
-						if(balanceStr.equals("") && !balanceStr.matches("\\d"))
+
+						if (balanceStr.equals("") && !balanceStr.matches("\\d"))
 						{
-							balanceText.setBackground(getResources().getDrawable(R.drawable.error_edittext));
-							exit_now = true;    // exit now
+							balanceText.setBackground(getResources()
+									.getDrawable(R.drawable.error_edittext));
+							exit_now = true; // exit now
 						}
-						
+
 						if (source.equals(""))
 						{
 							sourceText.setBackground(getResources()
 									.getDrawable(R.drawable.error_edittext));
-							exit_now = true;     // exit now 
+							exit_now = true; // exit now
 						}
 
-						if(checked && reason.equals(""))
+						if (checked && reason.equals(""))
 						{
-							reasonText.setBackground(getResources().getDrawable(R.drawable.error_edittext));
-							exit_now = true;    // exit now 
+							reasonText.setBackground(getResources()
+									.getDrawable(R.drawable.error_edittext));
+							exit_now = true; // exit now
 						}
-						
-						if(exit_now)
+
+						if (exit_now)
 						{
 							exit_now = false;
 							return;
 						}
-						
+
 						Integer balance = Integer.parseInt(balanceText
 								.getText().toString());
-						
-						if (checked)   // checked everything
-						{
-							csr.put(DBHelper.TRANSACTION_CATEGORY, source);
-							csr.put(DBHelper.TRANSACTION_WITHRAWAL_REASON,
-									reason);
-							balance = (-1) * balance;
-						}
-						else
-							csr.put(DBHelper.TRANSACTION_DEPOSIT_SOURCE, source);
 
-						csr.put(DBHelper.TRANSACTION_VALUE, balance);
-						csr.put(DBHelper.TRANSACTION_USER, userID);
-
-						Cursor caeser = sqldbase.query(
-								DBHelper.ACCOUNT_TABLE,
-								new String[] { DBHelper.ACCOUNT_NAME },
-								DBHelper.ACCOUNT_ID + " = '"
-										+ spinner.getSelectedItemId() + " '",
-								null, null, null, null);
+						Cursor caeser = DBDriver.GET_ACCOUNT_FROM_ID(spinner
+								.getSelectedItemId());
 
 						if (caeser.getCount() != 0)
 						{
@@ -411,26 +394,31 @@ public class TransactionsFragment extends BaseFragment implements DataFragmentIn
 
 						}
 
-						csr.put(DBHelper.TRANSACTION_ACCOUNT_NAME, accountName);
-
 						if (isHome)
 							accountID = (int) spinner.getSelectedItemId();
 
-						csr.put(DBHelper.TRANSACTION_ACCOUNT, accountID);
-						csr.put(DBHelper.TRANSACTION_POSTED, trans.dateFormat.format(new Date()));
-
 						Date date = new Date();
 						Log.i("date == null", "" + (date == null));
-						
-						String string = trans.dateFormat.format(date).toString();
+
+						String string = Utility.dateFormat.format(date)
+								.toString();
 						Log.i("date string", string);
-						
+
+						if (checked)
+						{
+
+							DBDriver.INSERT_WITHRAWAL(source, reason, balance,
+									userID, accountName, accountID);
+
+						}
+						else
+							DBDriver.INSERT_DEPOSIT(source, balance, userID,
+									accountName, accountID);
+
 						fixBalance(userID, accountID, balance);
 
-						sqldbase.insert(DBHelper.TRANSACTION_TABLE, null, csr);
-
-						updateData();    //update data 
-						dialog.dismiss(); // dismiss dialog 
+						updateData(); // update data
+						dialog.dismiss(); // dismiss dialog
 
 					}
 				});
@@ -440,23 +428,19 @@ public class TransactionsFragment extends BaseFragment implements DataFragmentIn
 			}
 		});
 
-		dialog.show();      // show dialog 
+		dialog.show(); // show dialog
 
 	}
 
 	/**
 	 * @parm userid
 	 * @param accountID
-	 * @return int 
+	 * @return int
 	 * 
 	 */
 	public int getBalance(int userId, int accountID)
 	{
-		Cursor caeser = sqldbase.query(DBHelper.ACCOUNT_TABLE,
-				new String[] { DBHelper.ACCOUNT_BALANCE },
-				DBHelper.ACCOUNT_USER + " = '" + userID + "' AND "
-						+ DBHelper.ACCOUNT_ID + " = '" + accountID + "'", null,
-				null, null, null, null);
+		Cursor caeser = DBDriver.GET_ACCOUNT_BALANCE(userId, accountID);
 
 		int bal = 0;
 		if (caeser.getCount() != 0)
@@ -465,24 +449,23 @@ public class TransactionsFragment extends BaseFragment implements DataFragmentIn
 			bal = caeser.getInt(0);
 
 		}
-		
-		Log.i("Balance: ", ""+bal);
+
+		Log.i("Balance: ", "" + bal);
 		return bal;
 
 	}
 
 	/**
 	 * @param userid
-	 * @return int
-	 * we use this method to getblanace sum 
+	 * @return int we use this method to getblanace sum
 	 */
 	public int getBalanceSum(int userId)
 	{
-		Cursor caeser = sqldbase.query(DBHelper.ACCOUNT_TABLE,
-				new String[] { DBHelper.ACCOUNT_ID }, DBHelper.ACCOUNT_USER
-						+ " = '" + userID + "'", null, null, null, null, null);
-		int sum = 0;
 		
+		Cursor caeser = DBDriver.GET_ACCOUNTS_IDS_FOR_USER(userID);
+		
+		int sum = 0;
+
 		if (caeser.getCount() != 0)
 		{
 			// caeser.moveToFirst();
@@ -497,38 +480,31 @@ public class TransactionsFragment extends BaseFragment implements DataFragmentIn
 			}
 		}
 
-		return sum;       // return sum 
+		return sum; // return sum
 
 	}
 
-/**
- * @param userID
- * @param account ID
- * @param change
- * @eturn void
- * we use this method to fix the balance 
- * 
- */
+	/**
+	 * @param userID
+	 * @param account
+	 *            ID
+	 * @param change
+	 * @eturn void we use this method to fix the balance
+	 * 
+	 */
 	public void fixBalance(int userID, int accountID, int change)
 	{
-		Cursor caeser = sqldbase.query(DBHelper.ACCOUNT_TABLE,
-				new String[] { DBHelper.ACCOUNT_BALANCE },
-				DBHelper.ACCOUNT_USER + " = '" + userID + "' AND "
-						+ DBHelper.ACCOUNT_ID + " = '" + accountID + "'", null,
-				null, null, null, null);
 
+		Cursor caeser = DBDriver.GET_ACCOUNT_BALANCE(userID, accountID);
 		int bal = getBalance(userID, accountID);
 		bal += change;
 
-		ContentValues cv = new ContentValues();  // get new content values from cv 
-		cv.put(DBHelper.ACCOUNT_BALANCE, bal);
+		
+												
+		
 
-		sqldbase.update(DBHelper.ACCOUNT_TABLE, cv, DBHelper.ACCOUNT_USER   // update sqldbase 
-				+ " = '" + userID + "' AND " + DBHelper.ACCOUNT_ID + " = '"
-				+ accountID + "'", null);
+		
 
 	}
-
-
 
 }

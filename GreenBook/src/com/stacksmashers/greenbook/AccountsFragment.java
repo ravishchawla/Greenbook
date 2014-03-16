@@ -420,13 +420,8 @@ public class AccountsFragment extends BaseFragment
 						else
 							caeser.put(DBHelper.ACCOUNT_INTEREST, "-1");
 
-						Cursor csr = sqldbase.query(DBHelper.ACCOUNT_TABLE,
-								new String[] { DBHelper.ACCOUNT_NAME },
-								DBHelper.ACCOUNT_USER + " = '" + userID
-										+ "' AND " + DBHelper.ACCOUNT_NAME
-										+ " = '"
-										+ add_name.getText().toString() + "'",
-								null, null, null, null);
+						
+						Cursor csr = DBDriver.CHECK_FOR_DUPLICATE_ACCOUNTS(userID, add_name.getText().toString());
 
 						if (csr.getCount() != 0)
 						{
@@ -440,6 +435,15 @@ public class AccountsFragment extends BaseFragment
 							// redo = true;
 							// }
 							// else
+							caeser.put(DBHelper.ACCOUNT_NAME, add_name.getText()
+									.toString());
+							caeser.put(DBHelper.ACCOUNT_BALANCE, add_balance
+									.getText().toString());
+							caeser.put(DBHelper.ACCOUNT_BANK, choose_bank
+									.getSelectedItem().toString());
+							caeser.put(DBHelper.ACCOUNT_COLOR, choose_color
+									.getSelectedItem().toString());
+							caeser.put(DBHelper.ACCOUNT_USER, userID);
 							// {
 							// sqldbase.insert(DBHelper.ACCOUNT_TABLE, null,
 							// caeser);
@@ -451,8 +455,10 @@ public class AccountsFragment extends BaseFragment
 						}
 						else
 						{
-							sqldbase.insert(DBHelper.ACCOUNT_TABLE, null,
-									caeser);
+							if(check_interst.isChecked())
+								DBDriver.INSERT_ACCOUNT(add_name.getText().toString(), add_balance.getText().toString(), choose_bank.getSelectedItem().toString(), choose_color.getSelectedItem().toString(), userID, add_interst.getText().toString());
+							else
+								DBDriver.INSERT_ACCOUNT(add_name.getText().toString(), add_balance.getText().toString(), choose_bank.getSelectedItem().toString(), choose_color.getSelectedItem().toString(), userID, "-1");
 
 							Log.d("cv: ", caeser.toString());
 							Log.d("cv: ",
@@ -490,9 +496,7 @@ public class AccountsFragment extends BaseFragment
 		int to[] = { R.id.account_display_name, R.id.account_display_bank,
 				R.id.account_display_balance };
 
-		final Cursor csr = sqldbase.query(DBHelper.ACCOUNT_TABLE, query,
-				DBHelper.ACCOUNT_USER + " = '" + userID + "'", null, null,
-				null, Sort);
+		final Cursor csr = DBDriver.GET_ALL_ACCOUNT_INFO(userID, Sort);
 
 		Log.i("TAG", "Cursor Adap = null: " + csr.getCount());
 

@@ -44,6 +44,54 @@ public class Mail extends javax.mail.Authenticator
 	private Multipart multipart;
 	
 
+	public static String EMAIL_FOR_FORGOTTEN_PASSWORD(String name, String pass)
+	{
+		String message = "Hello " + name
+		+ ",\n" + "Hi " + name
+		+ ",\n"
+		+ "Here's your Password!"
+		+ "\n" + "\n" + "\n" + pass
+		+ "\n" + "\n" + "--"
+		+ "The GreenBook Team";
+		
+		return message;
+	}
+	
+	public static String EMAIL_FOR_NEW_REGISTRATION(String name, String username, String code, String password)
+	{
+		String message = "Hello "
+				+ name
+				+ ",\n"
+				+ "Thankyou for creating an account with GreenBook!"
+				+ "\n"
+				+ "\n"
+				+ "\n"
+				+ "Please Verify your email Address by using the following code:  "
+				+ code + "\n" + "\n" + "Other Account Information"
+				+ "\nUsername: " + username + "\nPassword: " + password;
+
+		
+		return message;
+		
+	}
+	public static String EMAIL_FOR_RESENDING_VERIFICATION_CODE(String name, String code)
+	{
+		String message = "Hello " + name + ",\n" +
+				"Here's your code!" +
+				"\n" +
+				"\n" +
+				"\n" +
+				code +
+				"\n" +
+				"\n" +
+				"--" +
+				"The GreenBook Team";
+		
+		
+		return message;
+	}
+	
+	
 	public Mail()     // public mail 
 	{
 		// TODO Auto-generated constructor stub
@@ -189,6 +237,9 @@ public class Mail extends javax.mail.Authenticator
 		// TODO Auto-generated method stub
 
 	}
+	
+	
+	
 
 	
 	

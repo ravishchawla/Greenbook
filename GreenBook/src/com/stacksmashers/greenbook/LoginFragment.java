@@ -233,11 +233,7 @@ public class LoginFragment extends BaseFragment
 		String name = login_name.getEditableText().toString();
 		String pass = login_pass.getEditableText().toString();
 
-		caeser = sqldbase.query(DBHelper.USER_TABLE, new String[] {
-				DBHelper.USERS_ID, DBHelper.USER_EMAIL, DBHelper.USER_PASS },
-				DBHelper.USER_EMAIL + " = '" + name + "' AND "
-						+ DBHelper.USER_PASS + " = '" + pass + "'", null, null,
-				null, null);
+		Cursor caeser = DBDriver.LOGIN_USER_INFO(name, pass);
 
 		/*
 		 * fields = sqldbase.query(DBHelper.COURSE_TABLE, new String[] {
@@ -250,7 +246,7 @@ public class LoginFragment extends BaseFragment
 		{
 			caeser.moveToFirst();
 			Intent accountsIntent = new Intent(getActivity(),
-					HomeActivity.class); // get application cotext from
+					TransactionsActivity.class); // get application cotext from
 												// accountsactivity class
 			if (name.equals("sudo@root.com")) // if account type is specific
 			{

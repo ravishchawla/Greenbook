@@ -74,9 +74,7 @@ public class HomeActivity extends BaseActivity
 		accountsUser = extras.getString("Account User");  // get string account user 
 		
 		
-		Cursor csr = sqldbase.query(DBHelper.USER_TABLE,
-				new String[] { DBHelper.USERS_ID }, DBHelper.USER_EMAIL
-						+ " = '" + accountsUser + "'", null, null, null, null);
+		Cursor csr = DBDriver.GET_USER_FROM_ACCOUNt(accountsUser);
 		// use sqldbase for query 
 
 		if (csr.getCount() != 0)

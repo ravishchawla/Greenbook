@@ -10,16 +10,22 @@ import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.FragmentTransaction;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class TransactionsActivity extends BaseActivity implements
 		ActionBar.TabListener
@@ -34,11 +40,12 @@ public class TransactionsActivity extends BaseActivity implements
 	protected int accountID;
 	protected String accountName;
 	private ListView navList;
-	private DrawerLayout drawerLayout;
+	private DrawerLayout navigationDrawer;
 	// private TabsPageAdapter tabsPageAdapter;
-	protected SimpleDateFormat dateFormat;
+	
 	int spendingMode;
 	String SPENDING_TAG;
+	String TRANSACTIONS_TAG;
 
 	protected SpendingReportsFragment spendingReportsFragment;
 
@@ -71,28 +78,85 @@ public class TransactionsActivity extends BaseActivity implements
 		super.onCreate(savedInstanceState); // initalize savedinstancestate
 
 		setContentView(R.layout.activity_transaction); // call setcontentview
+		Bundle extras = getIntent().getExtras(); // get intent bundle extras
 
+		userID = extras.getInt("User ID");
+		accountID = extras.getInt("Account ID");
 		viewpager = (ViewPager) findViewById(R.id.transactoins_viewpager);
 
 		// initializePaging();
 
 		navList = (ListView)findViewById(R.id.navigation_drawer);
-		drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+		navigationDrawer = (DrawerLayout)findViewById(R.id.drawer_layout);
 		
-		String[] numbers_text = new String[] { "one", "two", "three", "four",
-				"five", "six", "seven", "eight", "nine", "ten", "eleven",
-				"twelve", "thirteen", "fourteen", "fifteen" };
 		
-		ArrayList<String> mArrayList;
-		ArrayAdapter<String> mAdapter;
 		
-		mArrayList = new ArrayList<String>();
-		for(String s : numbers_text)
-			mArrayList.add(s);
+				
 		
-		mAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, mArrayList);
 		
-		navList.setAdapter(mAdapter);
+		
+		
+		
+		String from[] = { DBHelper.ACCOUNT_NAME};
+		int to[] = { R.id.drawer_textView};
+
+		final Cursor csr = DBDriver.GET_ALL_ACCOUNT_INFO(userID, DBHelper.ACCOUNT_ID);
+
+		Log.i("TAG", "Cursor Adap = null: " + csr.getCount());
+		Log.i("Trans", DatabaseUtils.dumpCursorToString(csr));
+		if (csr.getCount() != 0)
+		{
+			csr.moveToFirst();
+			SimpleCursorAdapter adap = new SimpleCursorAdapter(getApplicationContext(),
+					R.layout.drawer_item, csr, from, to);
+
+			
+			
+			navList.setAdapter(adap);
+		}
+		
+		navList.setOnItemClickListener(new OnItemClickListener(){
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int pos,
+					long id)
+			{
+				// TODO Auto-generated method stub
+				TransactionsFragment transactionsFragment = (TransactionsFragment) getSupportFragmentManager()
+						.findFragmentByTag(TRANSACTIONS_TAG);
+
+				
+				SpendingReportsFragment spendingFragment = (SpendingReportsFragment)getSupportFragmentManager().findFragmentByTag(SPENDING_TAG);
+				
+				accountID = (int)id;
+				
+				Cursor caeser = DBDriver.ACCOUNT_NAME_FROM_ID(accountID);
+				String titleText = "Transactions";
+				if (caeser.getCount() != 0)
+				{
+					caeser.moveToFirst();
+					accountName = caeser.getString(0);
+
+				}
+				
+				
+				Toast.makeText(getApplicationContext(), "Switching Class to: " + accountName, Toast.LENGTH_LONG).show();
+				transactionsFragment.query(accountID, userID);
+				transactionsFragment.refreshList();
+				
+				spendingFragment.query();
+				spendingFragment.refreshList();
+				spendingFragment.refreshGraph();
+				
+				navigationDrawer.closeDrawer(navList);
+				
+			}
+			
+			
+			
+		});
+		
+		//navList.setAdapter(mAdapter);
 		
 		actionBar = getActionBar(); // get action bar
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -102,17 +166,12 @@ public class TransactionsActivity extends BaseActivity implements
 		actionBar.setHomeButtonEnabled(true);
 		
 
-		Bundle extras = getIntent().getExtras(); // get intent bundle extras
 
-		userID = extras.getInt("User ID");
-		accountID = extras.getInt("Account ID");
 
-		dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
+		Utility.dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
 				Locale.getDefault());
 
-		Cursor caeser = sqldbase.query(DBHelper.ACCOUNT_TABLE,
-				new String[] { DBHelper.ACCOUNT_NAME }, DBHelper.ACCOUNT_ID
-						+ " = '" + accountID + " '", null, null, null, null);
+		Cursor caeser = DBDriver.ACCOUNT_NAME_FROM_ID(accountID);
 		String titleText = "Transactions";
 		if (caeser.getCount() != 0)
 		{
@@ -297,6 +356,16 @@ public class TransactionsActivity extends BaseActivity implements
 		return SPENDING_TAG;
 	}
 
+	public void setTransactionTag(String tag)
+	{
+		TRANSACTIONS_TAG = tag;
+	}
+	
+	public String getTransactionTag()
+	{
+		return TRANSACTIONS_TAG;
+	}
+	
 	/**
 	 * @return void we use this method to initialize age
 	 */

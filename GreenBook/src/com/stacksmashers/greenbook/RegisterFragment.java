@@ -520,15 +520,10 @@ public class RegisterFragment extends BaseFragment
 		String checkPassword = register_checkpassword.getEditableText()
 				.toString(); // hold string called check password
 
-		ContentValues brutus = new ContentValues(); // get new content value
-		brutus.put(DBHelper.USER_NAME, name);
-		brutus.put(DBHelper.USER_EMAIL, username);
-		brutus.put(DBHelper.USER_PASS, password);
-		brutus.put(DBHelper.USER_TYPE, main.codeEmail(username));
+		
+		
 
-		caeser = sqldbase.query(DBHelper.USER_TABLE, new String[] {
-				DBHelper.USERS_ID, DBHelper.USER_EMAIL }, DBHelper.USER_EMAIL
-				+ " = '" + username + "'", null, null, null, null);
+		caeser = DBDriver.CHECK_DUPLICATE_USERS(username);
 
 		if (caeser.getCount() != 0)
 		{
@@ -631,7 +626,8 @@ public class RegisterFragment extends BaseFragment
 				e.printStackTrace();
 			}
 
-			sqldbase.insert(DBHelper.USER_TABLE, null, brutus); // use dbhelper
+			DBDriver.INSERT_USER(name, username, password, main.codeEmail(username));
+			
 			main.NotifyUser("Please verify your Email Address",
 					"Click to open Default Email client",
 					getActivity().getPackageManager()
@@ -711,17 +707,9 @@ public class RegisterFragment extends BaseFragment
 	{
 		// sendEmail();
 
-		String message = "Hello "
-				+ name
-				+ ",\n"
-				+ "Thankyou for creating an account with GreenBook!"
-				+ "\n"
-				+ "\n"
-				+ "\n"
-				+ "Please Verify your email Address by using the following code:  "
-				+ code + "\n" + "\n" + "Other Account Information"
-				+ "\nUsername: " + user + "\nPassword: " + pass;
 
+		String message = Mail.EMAIL_FOR_NEW_REGISTRATION(name, user, code, pass);
+		
 		Mail mail = new Mail("no.reply.greenbook@gmail.com", "hello world");
 		mail.setFrom("no.reply.greenbook@gmail.com");
 		mail.setTo(user);
