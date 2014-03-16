@@ -7,23 +7,13 @@
           android:visible="true"
           android:showAsAction="always"
           android:title="View Type"
-          android:icon="@drawable/content_sort">
-   <menu>
-			<item 
-			    android:id="@+id/spending_graph_view"
-			    android:title="Graph View" >
-			    
-			</item>
-			
-			<item
-			    android:id="@+id/spending_list_view"
-			    android:title="List View" >
-			    
-			</item>
+          android:checked="true"
+          android:icon="@drawable/content_list">
+   
 			
                    
            
-           </menu>
+   
                
    </item>
 

@@ -72,7 +72,8 @@ public class HomeActivity extends BaseActivity
 
 		userType = extras.getString("Account Type");      // get string account type 
 		accountsUser = extras.getString("Account User");  // get string account user 
-
+		
+		
 		Cursor csr = sqldbase.query(DBHelper.USER_TABLE,
 				new String[] { DBHelper.USERS_ID }, DBHelper.USER_EMAIL
 						+ " = '" + accountsUser + "'", null, null, null, null);

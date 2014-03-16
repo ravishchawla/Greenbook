@@ -28,7 +28,7 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
-public class TransactionsFragment extends BaseFragment
+public class TransactionsFragment extends BaseFragment implements DataFragmentInterface
 {
 
 	private ListView list;
@@ -56,6 +56,17 @@ public class TransactionsFragment extends BaseFragment
 
 	}
 
+	@Override
+	public void refresh(int mode)
+	{
+		// TODO Auto-generated method stub
+		
+		updateData();
+		
+		
+	}
+	
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState)
@@ -517,5 +528,7 @@ public class TransactionsFragment extends BaseFragment
 				+ accountID + "'", null);
 
 	}
+
+
 
 }
