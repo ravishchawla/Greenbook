@@ -9,14 +9,18 @@ import java.util.Vector;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,16 +37,19 @@ public class TransactionsActivity extends BaseActivity implements
 
 	private FragmentPagerAdapter pageAdapter;
 	private ViewPager viewpager;
-	private AccountsFragment accountsFragment;
 	private TransactionsFragment transactionFragment;
 	private ActionBar actionBar;
 	protected int userID;
-	protected int accountID;
+	protected int accountID = -1;
 	protected String accountName;
+	public Cursor navCursor;
+	public SimpleCursorAdapter navAdap;
 	private ListView navList;
 	private DrawerLayout navigationDrawer;
-	// private TabsPageAdapter tabsPageAdapter;
+	private ActionBarDrawerToggle actionToggle;
 	
+	// private TabsPageAdapter tabsPageAdapter;
+
 	int spendingMode;
 	String SPENDING_TAG;
 	String TRANSACTIONS_TAG;
@@ -66,8 +73,13 @@ public class TransactionsActivity extends BaseActivity implements
 
 	}
 
+	public void query()
+	{
+		navCursor = DBDriver.GET_ALL_ACCOUNT_INFO(userID, DBHelper.ACCOUNT_ID);
+	}
+	
 	/**
-	 * @param savedinstancestate
+	 * @param savedInstanceState
 	 * @return void we call this method to initalize this activity
 	 */
 	@Override
@@ -81,41 +93,65 @@ public class TransactionsActivity extends BaseActivity implements
 		Bundle extras = getIntent().getExtras(); // get intent bundle extras
 
 		userID = extras.getInt("User ID");
-		accountID = extras.getInt("Account ID");
 		viewpager = (ViewPager) findViewById(R.id.transactoins_viewpager);
 
+		navCursor = DBDriver.GET_DEFAULT_CURRENCY(userID);
+		navCursor.moveToFirst();
+		Vars.DEF_CURRENT_ID = navCursor.getInt(0);
+		navCursor = DBDriver.GET_CURRENCY(navCursor.getInt(0));
+		navCursor.moveToFirst();
+		Vars.DEF_CURRENCY_SYMBOL = navCursor.getString(2);
+		Vars.DEF_CURRENCY_TICKER = navCursor.getString(1);
 		// initializePaging();
 
-		navList = (ListView)findViewById(R.id.navigation_drawer);
-		navigationDrawer = (DrawerLayout)findViewById(R.id.drawer_layout);
-		
-		
-		
-				
-		
-		
-		
-		
-		
-		String from[] = { DBHelper.ACCOUNT_NAME};
-		int to[] = { R.id.drawer_textView};
+		actionBar = getActionBar(); // get action bar
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		// actionBar.setDisplayShowTitleEnabled(true); // enabled display show
 
-		final Cursor csr = DBDriver.GET_ALL_ACCOUNT_INFO(userID, DBHelper.ACCOUNT_ID);
+		actionBar.setDisplayHomeAsUpEnabled(true);
+		actionBar.setHomeButtonEnabled(true);
 
-		Log.i("TAG", "Cursor Adap = null: " + csr.getCount());
-		Log.i("Trans", DatabaseUtils.dumpCursorToString(csr));
-		if (csr.getCount() != 0)
+		navList = (ListView) findViewById(R.id.navigation_drawer);
+		navigationDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+		actionToggle = new ActionBarDrawerToggle(this, navigationDrawer,
+				R.drawable.ic_drawer, R.string.open_drawer,
+				R.string.close_drawer)
 		{
-			csr.moveToFirst();
-			SimpleCursorAdapter adap = new SimpleCursorAdapter(getApplicationContext(),
-					R.layout.drawer_item, csr, from, to);
 
-			
-			
-			navList.setAdapter(adap);
+			public void onDrawerClosed(View view)
+			{
+				invalidateOptionsMenu();
+			}
+
+			public void onDrawerOpened(View view)
+			{
+				invalidateOptionsMenu();
+			}
+
+		};
+
+		navigationDrawer.setDrawerListener(actionToggle);
+
+		String from[] = { DBHelper.ACCOUNT_NAME };
+		int to[] = { R.id.drawer_textView };
+
+		query();
+
+		Log.i("TAG", "Cursor Adap = null: " + navCursor.getCount());
+		Log.i("Trans", DatabaseUtils.dumpCursorToString(navCursor));
+		if (navCursor.getCount() != 0)
+		{
+			navCursor.moveToFirst();
+			navAdap = new SimpleCursorAdapter(
+					getApplicationContext(), R.layout.drawer_item, navCursor, from,
+					to);
+
+			navList.setAdapter(navAdap);
 		}
-		
-		navList.setOnItemClickListener(new OnItemClickListener(){
+
+		navList.setOnItemClickListener(new OnItemClickListener()
+		{
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int pos,
@@ -125,11 +161,13 @@ public class TransactionsActivity extends BaseActivity implements
 				TransactionsFragment transactionsFragment = (TransactionsFragment) getSupportFragmentManager()
 						.findFragmentByTag(TRANSACTIONS_TAG);
 
+				SpendingReportsFragment spendingFragment = (SpendingReportsFragment) getSupportFragmentManager()
+						.findFragmentByTag(SPENDING_TAG);
+
+				accountID = (int) id;
 				
-				SpendingReportsFragment spendingFragment = (SpendingReportsFragment)getSupportFragmentManager().findFragmentByTag(SPENDING_TAG);
 				
-				accountID = (int)id;
-				
+
 				Cursor caeser = DBDriver.ACCOUNT_NAME_FROM_ID(accountID);
 				String titleText = "Transactions";
 				if (caeser.getCount() != 0)
@@ -138,35 +176,24 @@ public class TransactionsActivity extends BaseActivity implements
 					accountName = caeser.getString(0);
 
 				}
-				
-				
-				Toast.makeText(getApplicationContext(), "Switching Class to: " + accountName, Toast.LENGTH_LONG).show();
+
+				Toast.makeText(getApplicationContext(),
+						"Switching Class to: " + accountName, Toast.LENGTH_LONG)
+						.show();
 				transactionsFragment.query(accountID, userID);
 				transactionsFragment.refreshList();
-				
+
 				spendingFragment.query();
 				spendingFragment.refreshList();
 				spendingFragment.refreshGraph();
-				
+
 				navigationDrawer.closeDrawer(navList);
-				
+
 			}
-			
-			
-			
+
 		});
-		
-		//navList.setAdapter(mAdapter);
-		
-		actionBar = getActionBar(); // get action bar
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-		actionBar.setDisplayShowTitleEnabled(true); // enabled display show
-		
-		actionBar.setDisplayHomeAsUpEnabled(true);
-		actionBar.setHomeButtonEnabled(true);
-		
 
-
+		// navList.setAdapter(mAdapter);
 
 		Utility.dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
 				Locale.getDefault());
@@ -270,7 +297,7 @@ public class TransactionsActivity extends BaseActivity implements
 		});
 
 		viewpager.setAdapter(pageAdapter);
-		actionBar.setHomeButtonEnabled(false);
+	//	actionBar.setHomeButtonEnabled(false);
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
 		actionBar.addTab(actionBar.newTab().setText("Transactions")
@@ -278,9 +305,39 @@ public class TransactionsActivity extends BaseActivity implements
 		actionBar.addTab(actionBar.newTab().setText("Spending Report")
 				.setTabListener(this));
 
+		new Handler().postDelayed(new Runnable()
+		{
+
+			@Override
+			/**
+			 * @return void 
+			 */
+			public void run()
+			{
+
+				navigationDrawer.openDrawer(navList);
+
+			}
+
+		}, 1000);
+
 	}
 
+	@Override
+	protected void onResume()
+	{
+		// TODO Auto-generated method stub
+	
+		query();
+		navAdap.changeCursor(navCursor);
+		navAdap.notifyDataSetChanged();
+		
+		super.onResume();
+	}
+	
+	
 	/**
+	 * 
 	 * @param menu
 	 * @return boolean we use this method to create option menu
 	 */
@@ -288,6 +345,11 @@ public class TransactionsActivity extends BaseActivity implements
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
 
+		if(navigationDrawer.isDrawerOpen(navList))
+			getMenuInflater().inflate(R.menu.menu_drawer, menu);
+		
+		else{
+		
 		// TODO Auto-generated method stub
 		Log.i("Debug", "Create");
 		if (getActionBar().getSelectedNavigationIndex() == 0)
@@ -298,7 +360,7 @@ public class TransactionsActivity extends BaseActivity implements
 			getMenuInflater().inflate(R.menu.menu_spending, menu);
 
 		// submenu.add("Stranger").setIcon(R.drawable.content_forgot);
-
+		}
 		// }
 
 		return super.onCreateOptionsMenu(menu);
@@ -306,7 +368,7 @@ public class TransactionsActivity extends BaseActivity implements
 
 	/**
 	 * @return boolean
-	 * @param iten
+	 * @param item
 	 *            we use this method to select items
 	 */
 	@Override
@@ -314,37 +376,89 @@ public class TransactionsActivity extends BaseActivity implements
 	{
 		// TODO Auto-generated method stub
 
-		if (viewpager.getCurrentItem() == 0)
-		{
+		TransactionsFragment transactionsFragment = (TransactionsFragment) getSupportFragmentManager()
+				.findFragmentByTag(TRANSACTIONS_TAG);
 
-			transactionFragment.addTransaction();
+		if (actionToggle.onOptionsItemSelected(item))
+		{
+			return true;
+		}
+
+		if(item.getItemId() == R.id.drawer_edit)
+		{
+			Intent accounts = new Intent(getApplicationContext(), AccountsFragment.class);
+			accounts.putExtra("User ID", userID);
+			startActivity(accounts);
+		}
+		
+		if (item.getItemId() == R.id.accounts_settings)
+		{
+			Intent settings = new Intent(getApplicationContext(),
+					SettingsActivity.class);
+			settings.putExtra("User ID", userID);
+			startActivity(settings);
+
+			return super.onOptionsItemSelected(item);
+		}
+		if (item.getItemId() == R.id.transactions_add)
+		{
+		
+			if(accountID == -1)
+				Toast.makeText(getApplicationContext(), "Please Select an account from the sidebar", Toast.LENGTH_LONG).show();
+			
+			else
+				transactionsFragment.addTransaction();
+
+			return super.onOptionsItemSelected(item);
 		}
 
 		SpendingReportsFragment spendingFragment = (SpendingReportsFragment) getSupportFragmentManager()
 				.findFragmentByTag(SPENDING_TAG);
 
 		if (item.getItemId() == R.id.spending_view_type)
+		{
+
+			if (item.isChecked())
 			{
-			
-			if(item.isChecked())
-				{
 				item.setIcon(R.drawable.content_graph);
-				
+
 				spendingFragment.displayView(1);
 				item.setChecked(false);
-				}
+			}
 			else
 			{
 				item.setIcon(R.drawable.content_list);
-				
+
 				spendingFragment.displayView(0);
 				item.setChecked(true);
 			}
-			
-			}
+
+			return super.onOptionsItemSelected(item);
+
+		}
 
 		return super.onOptionsItemSelected(item);
+
 	}
+
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState)
+	{
+
+		super.onPostCreate(savedInstanceState);
+		actionToggle.syncState();
+
+	};
+
+	@Override
+	public void onConfigurationChanged(
+			android.content.res.Configuration newConfig)
+	{
+
+		super.onConfigurationChanged(newConfig);
+		actionToggle.onConfigurationChanged(newConfig);
+
+	};
 
 	public void setSpendingReportTag(String tag)
 	{
@@ -360,12 +474,12 @@ public class TransactionsActivity extends BaseActivity implements
 	{
 		TRANSACTIONS_TAG = tag;
 	}
-	
+
 	public String getTransactionTag()
 	{
 		return TRANSACTIONS_TAG;
 	}
-	
+
 	/**
 	 * @return void we use this method to initialize age
 	 */

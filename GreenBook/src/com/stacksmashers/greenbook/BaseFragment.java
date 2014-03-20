@@ -6,9 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.parse.Parse;
-import com.parse.ParseAnalytics;
-import com.parse.ParseObject;
+
 
 /**
  * 
@@ -55,7 +53,7 @@ public class BaseFragment extends android.support.v4.app.Fragment
 	}
 	
 	/**
-	 * @param messege
+	 * @param message
 	 * @return void
 	 * we use this method to log string messege  
 	 */

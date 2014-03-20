@@ -20,7 +20,7 @@ public class VerifyEmail extends BaseActivity
 {
 
 /**
- * @param savedinstance state
+ * @param savedInstanceState
  * @return void 
  */
 	@Override

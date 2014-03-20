@@ -24,6 +24,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String USER_EMAIL = "USER_EMAIL";
 	public static final String USER_PIC = "USER_PIC";
 	public static final String USER_PASS = "USER_PASS";
+	public static final String USER_CURRENCY = "USER_CURRENCY";
 	
 	public static final String ACCOUNT_TABLE = "ACCOUNTS";
 	public static final String ACCOUNT_ID = ACCOUNT_TABLE + "._id";
@@ -31,7 +32,6 @@ public class DBHelper extends SQLiteOpenHelper {
 	public static final String ACCOUNT_USER = "ACCOUNT_USER";
 	public static final String ACCOUNT_BALANCE= "ACCOUNT_BALANCE";
 	public static final String ACCOUNT_INTEREST = "ACCOUNT_INTEREST";
-	public static final String ACCOUNT_COLOR = "ACCOUNT_COLOR";
 	public static final String ACCOUNT_BANK = "ACCOUNT_BANK";
 	
 	public static final String TRANSACTION_TABLE = "TRANSACTIONS";
@@ -46,8 +46,20 @@ public class DBHelper extends SQLiteOpenHelper {
 	public static final String TRANSACTION_CATEGORY = "TRANSACTION_CATEGORY";
 	public static final String TRANSACTION_POSTED = "TRANSACTION_POSTED";
 	public static final String TRANSACTION_AFFECTED = "TRANSACTION_AFFECTED";
+
+	
+	public static final String CURRENCY_TABLE = "CURRENCIES";
+	public static final String CURRENCY_ID = CURRENCY_TABLE + "._id";
+	public static final String CURRENCY_NAME = "CURRENCY_NAME";
+	public static final String CURRENCY_TICKER = "CURRENCY_TICKER";
+	public static final String CURRENCY_SYMBOL = "CURRENCY_SYMBOL";
+	public static final String CURRENCY_VALUE = "CURRENCY_VALUE";
 	
 	
+	public static String createUserTable;
+	public static String createAccountsTable;
+	public static String createTransactionsTable;
+	public static String createCurrencyTable;
 	
 
 	public static final String TAG = "DBHelper";
@@ -83,18 +95,18 @@ public class DBHelper extends SQLiteOpenHelper {
 		// TODO Auto-generated method stub
 		
 		//Queries for creating the four tables
-		final String createUserTable = "CREATE TABLE " + USER_TABLE + "( " + _id + " INTEGER PRIMARY KEY AUTOINCREMENT," + 
+		createUserTable = "CREATE TABLE " + USER_TABLE + "( " + _id + " INTEGER PRIMARY KEY AUTOINCREMENT," + 
 																						  USER_TYPE + " TEXT," +
 																						  USER_NAME + " TEXT," +
 																						  USER_EMAIL + " TEXT," +
 																						  USER_PIC + " TEXT," +
-																						  USER_PASS + " TEXT" + ");";
+																						  USER_PASS + " TEXT," + 
+																						  USER_CURRENCY + " INTEGER" + ");";
 		
-		final String createAccountTable = "CREATE TABLE " + ACCOUNT_TABLE + "( " + _id + " INTEGER PRIMARY KEY AUTOINCREMENT," + 
+		createAccountsTable = "CREATE TABLE " + ACCOUNT_TABLE + "( " + _id + " INTEGER PRIMARY KEY AUTOINCREMENT," + 
 																						  ACCOUNT_USER + " INTEGER," + 
 				                                                                          ACCOUNT_NAME + " TEXT," + 
 																						  ACCOUNT_BALANCE + " INTEGER," +
-				                                                                          ACCOUNT_COLOR + " TEXT," +
 				                                                                          ACCOUNT_BANK + " TEXT," +
 				                                                                          ACCOUNT_INTEREST + " TEXT," +
 																						  "FOREIGN KEY(" + ACCOUNT_USER + ") REFERENCES " + USER_TABLE + "(" + _id + ") ON DELETE CASCADE" +
@@ -102,7 +114,7 @@ public class DBHelper extends SQLiteOpenHelper {
 		
 		
 					
-		final String createTransactionTable = "CREATE TABLE " + TRANSACTION_TABLE + "( " + _id + " INTEGER PRIMARY KEY AUTOINCREMENT," + 
+		createTransactionsTable = "CREATE TABLE " + TRANSACTION_TABLE + "( " + _id + " INTEGER PRIMARY KEY AUTOINCREMENT," + 
 		                                                                                  TRANSACTION_USER + " INTEGER," + 
 		                                                                                  TRANSACTION_ACCOUNT + " INTEGER," + 
 		                                                                                  TRANSACTION_ACCOUNT_NAME + " TEXT," +
@@ -116,15 +128,34 @@ public class DBHelper extends SQLiteOpenHelper {
 		                                                               				      "FOREIGN KEY(" + TRANSACTION_USER + ") REFERENCES " + USER_TABLE + "(" + _id + ") ON DELETE CASCADE," +
 		                                                            				      "FOREIGN KEY(" + TRANSACTION_ACCOUNT + ") REFERENCES " + ACCOUNT_TABLE + "(" + _id + ") ON DELETE CASCADE" +");";
 		
+		createCurrencyTable = "CREATE TABLE " + CURRENCY_TABLE + "( " + _id + " INTEGER PRIMARY KEY AUTOINCREMENT," + 
+				  CURRENCY_NAME + " TEXT," +
+				  CURRENCY_TICKER + " TEXT," +
+				  CURRENCY_SYMBOL + " TEXT," +
+				  CURRENCY_VALUE + " INTEGER" +
+				  ");";
+ 
 		
 	
 		Log.i(TAG,"SQL Statements created");
 		dbse.execSQL(createUserTable);          //create use table 
-		dbse.execSQL(createAccountTable);       // create account table 
-		dbse.execSQL(createTransactionTable);   // create transaction table 
+		dbse.execSQL(createAccountsTable);       // create account table 
+		dbse.execSQL(createTransactionsTable);   // create transaction table 
+		dbse.execSQL(createCurrencyTable);
 
 	}
+	
+	
+	public static void exec()
+	{
+		createCurrencyTable = "CREATE TABLE " + CURRENCY_TABLE + "( " + _id + " INTEGER PRIMARY KEY AUTOINCREMENT," + 
+				  CURRENCY_NAME + " TEXT," +
+				  CURRENCY_TICKER + " TEXT," +
+				  CURRENCY_SYMBOL + " TEXT," +
+				  CURRENCY_VALUE + " INTEGER" +
+				  ");";
 
+	}
 
 	@Override
 	/**

@@ -29,17 +29,15 @@ public class TransactionsFragment extends BaseFragment implements
 {
 
 	private ListView list;
-	private HomeActivity home;
 	private TransactionsActivity trans;
 	private int userID;
-	private String currency;
-	private boolean isHome = false;
+	
 	private int accountID;
 	private String accountName;
 	private TextView totalBalance;
 	private Cursor dataCursor;
 	private SimpleCursorAdapter listAdapter;
-	
+
 	public TransactionsFragment()
 	{
 		// TODO Auto-generated constructor stub
@@ -60,6 +58,7 @@ public class TransactionsFragment extends BaseFragment implements
 		// TODO Auto-generated method stub
 
 		updateData();
+		
 
 	}
 
@@ -74,29 +73,13 @@ public class TransactionsFragment extends BaseFragment implements
 		View view = inflater.inflate(R.layout.fragment_transactions, container,
 				false);// calling activity register
 
-
-		
 		list = (ListView) view.findViewById(R.id.transactions_list);
 
-		if (getActivity() instanceof HomeActivity)
-		{
-
-			home = (HomeActivity) getActivity();
-			userID = home.userID;
-			currency = home.currency;
-			isHome = true;
-
-		}
-		else
-		{
-			((TransactionsActivity)getActivity()).setTransactionTag(getTag());
-			trans = (TransactionsActivity) getActivity();
-			userID = trans.userID;
-			currency = trans.currency;
-			isHome = false;
-			accountID = trans.accountID;
-			accountName = trans.accountName;
-		}
+		((TransactionsActivity) getActivity()).setTransactionTag(getTag());
+		trans = (TransactionsActivity) getActivity();
+		userID = trans.userID;
+		accountID = trans.accountID;
+		accountName = trans.accountName;
 
 		totalBalance = (TextView) view
 				.findViewById(R.id.transactions_total_balance);
@@ -106,58 +89,45 @@ public class TransactionsFragment extends BaseFragment implements
 		return view;
 	}
 
-	
 	public void query(int accountID, int userID)
 	{
 		dataCursor = DBDriver.GET_ACCOUNT_TRANSACTIONS(accountID, userID);
 		dataCursor.moveToFirst();
-		
+
 		Log.i("Trans", DatabaseUtils.dumpCursorToString(dataCursor));
 	}
-	
+
 	public void refreshList()
 	{
 		listAdapter.changeCursor(dataCursor);
 		listAdapter.notifyDataSetChanged();
 	}
-	
+
 	/**
 	 * @return void we use this method to updatedata
 	 */
 	public void updateData()
 	{
-		if (isHome)
-			totalBalance.setText(currency + getBalanceSum(userID));
-		else
-			totalBalance.setText(currency + getBalance(userID, accountID));
+		totalBalance.setText(Vars.DEF_CURRENCY_SYMBOL + getBalance(userID, accountID));
 
 		Log.i("calling", "updated data");
-		
+
 		query(accountID, userID);
-		
-		if (isHome)
-			dataCursor = DBDriver.GET_ACCOUNT_TRANSACTIONS(0, userID);
-		else
-			dataCursor = DBDriver.GET_ACCOUNT_TRANSACTIONS(accountID, userID);
 
-		
-		if (dataCursor.getCount() == 0)
-			return;
+		dataCursor = DBDriver.GET_ACCOUNT_TRANSACTIONS(accountID, userID);
 
-		
 		String[] from = { DBHelper.TRANSACTION_VALUE };
 		int[] to = { R.id.transaction_balancew };
 
 		listAdapter = new SimpleCursorAdapter(getActivity(), // call new
-														// simplecursoradapter
-														// from adap
+				// simplecursoradapter
+				// from adap
 				R.layout.transactions_list_block, dataCursor, from, to)
 		{
 
-
 			/**
 			 * @param position
-			 * @param convertview
+			 * @param convertView
 			 * @param parent
 			 *            this method displays the data to data set
 			 */
@@ -169,7 +139,6 @@ public class TransactionsFragment extends BaseFragment implements
 				View v = super.getView(position, convertView, parent);
 				ImageView image = (ImageView) v
 						.findViewById(R.id.transactions_total_icon);
-				
 
 				TextView title = (TextView) v
 						.findViewById(R.id.transaction_title);
@@ -180,10 +149,10 @@ public class TransactionsFragment extends BaseFragment implements
 				if (balances > 0) // balances less than 0
 				{
 
-					title.setText("Deposit " + currency + balances);
+					title.setText("Deposit " + Vars.DEF_CURRENCY_SYMBOL + balances);
 
-					descriptio.setText(" For " + dataCursor.getString(4) + " on: "
-							+ dataCursor.getString(7));
+					descriptio.setText(" For " + dataCursor.getString(4)
+							+ " on: " + dataCursor.getString(7));
 
 					image.setImageDrawable(getResources().getDrawable(
 							R.drawable.content_positive));
@@ -192,10 +161,10 @@ public class TransactionsFragment extends BaseFragment implements
 				else
 				{
 
-					title.setText("Withraw " + currency + ((-1) * balances));
+					title.setText("Withraw " + Vars.DEF_CURRENCY_SYMBOL + ((-1) * balances));
 
-					descriptio.setText(" For " + dataCursor.getString(6) + " on: "
-							+ dataCursor.getString(7));
+					descriptio.setText(" For " + dataCursor.getString(6)
+							+ " on: " + dataCursor.getString(7));
 
 					image.setImageDrawable(getResources().getDrawable(
 							R.drawable.content_negative));
@@ -234,10 +203,7 @@ public class TransactionsFragment extends BaseFragment implements
 		final Spinner spinner = (Spinner) view
 				.findViewById(R.id.transactions_account_select);
 
-		if (!isHome)
-			spinner.setVisibility(View.GONE);
-		else
-			spinner.setVisibility(View.VISIBLE);
+		spinner.setVisibility(View.GONE);
 
 		String[] from = { DBHelper.ACCOUNT_NAME };
 		int[] to = { android.R.id.text1 };
@@ -293,6 +259,9 @@ public class TransactionsFragment extends BaseFragment implements
 									int which)
 							{
 								// TODO Auto-generated method stub
+								
+								
+								
 
 							}
 
@@ -350,7 +319,6 @@ public class TransactionsFragment extends BaseFragment implements
 						boolean checked = whichSwitch.isChecked();
 
 						// TODO Auto-generated method stub
-						
 
 						boolean exit_now = false;
 
@@ -381,7 +349,7 @@ public class TransactionsFragment extends BaseFragment implements
 							return;
 						}
 
-						Integer balance = Integer.parseInt(balanceText
+						Double balance = Double.parseDouble(balanceText
 								.getText().toString());
 
 						Cursor caeser = DBDriver.GET_ACCOUNT_FROM_ID(spinner
@@ -393,9 +361,6 @@ public class TransactionsFragment extends BaseFragment implements
 							accountName = caeser.getString(0);
 
 						}
-
-						if (isHome)
-							accountID = (int) spinner.getSelectedItemId();
 
 						Date date = new Date();
 						Log.i("date == null", "" + (date == null));
@@ -456,14 +421,14 @@ public class TransactionsFragment extends BaseFragment implements
 	}
 
 	/**
-	 * @param userid
+	 * @param userId
 	 * @return int we use this method to getblanace sum
 	 */
 	public int getBalanceSum(int userId)
 	{
-		
+
 		Cursor caeser = DBDriver.GET_ACCOUNTS_IDS_FOR_USER(userID);
-		
+
 		int sum = 0;
 
 		if (caeser.getCount() != 0)
@@ -483,27 +448,32 @@ public class TransactionsFragment extends BaseFragment implements
 		return sum; // return sum
 
 	}
+	
+	
+	@Override
+	public void onResume()
+	{
+		// TODO Auto-generated method stub
+		super.onResume();
+	
+		totalBalance.setText(Vars.DEF_CURRENCY_SYMBOL + getBalance(userID, accountID));
+	
+	}
 
 	/**
 	 * @param userID
-	 * @param account
+	 * @param accountID
 	 *            ID
-	 * @param change
+	 * @param balance
 	 * @eturn void we use this method to fix the balance
 	 * 
 	 */
-	public void fixBalance(int userID, int accountID, int change)
+	public void fixBalance(int userID, int accountID, Double balance)
 	{
 
 		Cursor caeser = DBDriver.GET_ACCOUNT_BALANCE(userID, accountID);
 		int bal = getBalance(userID, accountID);
-		bal += change;
-
-		
-												
-		
-
-		
+		bal += balance;
 
 	}
 

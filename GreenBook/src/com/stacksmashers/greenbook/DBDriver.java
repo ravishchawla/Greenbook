@@ -1,5 +1,6 @@
 package com.stacksmashers.greenbook;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import android.content.ContentValues;
@@ -19,6 +20,14 @@ public class DBDriver
 
 		dbase = new DBHelper(context);
 		sqldbase = dbase.getWritableDatabase();
+
+		// sqldbase.execSQL("DROP TABLE " + DBHelper.CURRENCY_TABLE);
+		// DBHelper.exec();
+		// sqldbase.execSQL(DBHelper.createCurrencyTable);
+
+		
+	//	sqldbase.execSQL("ALTER TABLE " + DBHelper.USER_TABLE + " ADD " + DBHelper.USER_CURRENCY + " INTEGER");
+		
 	}
 
 	/**
@@ -55,11 +64,11 @@ public class DBDriver
 
 	}
 
-	public static Cursor GET_USER_FROM_ACCOUNt(String accountsUser)
+	public static Cursor GET_USER_ID_FROM_EMAIL(String email)
 	{
 		Cursor cursor = sqldbase.query(DBHelper.USER_TABLE,
 				new String[] { DBHelper.USERS_ID }, DBHelper.USER_EMAIL
-						+ " = '" + accountsUser + "'", null, null, null, null);
+						+ " = '" + email + "'", null, null, null, null);
 
 		return cursor;
 	}
@@ -175,13 +184,13 @@ public class DBDriver
 		sqldbase.insert(DBHelper.TRANSACTION_TABLE, null, cValues);
 	}
 
-	public static void INSERT_DEPOSIT(String SOURCE, int VALUE, int USERID,
+	public static void INSERT_DEPOSIT(String SOURCE, Double balance, int USERID,
 			String ACCOUNT_NAME, int ACCOUNTSID)
 	{
 		ContentValues cValues = new ContentValues();
 		cValues.put(DBHelper.TRANSACTION_DEPOSIT_SOURCE, SOURCE);
 
-		cValues.put(DBHelper.TRANSACTION_VALUE, VALUE);
+		cValues.put(DBHelper.TRANSACTION_VALUE, balance);
 		cValues.put(DBHelper.TRANSACTION_USER, USERID);
 		cValues.put(DBHelper.TRANSACTION_ACCOUNT_NAME, ACCOUNT_NAME);
 		cValues.put(DBHelper.TRANSACTION_ACCOUNT, ACCOUNTSID);
@@ -193,13 +202,13 @@ public class DBDriver
 	}
 
 	public static void INSERT_WITHRAWAL(String CATEGORY, String REASON,
-			int VALUE, int USERID, String ACCOUNT_NAME, int ACCOUNTSID)
+			Double balance, int USERID, String ACCOUNT_NAME, int ACCOUNTSID)
 	{
-		VALUE = (-1) * VALUE;
+		balance = (-1) * balance;
 		ContentValues cValues = new ContentValues();
 		cValues.put(DBHelper.TRANSACTION_CATEGORY, CATEGORY);
 		cValues.put(DBHelper.TRANSACTION_WITHRAWAL_REASON, REASON);
-		cValues.put(DBHelper.TRANSACTION_VALUE, VALUE);
+		cValues.put(DBHelper.TRANSACTION_VALUE, balance);
 		cValues.put(DBHelper.TRANSACTION_USER, USERID);
 		cValues.put(DBHelper.TRANSACTION_ACCOUNT_NAME, ACCOUNT_NAME);
 		cValues.put(DBHelper.TRANSACTION_ACCOUNT, ACCOUNTSID);
@@ -246,60 +255,154 @@ public class DBDriver
 
 	}
 
-	public static void INSERT_USER(String USER_NAME, String USER_EMAIL, String USER_PASS, String USER_TYPE)
+	public static void INSERT_USER(String USER_NAME, String USER_EMAIL,
+			String USER_PASS, String USER_TYPE, int USER_CURRENCY)
 	{
 		ContentValues cValues = new ContentValues();
 		cValues.put(DBHelper.USER_NAME, USER_NAME);
 		cValues.put(DBHelper.USER_EMAIL, USER_EMAIL);
 		cValues.put(DBHelper.USER_PASS, USER_PASS);
 		cValues.put(DBHelper.USER_TYPE, USER_TYPE);
-		
+		cValues.put(DBHelper.USER_CURRENCY, USER_CURRENCY);
 		sqldbase.insert(DBHelper.USER_TABLE, null, cValues);
 	}
-	
-	public static Cursor CHECK_FOR_DUPLICATE_ACCOUNTS(int USERID, String ACCOUNTS_NAME)
+
+	public static Cursor CHECK_FOR_DUPLICATE_ACCOUNTS(int USERID,
+			String ACCOUNTS_NAME)
 	{
-	
+
 		Cursor cursor = sqldbase.query(DBHelper.ACCOUNT_TABLE,
-				new String[] { DBHelper.ACCOUNT_NAME },
-				DBHelper.ACCOUNT_USER + " = '" + USERID
-						+ "' AND " + DBHelper.ACCOUNT_NAME
-						+ " = '"
-						+ ACCOUNTS_NAME + "'",
-				null, null, null, null);
+				new String[] { DBHelper.ACCOUNT_NAME }, DBHelper.ACCOUNT_USER
+						+ " = '" + USERID + "' AND " + DBHelper.ACCOUNT_NAME
+						+ " = '" + ACCOUNTS_NAME + "'", null, null, null, null);
 
 		return cursor;
-		
+
 	}
-	
-	public static void INSERT_ACCOUNT(String ACCOUNT_NAME, String ACCOUNT_BALANCE, String ACCOUNT_BANK,  String ACCOUNT_COLOR, int ACCOUNT_USER, String ACCOUNT_INTEREST)
+
+	public static void INSERT_ACCOUNT(String ACCOUNT_NAME,
+			String ACCOUNT_BALANCE, String ACCOUNT_BANK,
+			int ACCOUNT_USER)
 	{
 		ContentValues cValues = new ContentValues();
 		cValues.put(DBHelper.ACCOUNT_NAME, ACCOUNT_NAME);
 		cValues.put(DBHelper.ACCOUNT_BALANCE, ACCOUNT_BALANCE);
 		cValues.put(DBHelper.ACCOUNT_BANK, ACCOUNT_BANK);
-		cValues.put(DBHelper.ACCOUNT_COLOR, ACCOUNT_COLOR);
-				
 		cValues.put(DBHelper.ACCOUNT_USER, ACCOUNT_USER);
-		
 		sqldbase.insert(DBHelper.ACCOUNT_TABLE, null, cValues);
-		
-		
+
 	}
 	
+	public static void INSERT_ACCOUNT(String ACCOUNT_NAME,
+			String ACCOUNT_BALANCE, String ACCOUNT_BANK,
+			int ACCOUNT_USER, String ACCOUNT_INTEREST)
+	{
+		ContentValues cValues = new ContentValues();
+		cValues.put(DBHelper.ACCOUNT_NAME, ACCOUNT_NAME);
+		cValues.put(DBHelper.ACCOUNT_BALANCE, ACCOUNT_BALANCE);
+		cValues.put(DBHelper.ACCOUNT_BANK, ACCOUNT_BANK);
+		cValues.put(DBHelper.ACCOUNT_USER, ACCOUNT_USER);
+		cValues.put(DBHelper.ACCOUNT_INTEREST, ACCOUNT_INTEREST);
+		sqldbase.insert(DBHelper.ACCOUNT_TABLE, null, cValues);
+
+	}
+
 	public static Cursor GET_ALL_ACCOUNT_INFO(int USERID, String SORT)
 	{
 		String query[] = { DBHelper.ACCOUNT_ID, DBHelper.ACCOUNT_NAME,
-				DBHelper.ACCOUNT_BANK, DBHelper.ACCOUNT_BALANCE,
-				DBHelper.ACCOUNT_COLOR };
-		
-		 Cursor cursor = sqldbase.query(DBHelper.ACCOUNT_TABLE, query,
+				DBHelper.ACCOUNT_BANK, DBHelper.ACCOUNT_BALANCE};
+
+		Cursor cursor = sqldbase.query(DBHelper.ACCOUNT_TABLE, query,
 				DBHelper.ACCOUNT_USER + " = '" + USERID + "'", null, null,
 				null, SORT);
+
+		return cursor;
+
+	}
+
+	public static Cursor GET_DEFAULT_CURRENCY(int userid)
+	{
+		
+		Cursor cursor = sqldbase.query(DBHelper.USER_TABLE, new String[] { DBHelper.USER_CURRENCY }, DBHelper.USERS_ID + " = '" + userid + "'", null,null,null,null);
 		
 		return cursor;
 
 	}
 
+	public static void UPDATE_CURRENCIES(ArrayList<Double> exchangeValues)
+	{
+		ContentValues cValues = new ContentValues();
+
+		int key = 1;
+
+		for (Double d : exchangeValues)
+		{
+			cValues.clear();
+			cValues.put(DBHelper.CURRENCY_VALUE, d);
+			sqldbase.update(DBHelper.CURRENCY_TABLE, cValues,
+					DBHelper.CURRENCY_ID + " = '" + key + "'", null);
+
+			key++;
+
+		}
+
+	}
+
+	public static void UPDATE_DEFAULT_CURRENCY(int user_id, int currency)
+	{
+		ContentValues cValues = new ContentValues();
+		cValues.put(DBHelper.USER_CURRENCY, currency);
+		sqldbase.update(DBHelper.USER_TABLE, cValues, DBHelper.USERS_ID + " = '" + user_id + "'", null);
+		
+	}
 	
+	
+	public static Cursor GET_ALL_CURRENCIES()
+	{
+		Cursor cursor = sqldbase.query(DBHelper.CURRENCY_TABLE, new String[] {
+				DBHelper.CURRENCY_NAME, DBHelper.CURRENCY_TICKER,
+				DBHelper.CURRENCY_SYMBOL, DBHelper.CURRENCY_VALUE , DBHelper.CURRENCY_ID},
+				null, null, null, null, null);
+		return cursor;
+	}
+	
+	public static Cursor GET_CURRENCY(int currency_id)
+	{
+		Cursor cursor = sqldbase.query(DBHelper.CURRENCY_TABLE, new String[] {
+				DBHelper.CURRENCY_NAME, DBHelper.CURRENCY_TICKER,
+				DBHelper.CURRENCY_SYMBOL, DBHelper.CURRENCY_VALUE },
+				DBHelper.CURRENCY_ID + " = '" + currency_id + "'", null, null, null, null);
+		return cursor;
+	}
+	
+
+	public static void INSERT_CURRENCY(String name, String ticker, String string)
+	{
+		ContentValues cValues = new ContentValues();
+		cValues.put(DBHelper.CURRENCY_NAME, name);
+		cValues.put(DBHelper.CURRENCY_TICKER, ticker);
+		cValues.put(DBHelper.CURRENCY_SYMBOL, string);
+
+		sqldbase.insert(DBHelper.CURRENCY_TABLE, null, cValues);
+
+	}
+
+	public static void UPDATE_TRANSACTION_VALUES(int user_id, Double double1)
+	{
+
+		// UPDATE TRANSACTION_TABLE Set TRANSACTION_VALUE = TRANSACTION_VALUE *
+		// 3.2 WHERE TRANSACTION_USER = 0
+
+		sqldbase.execSQL("UPDATE " + DBHelper.TRANSACTION_TABLE + " SET "
+				+ DBHelper.TRANSACTION_VALUE + " = "
+				+ DBHelper.TRANSACTION_VALUE + " * " + double1 + " WHERE "
+				+ DBHelper.TRANSACTION_USER + " = " + user_id);
+
+		sqldbase.execSQL("UPDATE " + DBHelper.ACCOUNT_TABLE + " SET "
+				+ DBHelper.ACCOUNT_BALANCE + " = " + DBHelper.ACCOUNT_BALANCE
+				+ " * " + double1 + " WHERE " + DBHelper.ACCOUNT_USER
+				+ " = " + user_id);
+
+	}
+
 }

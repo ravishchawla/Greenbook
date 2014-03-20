@@ -15,6 +15,7 @@
         android:layout_toLeftOf="@+id/nameCheck"
         android:ems="10"
         android:hint="Name"
+        android:inputType="textPersonName"
         android:textColor="#009900"
         android:textColorHint="#C0C0C0" >
 
@@ -52,7 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/register_name"
         android:layout_alignParentRight="true"
-        android:text="✗"
+        android:text="✘"
         android:textAppearance="?android:attr/textAppearanceLarge"
          />
 
@@ -62,7 +63,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/register_username"
         android:layout_alignParentRight="true"
-        android:text="✗"
+        android:text="✘"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
@@ -71,7 +72,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/register_password"
         android:layout_alignParentRight="true"
-        android:text="✗"
+        android:text="✘"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
@@ -81,7 +82,7 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/register_password"
         android:layout_marginTop="19dp"
-        android:text="✗"
+        android:text="✘"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <EditText

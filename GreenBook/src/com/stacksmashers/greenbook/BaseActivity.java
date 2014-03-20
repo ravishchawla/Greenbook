@@ -14,9 +14,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.parse.Parse;
-import com.parse.ParseObject;
-import com.parse.codec.binary.StringUtils;
+
 
 /**
  * 
@@ -27,7 +25,7 @@ import com.parse.codec.binary.StringUtils;
 public class BaseActivity extends FragmentActivity
 {
 
-	String currency = "£";
+	String currency = "ï¿½";
 	public BaseActivity()
 	{
 		// TODO Auto-generated constructor stub
@@ -55,24 +53,11 @@ public class BaseActivity extends FragmentActivity
 		
         //  calling bese context from dbhelper
 
-		Parse.initialize(this, "7003TMIrbLL91cSLNAhVD1dkHK2f6Xx1rtrVUtEY",
-				"UooMQDvQLmMbzI2zsm4yHi1BYCTQFnSuSINL9elv");
-
-		// test the different object
-		ParseObject testObject = new ParseObject("HailCaeser");
-		testObject.put("Caeser", "MarkAnthony");
-
-		ParseObject crestObject = new ParseObject("HailBrutus");
-		crestObject.put("Bruthus", "Romeo");
-
-		// save the activity in background
-		testObject.saveInBackground();
-		crestObject.saveInBackground();
 
 	}
 
 	/**
-	 * @param messege
+	 * @param message
 	 * @return void 
 	 * 
 	 */
@@ -85,7 +70,7 @@ public class BaseActivity extends FragmentActivity
 	 * 
 	 * in this method we notify our user about title, messege and intent
 	 * @param title
-	 * @param messege
+	 * @param message
 	 * @param intent 
 	 */
 	public void NotifyUser(String title, String message, Intent intent)
@@ -128,7 +113,7 @@ public class BaseActivity extends FragmentActivity
 
 	/**
 	 * this method talk about code email for string email 
-	 * @param mail 
+	 * @param email
 	 */
 	public String codeEmail(String email)
 	{

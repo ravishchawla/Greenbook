@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component jdk="Android API 19 Platform" jdk_type="Android SDK">
+	<exclude-output/>
+	<contentEntry url="file://$MODULE_DIR$"/>
+	<lib name="mail.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/libs/mail.jar!/"/>
+	</lib>
+	<lib name="additionnal.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/libs/additionnal.jar!/"/>
+	</lib>
+	<lib name="activation.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/libs/activation.jar!/"/>
+	</lib>
+	<lib name="achartengine-1.1.0.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/libs/achartengine-1.1.0.jar!/"/>
+	</lib>
+	<lib name="android-support-v4.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/libs/android-support-v4.jar!/"/>
+	</lib>
+</component>

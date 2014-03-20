@@ -66,9 +66,9 @@ public class RegisterFragment extends BaseFragment
 	 * called this method to start the activity. Maintain the activity and
 	 * application.
 	 * 
-	 * @param inflamer
+	 * @param inflater
 	 * @param container
-	 * @param savedinstancestate 
+	 * @param savedInstanceState
 	 * @return void
 	 */
 	@Override
@@ -143,7 +143,7 @@ public class RegisterFragment extends BaseFragment
 			/**
 			 * @param s
 			 * @param start
-			 * @param before
+			 * @param after
 			 * @param count
 			 * @return void called this method to notify that, within s, the
 			 *         count characters beginning at start start are about to be
@@ -168,9 +168,9 @@ public class RegisterFragment extends BaseFragment
 				// TODO Auto-generated method stub
 
 				if (name_bool) // if its name
-					name_check.setText("✔"); // use the right check mark
+					name_check.setText(Vars.CHECK); // use the right check mark
 				else
-					name_check.setText("✗"); // use wrong check mark
+					name_check.setText(Vars.CROSS); // use wrong check mark
 
 				if (main.check != null)
 					if (name_bool && email_bool && password_bool
@@ -212,7 +212,7 @@ public class RegisterFragment extends BaseFragment
 					/**
 					 * @param s
 					 * @param start
-					 * @param before
+					 * @param after
 					 * @param count
 					 * @return void called this method to notify that, within s,
 					 *         the count characters beginning at start start are
@@ -238,9 +238,9 @@ public class RegisterFragment extends BaseFragment
 						// TODO Auto-generated method stub
 
 						if (email_bool)
-							email_check.setText("✔");
+							email_check.setText(Vars.CHECK);
 						else
-							email_check.setText("✗");
+							email_check.setText(Vars.CROSS);
 
 						if (main.check != null)
 							if (name_bool && email_bool && password_bool
@@ -256,16 +256,16 @@ public class RegisterFragment extends BaseFragment
 		{
 /**
  * @param arg0
- * @param void
+ *
  * we use this method to change the text 
  */
 			@Override
 			public void afterTextChanged(Editable arg0)
 			{
 				if (checkpassword_bool)
-					checkpassword_check.setText("✔");
+					checkpassword_check.setText(Vars.CHECK);
 				else
-					checkpassword_check.setText("✗");
+					checkpassword_check.setText(Vars.CROSS);
 
 				if (main.check != null)   // main check not null 
 					if (name_bool && email_bool && password_bool
@@ -322,21 +322,21 @@ public class RegisterFragment extends BaseFragment
 
 			/**
 			 * @param arg0
-			 * @param void 
+			 *
 			 */
 			@Override
 			public void afterTextChanged(Editable arg0)
 			{
 
 				if (password_bool)
-					password_check.setText("✔");
+					password_check.setText(Vars.CHECK);
 				else
-					password_check.setText("✗");
+					password_check.setText(Vars.CROSS);
 
 				if (checkpassword_bool)
-					checkpassword_check.setText("✔");
+					checkpassword_check.setText(Vars.CHECK);
 				else
-					checkpassword_check.setText("✗");
+					checkpassword_check.setText(Vars.CROSS);
 
 				if (main.check != null)
 					if (name_bool && email_bool && password_bool
@@ -500,7 +500,7 @@ public class RegisterFragment extends BaseFragment
 	 * called this method to start the regristration activity Maintain the
 	 * regristration activity and application.
 	 * 
-	 * @param view
+	 *
 	 * @return void
 	 */
 
@@ -601,9 +601,6 @@ public class RegisterFragment extends BaseFragment
 			ContextWrapper wrapper = new ContextWrapper(getActivity());
 			File imagesPath = wrapper.getDir("images", Context.MODE_PRIVATE);
 			File filePath = new File(imagesPath, main.normalizeEmail(username));
-			Toast.makeText(getActivity(),
-					"Normalized: " + main.normalizeEmail(username),
-					Toast.LENGTH_LONG).show();
 
 			FileOutputStream output = null;
 
@@ -626,7 +623,7 @@ public class RegisterFragment extends BaseFragment
 				e.printStackTrace();
 			}
 
-			DBDriver.INSERT_USER(name, username, password, main.codeEmail(username));
+			DBDriver.INSERT_USER(name, username, password, main.codeEmail(username), 14);
 			
 			main.NotifyUser("Please verify your Email Address",
 					"Click to open Default Email client",

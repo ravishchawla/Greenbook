@@ -101,7 +101,7 @@ public class LoginFragment extends BaseFragment
 					/**
 					 * @param s
 					 * @param start
-					 * @param before
+					 * @param after
 					 * @param count
 					 * @return void called this method to notify that, within s,
 					 *         the count characters beginning at start start are
@@ -165,7 +165,7 @@ public class LoginFragment extends BaseFragment
 			/**
 			 * @param s
 			 * @param start
-			 * @param before
+			 * @param after
 			 * @param count
 			 * @return void called this method to notify that, within s, the
 			 *         count characters beginning at start start are about to be
@@ -224,16 +224,16 @@ public class LoginFragment extends BaseFragment
 
 	/**
 	 * 
-	 * @param views
+	 *
 	 * @return void this method to click on login activity and see it
 	 */
 
 	public void logon()
 	{
-		String name = login_name.getEditableText().toString();
+		String email = login_name.getEditableText().toString();
 		String pass = login_pass.getEditableText().toString();
 
-		Cursor caeser = DBDriver.LOGIN_USER_INFO(name, pass);
+		Cursor caeser = DBDriver.LOGIN_USER_INFO(email, pass);
 
 		/*
 		 * fields = sqldbase.query(DBHelper.COURSE_TABLE, new String[] {
@@ -245,22 +245,24 @@ public class LoginFragment extends BaseFragment
 		if (caeser.getCount() != 0)
 		{
 			caeser.moveToFirst();
-			Intent accountsIntent = new Intent(getActivity(),
+			Intent homeIntent = new Intent(getActivity(),
 					TransactionsActivity.class); // get application cotext from
 												// accountsactivity class
-			if (name.equals("sudo@root.com")) // if account type is specific
+			if (email.equals("sudo@root.com")) // if account type is specific
 			{
-				accountsIntent.putExtra("Account Type", "Sudoer"); // return
+				homeIntent.putExtra("Account Type", "Sudoer"); // return
 																	// sudoer
 
 			}
 			else
-				accountsIntent.putExtra("Account Type", "Non-Sudoer"); // reutrn
+				homeIntent.putExtra("Account Type", "Non-Sudoer"); // reutrn
 																		// nonsuder
-
-			accountsIntent.putExtra("Account User", name);
+			
+			
+			
+			homeIntent.putExtra("User ID", caeser.getInt(0));
 			// getActivity().finish();
-			startActivity(accountsIntent); // start activity
+			startActivity(homeIntent); // start activity
 
 		}
 		else
