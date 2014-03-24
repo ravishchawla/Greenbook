@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
@@ -33,14 +34,13 @@ public class PieGraph extends GraphicalView
 
 	}
 
-	public static GraphicalView getNewInstance(Context contxt,
-			Map<String, Integer> items, int length)
+	public static GraphicalView getNewInstance(Context contxt)
 	{
 
 		
 		
-		return ChartFactory.getPieChartView(contxt, getDataSet(contxt, items),
-				getRenderer(length - 1));
+		return ChartFactory.getPieChartView(contxt, getDataSet(contxt, Vars.transactionParseMap),
+				getRenderer(Vars.transactionParseMap.size()));
 
 		
 		
@@ -71,19 +71,20 @@ public class PieGraph extends GraphicalView
 	}
 
 	private static CategorySeries getDataSet(Context context,
-			Map<String, Integer> items)
+			Map<String, Double> items)
 	{
 		CategorySeries series = new CategorySeries("Overall Spending");
 
-		int totalSum = items.get("-1");
+		
 		Log.i("Pie", "" + items.size());
-		items.remove("-1");
 
-		for (Map.Entry<String, Integer> item : items.entrySet())
+		for (Entry<String, Double> item : items.entrySet())
 		{
+			
+			
 			series.add((String) item.getKey(), 100 * item.getValue()
-					/ (double) totalSum);
-			Log.i("pie: ", "" + 100 * item.getValue() / (double) totalSum);
+					/ (double) Vars.transactionTotalSum);
+			Log.i("pie: ", "" + 100 * item.getValue() / (double) Vars.transactionTotalSum);
 
 		}
 		/*

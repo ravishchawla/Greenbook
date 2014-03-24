@@ -1,8 +1,8 @@
 package com.stacksmashers.greenbook;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
+import java.io.Serializable;
+import java.util.List;
+
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -12,9 +12,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 /**
  * 
@@ -27,8 +31,9 @@ public class LoginFragment extends BaseFragment
 	private EditText login_name; // edit login name
 	private EditText login_pass;
 	// edit login button
-	private Cursor caeser; // cursor
+	
 	private MainActivity main;
+	
 
 	boolean name_bool = false, pass_bool = false;
 
@@ -230,47 +235,72 @@ public class LoginFragment extends BaseFragment
 
 	public void logon()
 	{
-		String email = login_name.getEditableText().toString();
+		final String email = login_name.getEditableText().toString();
 		String pass = login_pass.getEditableText().toString();
 
-		Cursor caeser = DBDriver.LOGIN_USER_INFO(email, pass);
-
+		//Cursor caeser = DBDriver.LOGIN_USER_INFO(email, pass);
+		List<ParseObject> parseList = ParseDriver.LOGIN_USER_INFO(email, pass);
+		
 		/*
 		 * fields = sqldbase.query(DBHelper.COURSE_TABLE, new String[] {
 		 * DBHelper.COURSE_ID, DBHelper.COURSE_NAME, DBHelper.COURSE_PROF,
 		 * DBHelper.AVERAGE_GRADE, DBHelper.IS_WEIGHTED, DBHelper.COURSE_HOURS
 		 * }, DBHelper.COURSE_ID + " = " + ID, null, null, null, null);
 		 */
-
-		if (caeser.getCount() != 0)
-		{
-			caeser.moveToFirst();
-			Intent homeIntent = new Intent(getActivity(),
-					TransactionsActivity.class); // get application cotext from
+		
+		ParseQuery<ParseObject> query = ParseQuery.getQuery(ParseDriver.USER_TABLE);
+		query.whereEqualTo(ParseDriver.USER_EMAIL, email);
+		query.whereEqualTo(ParseDriver.USER_PASS, pass);
+		
+		query.findInBackground(new FindCallback<ParseObject>()
+				{
+					
+					@Override
+					public void done(List<ParseObject> userList, ParseException exe)
+					{
+						// TODO Auto-generated method stub
+						
+						if(userList != null)
+						{
+		
+							if (userList.size() != 0)
+							{
+								//	caeser.moveToFirst();
+								Intent homeIntent = new Intent(getActivity(),
+										TransactionsActivity.class); // get application cotext from
 												// accountsactivity class
-			if (email.equals("sudo@root.com")) // if account type is specific
-			{
-				homeIntent.putExtra("Account Type", "Sudoer"); // return
+									if (email.equals("sudo@root.com")) // if account type is specific
+									{	
+										homeIntent.putExtra("Account Type", "Sudoer"); // return
 																	// sudoer
 
-			}
-			else
-				homeIntent.putExtra("Account Type", "Non-Sudoer"); // reutrn
+									}
+									else
+										homeIntent.putExtra("Account Type", "Non-Sudoer"); // reutrn
 																		// nonsuder
 			
 			
-			
-			homeIntent.putExtra("User ID", caeser.getInt(0));
+									ParseObject object = userList.get(0);
+									
+									
+									Vars.userObjectID = object.getString(ParseDriver.OBJECT_ID);
+									Vars.userParseObj = object;
+									Vars.currencyParseObj = object.getParseObject(ParseDriver.USER_CURRENCY);
+									
+									
 			// getActivity().finish();
-			startActivity(homeIntent); // start activity
+									startActivity(homeIntent); // start activity
 
-		}
-		else
-		{
-			Toast.makeText(getActivity(), "User not found", Toast.LENGTH_LONG)
-					.show(); // user not found if id and password wrong
-		}
+							}
+							else
+							{
+								Toast.makeText(getActivity(), "User not found", Toast.LENGTH_LONG)
+								.show(); // user not found if id and password wrong
+							}
 
+						}
+
+					}
+				});
 	}
-
 }

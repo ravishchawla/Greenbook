@@ -1,25 +1,24 @@
 package com.stacksmashers.greenbook;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -28,10 +27,15 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.SaveCallback;
 
 /**
  * 
@@ -47,14 +51,16 @@ public class AccountsFragment extends BaseActivity
 	private TextView add_balance;
 	private TextView add_custom;
 	private Spinner choose_bank;
-	private SimpleCursorAdapter adap;
 	private CheckBox check_interst;
 	private TextView add_interst;
-	private String accountsUser, userType;
-	private int userID;
-	private static boolean redo = false;
-	private Cursor listCursor;
-	private SimpleCursorAdapter listAdap;
+	private String accountsUser;
+	private String userID;
+	private ArrayAdapter listAdapter;
+
+	private ParseQuery<ParseObject> duplicateQuery = ParseQuery
+			.getQuery(ParseDriver.ACCOUNT_TABLE);
+
+	private List<ParseObject> parseList;
 
 	public AccountsFragment()
 	{
@@ -86,42 +92,25 @@ public class AccountsFragment extends BaseActivity
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState); // create savedinstancestate
 
-		userID = getIntent().getIntExtra("User ID", -1);
+		userID = Vars.userObjectID;
 
 		setContentView(R.layout.activity_accounts);
 
 		list = (ListView) findViewById(R.id.accounts_list); // listview from
 															// accounts_list
 
-		list.setOnItemClickListener(new OnItemClickListener()
-		{
-			/**
-			 * @param parent
-			 * @param view
-			 * @param pos
-			 * @param id
-			 */
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int pos,
-					long id)
-			{
-				// TODO Auto-generated method stub
-				// get new intent from intent
-				Intent intent = new Intent(getApplicationContext(),
-						TransactionsActivity.class);
-				intent.putExtra("User ID", userID);
-				intent.putExtra("Account ID", (int) id);
-				Log.i("Account ID: ", "" + id);
-				startActivity(intent); // start intent activity
-
-			}
-		});
+		duplicateQuery
+				.whereEqualTo(ParseDriver.USER_ACCOUNT, Vars.userParseObj);
 
 		// Toast.makeText(getApplicationContext(), "User: " + accountsUser,
 		// Toast.LENGTH_LONG).show();
 		Log.i("TAG", "User: " + accountsUser);
 
-		updateData(DBHelper.ACCOUNT_ID);
+		listAdapter = new AccountsAdapter(getApplicationContext(),
+				new ArrayList<ParseObject>());
+
+		list.setAdapter(listAdapter); // set adapter
+		query(ParseDriver.OBJECT_ID);
 
 	}
 
@@ -134,9 +123,6 @@ public class AccountsFragment extends BaseActivity
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
 
-		
-		
-		
 		if (item.getItemId() == R.id.accounts_add)
 		{
 			addAccount(); // add acount
@@ -156,23 +142,29 @@ public class AccountsFragment extends BaseActivity
 		else if (item.getItemId() == R.id.accounts_name_sort) // name sort
 		{
 
-			query(DBHelper.ACCOUNT_NAME); // update account name
-			listAdap.changeCursor(listCursor);
-			listAdap.notifyDataSetChanged();
+			Vars.ACCOUNT_SORT_TYPE = Vars.SORT_BY_NAME;
+			reorder();
+
 		}
 
 		else if (item.getItemId() == R.id.accounts_balance_sort) // balance sort
 		{
 
-			query(DBHelper.ACCOUNT_BALANCE);
-			listAdap.changeCursor(listCursor);
-			listAdap.notifyDataSetChanged();
+			Vars.ACCOUNT_SORT_TYPE = Vars.SORT_BY_BALANCE;
+			reorder();
+
 		}
 		else if (item.getItemId() == R.id.accounts_bank_sort) // bank sort
 		{
-			query(DBHelper.ACCOUNT_BANK);
-			listAdap.changeCursor(listCursor);
-			listAdap.notifyDataSetChanged();
+			Vars.ACCOUNT_SORT_TYPE = Vars.SORT_BY_BANK;
+			reorder();
+
+		}
+		
+		else if (item.getItemId() == R.id.accounts_date_sort)
+		{
+			Vars.ACCOUNT_SORT_TYPE = Vars.SORT_BY_DATE_CREATED;
+			reorder();
 		}
 
 		// TODO Auto-generated method stub
@@ -194,20 +186,6 @@ public class AccountsFragment extends BaseActivity
 	 */
 	public void addAccount()
 	{
-//		Intent in = new Intent(getApplicationContext(), SplashScreen.class); // get
-																				// new
-																				// intent
-//		PendingIntent pIntent = PendingIntent.getActivity(
-//				getApplicationContext(), 0, in, 0);
-
-		// get notificationcompat from notification
-//		Notification noti = new NotificationCompat.Builder(
-//				getApplicationContext()).setContentTitle("Verify Email")
-//				.setContentText("Please verify your email address")
-//				.setContentIntent(pIntent)
-//				.setSmallIcon(R.drawable.greenbooklauncher).build();
-		//NotificationManager nManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		//nManager.notify(1, noti);
 
 		dialogView = getLayoutInflater()
 				.inflate(R.layout.dialog_accounts, null);
@@ -256,8 +234,7 @@ public class AccountsFragment extends BaseActivity
 		add_custom.setVisibility(View.GONE); //
 
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-				this, R.array.Banks,
-				android.R.layout.simple_spinner_item);
+				this, R.array.Banks, android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		choose_bank.setAdapter(adapter);
 		choose_bank.setOnItemSelectedListener(new OnItemSelectedListener()
@@ -310,29 +287,17 @@ public class AccountsFragment extends BaseActivity
 					@Override
 					public void onClick(DialogInterface dialog, int which)
 					{
-						// TODO Auto-generated method stub
 
-						// Toast.makeText(getApplicationContext(),
-						// choose_bank.getSelectedItem().toString(),
-						// Toast.LENGTH_LONG).show();
 					}
 				}).setTitle("Enter Details") // set title
 				.setNegativeButton("Cancel", new OnClickListener() // set
-																	// navigation
-																	// button
 						{
-
-							/**
-							 * @param dialog
-							 * @param which
-							 * @return void
-							 */
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which)
 							{
 
-								dialog.cancel(); // cancle dialog
+								dialog.cancel(); // cancel dialog
 							}
 						}).create(); // create
 
@@ -371,14 +336,19 @@ public class AccountsFragment extends BaseActivity
 						String addInt = add_interst.getText().toString(); // add
 																			// int
 
-						final ContentValues caeser = new ContentValues();
-						caeser.put(DBHelper.ACCOUNT_NAME, add_name.getText()
-								.toString());
-						caeser.put(DBHelper.ACCOUNT_BALANCE, add_balance
+						final ParseObject account = new ParseObject(
+								ParseDriver.ACCOUNT_TABLE);
+
+						account.put(ParseDriver.ACCOUNT_NAME, add_name
 								.getText().toString());
-						caeser.put(DBHelper.ACCOUNT_BANK, choose_bank
+
+						account.put(ParseDriver.ACCOUNT_BALANCE, Double.parseDouble(add_balance
+								.getText().toString()));
+
+						account.put(ParseDriver.ACCOUNT_BANK, choose_bank
 								.getSelectedItem().toString());
-						caeser.put(DBHelper.ACCOUNT_USER, userID);
+
+						account.put(ParseDriver.USER_ACCOUNT, Vars.userParseObj);
 
 						boolean exit_now = false;
 						if (addName.equals("")) // addname
@@ -414,66 +384,61 @@ public class AccountsFragment extends BaseActivity
 														// checked
 						{
 
-							caeser.put(DBHelper.ACCOUNT_INTEREST, add_interst
-									.getText().toString());
+							account.put(ParseDriver.ACCOUNT_INTEREST,
+									add_interst.getText().toString());
+
 						}
 						else
-							caeser.put(DBHelper.ACCOUNT_INTEREST, "-1");
+							account.put(ParseDriver.ACCOUNT_INTEREST, "-1");
 
-						Cursor csr = DBDriver.CHECK_FOR_DUPLICATE_ACCOUNTS(
-								userID, add_name.getText().toString());
+						duplicateQuery.whereEqualTo(ParseDriver.ACCOUNT_NAME,
+								add_name.getText().toString());
 
-						if (csr.getCount() != 0)
-						{
-							// if (!redo)
-							// {
+						duplicateQuery
+								.findInBackground(new FindCallback<ParseObject>()
+								{
 
-							Toast.makeText(
-									getApplicationContext(),
-									"Account Alreaddy Exists\nPlease Rename the Account",
-									Toast.LENGTH_LONG).show();
-							// redo = true;
-							// }
-							// else
-							caeser.put(DBHelper.ACCOUNT_NAME, add_name
-									.getText().toString());
-							caeser.put(DBHelper.ACCOUNT_BALANCE, add_balance
-									.getText().toString());
-							caeser.put(DBHelper.ACCOUNT_BANK, choose_bank
-									.getSelectedItem().toString());
-							caeser.put(DBHelper.ACCOUNT_USER, userID);
-							// {
-							// sqldbase.insert(DBHelper.ACCOUNT_TABLE, null,
-							// caeser);
-							// redo = false;
+									@Override
+									public void done(
+											List<ParseObject> accountList,
+											ParseException exe)
+									{
+										// TODO Auto-generated method stub
 
-							// ArtDialog.dismiss();
-							// updateData();
-							// }
-						}
-						else
-						{
-							if (check_interst.isChecked())
-								DBDriver.INSERT_ACCOUNT(add_name.getText()
-										.toString(), add_balance.getText()
-										.toString(), choose_bank
-										.getSelectedItem().toString(),
-										 userID,
-										add_interst.getText().toString());
-							else
-								DBDriver.INSERT_ACCOUNT(add_name.getText()
-										.toString(), add_balance.getText()
-										.toString(), choose_bank
-										.getSelectedItem().toString(),
-										 userID);
+										if (accountList != null)
+										{
 
-							Log.d("cv: ", caeser.toString());
-							Log.d("cv: ",
-									caeser.getAsString(DBHelper.ACCOUNT_NAME));
+											if (accountList.size() != 0)
+												Toast.makeText(
+														getApplicationContext(),
+														"Account Alreaddy Exists\nPlease Rename the Account",
+														Toast.LENGTH_LONG)
+														.show();
 
-							ArtDialog.dismiss();
-							updateData(DBHelper.ACCOUNT_ID);
-						}
+											else
+											{
+												Log.i("starting save", "starting save");
+												account.saveInBackground(new SaveCallback()
+												{
+													
+													@Override
+													public void done(ParseException arg0)
+													{
+														// TODO Auto-generated method stub
+														if(arg0 == null)
+														Log.i("starting save", "what the FUCK is going on here.");
+														else
+															Log.i("starting save", arg0.getMessage());
+													}
+												});
+												ArtDialog.dismiss();
+												query(ParseDriver.OBJECT_ID);
+											}
+										}
+
+									}
+								});
+
 						// caeser.put(DBHelper.ACCOUNT, value)
 
 					}
@@ -486,41 +451,111 @@ public class AccountsFragment extends BaseActivity
 
 	}
 
-	public void query(String Sort)
+	public void reorder()
 	{
-		listCursor = DBDriver.GET_ALL_ACCOUNT_INFO(userID, Sort);
+		Collections.sort(Vars.accountsParseList, new AccountsComparator());
+		listAdapter.clear();
+		listAdapter.addAll(Vars.accountsParseList);
 	}
 	
-	/**
-	 * @param sort
-	 * @return void we use this method to update data
-	 */
-	@SuppressWarnings("deprecation")
-	public void updateData(String Sort)
+	public void query(String Sort)
+	{
+		ParseQuery<ParseObject> accountQuery = ParseQuery
+				.getQuery(ParseDriver.ACCOUNT_TABLE);
+		accountQuery.whereEqualTo(ParseDriver.USER_ACCOUNT, Vars.userParseObj);
+		accountQuery.orderByAscending(Sort);
+
+		Log.i("Accounts ", "inquery()");
+		accountQuery.findInBackground(new FindCallback<ParseObject>()
+		{
+
+			@Override
+			public void done(List<ParseObject> accountList, ParseException exe)
+			{
+				// TODO Auto-generated method stub
+
+				if (accountList != null)
+				{
+					Vars.accountsParseList = accountList;
+					listAdapter.clear();
+					listAdapter.addAll(accountList);
+					Log.i("Acconts ", "" + accountList.size());
+				}
+
+			}
+		});
+
+	}
+
+}
+
+class AccountsAdapter extends ArrayAdapter<ParseObject>
+{
+
+	private Context context;
+	private List<ParseObject> parseList;
+
+	public AccountsAdapter(Context _context, List<ParseObject> _parseList)
+	{
+		super(_context, R.layout.listblock_accounts, _parseList);
+		context = _context;
+		parseList = _parseList;
+
+	}
+
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent)
+	{
+		if (convertView == null)
+		{
+			convertView = LayoutInflater.from(context).inflate(
+					R.layout.listblock_accounts, null);
+		}
+
+		ParseObject object = parseList.get(position);
+
+		Log.i("accounts ", "filling up screen");
+		((TextView) convertView.findViewById(R.id.account_display_name))
+				.setText(object.getString(ParseDriver.ACCOUNT_NAME));
+		((TextView) convertView.findViewById(R.id.account_display_bank))
+				.setText(object.getString(ParseDriver.ACCOUNT_BANK));
+		((TextView) convertView.findViewById(R.id.account_display_balance))
+				.setText(object.getString(ParseDriver.ACCOUNT_BALANCE));
+
+		return convertView;
+
+	}
+}
+
+	class AccountsComparator implements Comparator<ParseObject>
 	{
 
-		String from[] = { DBHelper.ACCOUNT_NAME, DBHelper.ACCOUNT_BANK,
-				DBHelper.ACCOUNT_BALANCE };
-		String query[] = { DBHelper.ACCOUNT_ID, DBHelper.ACCOUNT_NAME,
-				DBHelper.ACCOUNT_BANK, DBHelper.ACCOUNT_BALANCE};
-		int to[] = { R.id.account_display_name, R.id.account_display_bank,
-				R.id.account_display_balance };
-
-		query(Sort);
-
-		Log.i("TAG", "Cursor Adap = null: " + listCursor.getCount());
-
-		if (listCursor.getCount() != 0)
+		public int compare(ParseObject one, ParseObject two)
 		{
-			listCursor.moveToFirst();
-			listAdap = new SimpleCursorAdapter(getApplicationContext(),
-					R.layout.listblock_accounts, listCursor, from, to);
+			switch (Vars.ACCOUNT_SORT_TYPE)
+			{
+				case Vars.SORT_BY_NAME:
+					return one.getString(ParseDriver.ACCOUNT_NAME).compareTo(
+							two.getString(ParseDriver.ACCOUNT_NAME));
 
-			list.setAdapter(listAdap); // set adapter
+				case Vars.SORT_BY_BANK:
+
+					return one.getString(ParseDriver.ACCOUNT_BANK).compareTo(
+							two.getString(ParseDriver.ACCOUNT_BANK));
+
+				case Vars.SORT_BY_BALANCE:
+
+					return (int) (one.getDouble(ParseDriver.ACCOUNT_NAME) - two
+							.getDouble(ParseDriver.ACCOUNT_NAME));
+
+				case Vars.SORT_BY_DATE_CREATED:
+					return one.getCreatedAt().compareTo(two.getCreatedAt());
+
+				default:
+					return 0;
+
+			}
 		}
 
 	}
-	
-	
 
-}

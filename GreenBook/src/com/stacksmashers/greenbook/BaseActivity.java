@@ -73,7 +73,7 @@ public class BaseActivity extends FragmentActivity
 	 * @param message
 	 * @param intent 
 	 */
-	public void NotifyUser(String title, String message, Intent intent)
+	public NotificationManager NotifyUser(int id, String title, String message, Intent intent)
 	{
 		// get pending activity 
 		PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
@@ -81,14 +81,14 @@ public class BaseActivity extends FragmentActivity
 		Notification noti = new NotificationCompat.Builder(this)
 		// send new notification 
 				.setContentTitle(title).setContentText(message)  // setcontent title and text 
-				.setContentIntent(pIntent)     // setcontent intent 
+				.setContentIntent(pIntent) // setcontent intent 
 				.setSmallIcon(R.drawable.greenbooklauncher).build();  //set small icon 
 		// manage notification 
 		NotificationManager nManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		nManager.notify(1, noti);
+		nManager.notify(id, noti);
 
-		
-		
+		return nManager;
+	
 	}
 	
 	/**

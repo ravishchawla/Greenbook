@@ -15,12 +15,12 @@
         />
 
     <TextView
-        android:id="@+id/spending_category"
+        android:id="@+id/transactions_currency"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="14dp"
-        android:layout_toRightOf="@+id/transactions_total_icon"
+        android:layout_toRightOf="@+id/settings_icon"
         android:text="Medium Text"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -28,8 +28,8 @@
         android:id="@+id/spending_balance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/spending_category"
-        android:layout_alignBottom="@+id/spending_category"
+        android:layout_alignBaseline="@+id/transactions_currency"
+        android:layout_alignBottom="@+id/transactions_currency"
         android:layout_alignParentRight="true"
         android:text="Small Text"
         android:textAppearance="?android:attr/textAppearanceMedium" />

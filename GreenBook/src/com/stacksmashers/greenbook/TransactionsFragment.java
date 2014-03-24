@@ -1,13 +1,24 @@
 package com.stacksmashers.greenbook;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.SaveCallback;
+import com.stacksmashers.greenbook.TransactionsActivity.NavigationAdapter;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnShowListener;
-import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,26 +28,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
-public class TransactionsFragment extends BaseFragment implements
-		DataFragmentInterface
+public class TransactionsFragment extends BaseFragment
 {
 
 	private ListView list;
 	private TransactionsActivity trans;
-	private int userID;
-	
-	private int accountID;
-	private String accountName;
 	private TextView totalBalance;
-	private Cursor dataCursor;
-	private SimpleCursorAdapter listAdapter;
+
+	ArrayAdapter<ParseObject> transactionAdapter;
 
 	public TransactionsFragment()
 	{
@@ -49,16 +55,6 @@ public class TransactionsFragment extends BaseFragment implements
 	public static void main(String[] args)
 	{
 		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void refresh(int mode)
-	{
-		// TODO Auto-generated method stub
-
-		updateData();
-		
 
 	}
 
@@ -77,107 +73,14 @@ public class TransactionsFragment extends BaseFragment implements
 
 		((TransactionsActivity) getActivity()).setTransactionTag(getTag());
 		trans = (TransactionsActivity) getActivity();
-		userID = trans.userID;
-		accountID = trans.accountID;
-		accountName = trans.accountName;
 
-		totalBalance = (TextView) view
-				.findViewById(R.id.transactions_total_balance);
-
-		updateData();
+		totalBalance = (TextView) view.findViewById(R.id.balance_total);
+		
+		transactionAdapter = new TransactionAdapter(getActivity(),
+				new ArrayList<ParseObject>());
+		list.setAdapter(transactionAdapter);
 
 		return view;
-	}
-
-	public void query(int accountID, int userID)
-	{
-		dataCursor = DBDriver.GET_ACCOUNT_TRANSACTIONS(accountID, userID);
-		dataCursor.moveToFirst();
-
-		Log.i("Trans", DatabaseUtils.dumpCursorToString(dataCursor));
-	}
-
-	public void refreshList()
-	{
-		listAdapter.changeCursor(dataCursor);
-		listAdapter.notifyDataSetChanged();
-	}
-
-	/**
-	 * @return void we use this method to updatedata
-	 */
-	public void updateData()
-	{
-		totalBalance.setText(Vars.DEF_CURRENCY_SYMBOL + getBalance(userID, accountID));
-
-		Log.i("calling", "updated data");
-
-		query(accountID, userID);
-
-		dataCursor = DBDriver.GET_ACCOUNT_TRANSACTIONS(accountID, userID);
-
-		String[] from = { DBHelper.TRANSACTION_VALUE };
-		int[] to = { R.id.transaction_balancew };
-
-		listAdapter = new SimpleCursorAdapter(getActivity(), // call new
-				// simplecursoradapter
-				// from adap
-				R.layout.transactions_list_block, dataCursor, from, to)
-		{
-
-			/**
-			 * @param position
-			 * @param convertView
-			 * @param parent
-			 *            this method displays the data to data set
-			 */
-			@Override
-			public View getView(int position, View convertView, ViewGroup parent)
-			{
-				Log.i("Trans", "Refreshing Data LIst " + position);
-
-				View v = super.getView(position, convertView, parent);
-				ImageView image = (ImageView) v
-						.findViewById(R.id.transactions_total_icon);
-
-				TextView title = (TextView) v
-						.findViewById(R.id.transaction_title);
-				TextView descriptio = (TextView) v
-						.findViewById(R.id.transactions_total_balance);
-
-				int balances = dataCursor.getInt(8);
-				if (balances > 0) // balances less than 0
-				{
-
-					title.setText("Deposit " + Vars.DEF_CURRENCY_SYMBOL + balances);
-
-					descriptio.setText(" For " + dataCursor.getString(4)
-							+ " on: " + dataCursor.getString(7));
-
-					image.setImageDrawable(getResources().getDrawable(
-							R.drawable.content_positive));
-
-				}
-				else
-				{
-
-					title.setText("Withraw " + Vars.DEF_CURRENCY_SYMBOL + ((-1) * balances));
-
-					descriptio.setText(" For " + dataCursor.getString(6)
-							+ " on: " + dataCursor.getString(7));
-
-					image.setImageDrawable(getResources().getDrawable(
-							R.drawable.content_negative));
-				}
-
-				return v;
-
-			}
-
-		};
-
-		list.setAdapter(listAdapter);
-
 	}
 
 	/**
@@ -194,6 +97,8 @@ public class TransactionsFragment extends BaseFragment implements
 		final Switch whichSwitch = (Switch) view
 				.findViewById(R.id.transaction_switch);
 
+	//	((TextView)view.findViewById(R.id.transactions_currency)).setText(Vars.currencyParseObj.getString(ParseDriver.CURRENCY_SYMBOL));
+		
 		final TextView balanceText = (TextView) view
 				.findViewById(R.id.transaction_add_value);
 		final TextView sourceText = (TextView) view
@@ -208,12 +113,11 @@ public class TransactionsFragment extends BaseFragment implements
 		String[] from = { DBHelper.ACCOUNT_NAME };
 		int[] to = { android.R.id.text1 };
 
-		final Cursor caeser = DBDriver.GET_ACCOUNT_INFO_FOR_USER(userID);
-
-		SimpleCursorAdapter adap = new SimpleCursorAdapter(getActivity(),
-				android.R.layout.simple_spinner_item, caeser, from, to);
-		adap.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		spinner.setAdapter(adap);
+		ArrayAdapter<ParseObject> spinnerAdap = new SpinnerAdapter(
+				getActivity(), new ArrayList<ParseObject>());
+		spinnerAdap
+				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinner.setAdapter(spinnerAdap);
 
 		whichSwitch.setOnCheckedChangeListener(new OnCheckedChangeListener()
 		{
@@ -259,9 +163,6 @@ public class TransactionsFragment extends BaseFragment implements
 									int which)
 							{
 								// TODO Auto-generated method stub
-								
-								
-								
 
 							}
 
@@ -302,6 +203,8 @@ public class TransactionsFragment extends BaseFragment implements
 																// listener
 				{
 
+					private String accountName;
+
 					@SuppressLint("NewApi")
 					@Override
 					/**
@@ -336,13 +239,6 @@ public class TransactionsFragment extends BaseFragment implements
 							exit_now = true; // exit now
 						}
 
-						if (checked && reason.equals(""))
-						{
-							reasonText.setBackground(getResources()
-									.getDrawable(R.drawable.error_edittext));
-							exit_now = true; // exit now
-						}
-
 						if (exit_now)
 						{
 							exit_now = false;
@@ -352,38 +248,64 @@ public class TransactionsFragment extends BaseFragment implements
 						Double balance = Double.parseDouble(balanceText
 								.getText().toString());
 
-						Cursor caeser = DBDriver.GET_ACCOUNT_FROM_ID(spinner
-								.getSelectedItemId());
-
-						if (caeser.getCount() != 0)
-						{
-							caeser.moveToFirst();
-							accountName = caeser.getString(0);
-
-						}
+						accountName = Vars.accountsParseList.get(
+								(int) spinner.getSelectedItemId()).getString(
+								ParseDriver.ACCOUNT_NAME);
 
 						Date date = new Date();
 						Log.i("date == null", "" + (date == null));
 
-						String string = Utility.dateFormat.format(date)
-								.toString();
+						String string = Vars.dateFormat.format(date).toString();
 						Log.i("date string", string);
 
+						ParseObject transaction = new ParseObject(
+								ParseDriver.TRANSACTION_TABLE);
+
+						transaction.put(ParseDriver.TRANSACTION_ACCOUNT_NAME,
+								accountName);
+						transaction.put(ParseDriver.ACCOUNT_TRANSACTION,
+								Vars.accountParseObj);
+						transaction.put(ParseDriver.USER_TRANSACTION, Vars.userParseObj);
+						transaction.put(ParseDriver.TRANSACTION_CATEGORY,
+								source);
 						if (checked)
 						{
+							transaction.put(
+									ParseDriver.TRANSACTION_WITHRAWAL_REASON,
+									reason);
 
-							DBDriver.INSERT_WITHRAWAL(source, reason, balance,
-									userID, accountName, accountID);
+							
 
+							transaction.put(ParseDriver.TRANSACTION_VALUE,
+									((-1) * balance));
+							
+							Vars.accountParseObj.put(ParseDriver.ACCOUNT_BALANCE, Vars.accountParseObj.getDouble(ParseDriver.ACCOUNT_BALANCE) - balance);
+							
 						}
 						else
-							DBDriver.INSERT_DEPOSIT(source, balance, userID,
-									accountName, accountID);
+						{
 
-						fixBalance(userID, accountID, balance);
+							transaction.put(ParseDriver.TRANSACTION_VALUE,
+									balance);
+							
+							Vars.accountParseObj.put(ParseDriver.ACCOUNT_BALANCE, Vars.accountParseObj.getDouble(ParseDriver.ACCOUNT_BALANCE) + balance);
+						}
+						
+						Vars.accountParseObj.saveInBackground();
+						transaction.saveInBackground(new SaveCallback()
+						{
 
-						updateData(); // update data
-						dialog.dismiss(); // dismiss dialog
+							@Override
+							public void done(ParseException arg0)
+							{
+								if (arg0 == null)
+								{
+									((TransactionsActivity) getActivity())
+											.queryTransactions();
+									dialog.dismiss(); // dismiss dialog
+								}
+							}
+						});
 
 					}
 				});
@@ -398,82 +320,142 @@ public class TransactionsFragment extends BaseFragment implements
 	}
 
 	/**
-	 * @parm userid
-	 * @param accountID
-	 * @return int
-	 * 
-	 */
-	public int getBalance(int userId, int accountID)
-	{
-		Cursor caeser = DBDriver.GET_ACCOUNT_BALANCE(userId, accountID);
-
-		int bal = 0;
-		if (caeser.getCount() != 0)
-		{
-			caeser.moveToFirst();
-			bal = caeser.getInt(0);
-
-		}
-
-		Log.i("Balance: ", "" + bal);
-		return bal;
-
-	}
-
-	/**
 	 * @param userId
 	 * @return int we use this method to getblanace sum
 	 */
-	public int getBalanceSum(int userId)
+	public double getBalanceSum()
 	{
 
-		Cursor caeser = DBDriver.GET_ACCOUNTS_IDS_FOR_USER(userID);
-
-		int sum = 0;
-
-		if (caeser.getCount() != 0)
+		double sum = 0;
+		for (ParseObject obj : Vars.accountsParseList)
 		{
-			// caeser.moveToFirst();
-
-			while (caeser.moveToNext())
-			{
-				int bal = caeser.getInt(0);
-				Log("Balance: " + bal);
-				sum += getBalance(userId, caeser.getInt(0));
-				Log("sum: " + sum);
-
-			}
+			sum += obj.getDouble(ParseDriver.TRANSACTION_VALUE);
 		}
-
 		return sum; // return sum
 
 	}
+
+	public void updateTotal()
+	{
+		if(Vars.accountParseObj != null)
+		{
+			
+			
+			
+			
+			totalBalance.setText(""+Vars.accountParseObj.getDouble(ParseDriver.ACCOUNT_BALANCE));
+		
 	
 	
+		}
+	}
+
 	@Override
 	public void onResume()
 	{
 		// TODO Auto-generated method stub
 		super.onResume();
-	
-		totalBalance.setText(Vars.DEF_CURRENCY_SYMBOL + getBalance(userID, accountID));
+
 	
 	}
 
-	/**
-	 * @param userID
-	 * @param accountID
-	 *            ID
-	 * @param balance
-	 * @eturn void we use this method to fix the balance
-	 * 
-	 */
-	public void fixBalance(int userID, int accountID, Double balance)
+	class TransactionAdapter extends ArrayAdapter<ParseObject>
 	{
+		private Context context;
+		private List<ParseObject> parseList;
 
-		Cursor caeser = DBDriver.GET_ACCOUNT_BALANCE(userID, accountID);
-		int bal = getBalance(userID, accountID);
-		bal += balance;
+		public TransactionAdapter(Context _context, List<ParseObject> _parseList)
+		{
+			super(_context, R.layout.listblock_transactions, _parseList);
+			context = _context;
+			parseList = _parseList;
+
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent)
+		{
+			// TODO Auto-generated method stub
+
+			if (convertView == null)
+			{
+				convertView = LayoutInflater.from(context).inflate(
+						R.layout.listblock_transactions, null);
+			}
+
+			ParseObject object = parseList.get(position);
+			double balances = object.getDouble(ParseDriver.TRANSACTION_VALUE);
+			String date = Vars.longDateFormat.format(object.getCreatedAt());
+			((TextView) convertView
+					.findViewById(R.id.transaction_block_description))
+					.setText(date);
+			((TextView) convertView
+					.findViewById(R.id.transaction_block_balance))
+					.setText(Vars.DEF_CURRENCY_SYMBOL + balances);
+			if (balances > 0) // balances less than 0
+			{
+
+				((TextView) convertView
+						.findViewById(R.id.transaction_block_title))
+						.setText(object
+								.getString(ParseDriver.TRANSACTION_CATEGORY));
+
+				((ImageView) convertView
+						.findViewById(R.id.transaction_block_icon))
+						.setImageDrawable(getResources().getDrawable(
+								R.drawable.content_positive));
+
+			}
+			else
+			{
+
+				((TextView) convertView
+						.findViewById(R.id.transaction_block_title))
+						.setText(object
+								.getString(ParseDriver.TRANSACTION_CATEGORY));
+
+				((ImageView) convertView
+						.findViewById(R.id.transaction_block_icon))
+						.setImageDrawable(getResources().getDrawable(
+								R.drawable.content_negative));
+
+			}
+
+			return convertView;
+
+		}
+
+	}
+
+	class SpinnerAdapter extends ArrayAdapter
+	{
+		private Context context;
+		private List<ParseObject> parseList;
+
+		public SpinnerAdapter(Context _context, List<ParseObject> _parseList)
+		{
+			super(_context, android.R.layout.simple_spinner_item, _parseList);
+			context = _context;
+			parseList = _parseList;
+
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent)
+		{
+			// TODO Auto-generated method stub
+
+			if (convertView == null)
+			{
+				convertView = LayoutInflater.from(context).inflate(
+						R.layout.listblock_accounts, null);
+			}
+
+			ParseObject object = parseList.get(position);
+
+			return convertView;
+
+		}
 
 	}
 

@@ -4,7 +4,7 @@
     android:padding="6dip" >
 
     <ImageView
-        android:id="@+id/transactions_total_icon"
+        android:id="@+id/settings_icon"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_alignParentBottom="true"
@@ -13,28 +13,25 @@
         android:src="@drawable/ic_launcher" />
 
     <TextView
-        android:id="@+id/transactions_total_balance"
+        android:id="@+id/settings_description"
         android:layout_width="fill_parent"
         android:layout_height="26dip"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_toRightOf="@id/transactions_total_icon"
+        android:layout_toRightOf="@id/settings_icon"
         android:ellipsize="marquee"
         android:singleLine="true"
         android:text="Description"
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/transaction_title"
+        android:id="@+id/settings_title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/transactions_total_balance"
-        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_alignWithParentIfMissing="true"
-        android:layout_toRightOf="@id/transactions_total_icon"
+        android:layout_toRightOf="@+id/settings_icon"
         android:gravity="center_vertical"
-		android:text="Title"
+        android:text="Title"
         android:textSize="16sp" />
 
 </RelativeLayout> 

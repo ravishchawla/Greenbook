@@ -2,11 +2,17 @@ package com.stacksmashers.greenbook;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.achartengine.GraphicalView;
 
@@ -14,10 +20,9 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
-import android.database.Cursor;
 import android.database.DatabaseUtils;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,14 +32,16 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
-public class SpendingReportsFragment extends BaseFragment implements
-		DataFragmentInterface
+import com.parse.FindCallback;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
+public class SpendingReportsFragment extends BaseFragment
 {
 
 	private Spinner startSpinner;
@@ -43,14 +50,13 @@ public class SpendingReportsFragment extends BaseFragment implements
 	private TransactionsActivity trans;
 	// private ListView spendingList;
 	GraphicalView graph;
-	private int userId;
 	private String startRange[] = new String[2];
 	private String endRange[] = new String[2];
 	static String startDateString, endDateString;
+	static Date startDate, endDate;
 	private ArrayAdapter<String> startAdapter, endAdapter;
-	private SimpleCursorAdapter mListAdapter;
+	public ArrayAdapter<Entry<String, Double>> spendingAdapter;
 	boolean state = false;
-	Cursor dataCursor;
 	View view;
 	LinearLayout mLinLayout;
 	public int viewMode;
@@ -68,13 +74,6 @@ public class SpendingReportsFragment extends BaseFragment implements
 	public static void main(String[] args)
 	{
 		// TODO Auto-generated method stub
-
-	}
-
-	public void refresh(int mode)
-	{
-		String currentDate = Utility.dateFormat.format(new Date());
-		updateData();
 
 	}
 
@@ -99,11 +98,6 @@ public class SpendingReportsFragment extends BaseFragment implements
 		view = inflater.inflate(R.layout.fragment_spending_report_table,
 				container, false);// calling activity register
 
-		((TransactionsActivity) getActivity()).setSpendingReportTag(getTag());
-
-		Utility.dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-		Utility.longDateFormat = new SimpleDateFormat("EEE, MMMM d, yyyy",
-				Locale.getDefault());
 		startRange[1] = "Select Date";
 		endRange[1] = "Select Date";
 
@@ -114,13 +108,16 @@ public class SpendingReportsFragment extends BaseFragment implements
 				.findViewById(R.id.spending_report_graph);
 
 		trans = (TransactionsActivity) getActivity();
-		userId = trans.userID;
+		startDate = new Date();
+		endDate = new Date();
+		startDate.setYear(startDate.getYear() - 1);
+		endDate.setYear(endDate.getYear() + 1);
 
-		String currentDate = Utility.longDateFormat.format(new Date());
-
-		// TODO Auto-generated method stub
-
+		String currentDate = Vars.longDateFormat.format(startDate);
 		startRange[0] = currentDate;
+		// TODO Auto-generated method stub
+		currentDate = Vars.longDateFormat.format(endDate);
+
 		endRange[0] = currentDate;
 
 		startAdapter = new ArrayAdapter<String>(getActivity(),
@@ -188,6 +185,7 @@ public class SpendingReportsFragment extends BaseFragment implements
 
 		});
 
+		((TransactionsActivity) getActivity()).setSpendingReportTag(getTag());
 		updateData();
 
 		return view;
@@ -202,51 +200,57 @@ public class SpendingReportsFragment extends BaseFragment implements
 		Log.i("Spending", "Actually called onREsume");
 		state = true;
 
+		
 		// updateData(null, null, 0);
 		// if(trans.spendingMode == 1 && items!= null)
 		// repaintGraph(items);
 
 	}
 
-	public void query()
+	public List<Entry<String, Double>> regroup()
 	{
-		String sumTransBalances = "Sum(" + DBHelper.TRANSACTION_VALUE + ")";
+		LinkedHashMap<String, Double> transactionGroups = new LinkedHashMap<String, Double>();
+		Log.i("trans entry ()", "" + Vars.transactionParseList.size());
+		Vars.transactionTotalSum = Vars.transactionWithrawSum = 0.0;
 
-		
-		dataCursor = DBDriver.SPENDING_CATEGORY_REPORT(userId, startDateString, endDateString);
+		for (ParseObject obj : Vars.transactionParseList)
+		{
+			Double value = obj.getDouble(ParseDriver.TRANSACTION_VALUE);
+			Date createdAt = obj.getCreatedAt();
+			Vars.transactionTotalSum += value;
 
-		Log.i("Spend", DatabaseUtils.dumpCursorToString(dataCursor));
-		
-	}
-	
-	public void refreshList()
-	{
-		mListAdapter.changeCursor(dataCursor);
-		mListAdapter.notifyDataSetChanged();
+			if ((value >= 0) || (createdAt.compareTo(startDate) < 0)
+					|| (createdAt.compareTo(endDate) > 0))
+				continue;
+
+			Vars.transactionWithrawSum += value;
+			String name = obj.getString(ParseDriver.TRANSACTION_CATEGORY);
+			Double prev = transactionGroups.get(name);
+			if (prev == null)
+				transactionGroups.put(name, value);
+			else
+				transactionGroups.put(name, prev + value);
+		}
+
+		Log.i("map entry ()", "" + transactionGroups.size());
+		for (Map.Entry<String, Double> entry : transactionGroups.entrySet())
+		{
+			Log.i("map entry", entry.getKey() + " , " + entry.getValue());
+		}
+
+		Vars.transactionParseMap = transactionGroups;
+
+		return new ArrayList(transactionGroups.entrySet());
+
 	}
 
 	public void refreshGraph()
 	{
 
-		Map<String, Integer> items = new HashMap<String, Integer>();
-		int totalSum = 0;
-		dataCursor.moveToFirst();
-		while (!dataCursor.isAfterLast())
-		{
-			Log.i("items: ",
-					dataCursor.getString(1) + "'-'" + dataCursor.getInt(2));
-			if (dataCursor.getInt(2) < 0)
-			{
-				items.put(dataCursor.getString(1), dataCursor.getInt(2));
-				totalSum += dataCursor.getInt(2);
+		mLinLayout = (LinearLayout) view
+				.findViewById(R.id.spending_graphicalview);
 
-			}
-
-			dataCursor.moveToNext();
-		}
-
-		items.put("-1", totalSum);
-		graph = PieGraph.getNewInstance(getActivity(), items, items.size());
+		graph = PieGraph.getNewInstance(getActivity());
 		graph.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT));
 		mLinLayout.removeAllViews();
@@ -268,20 +272,6 @@ public class SpendingReportsFragment extends BaseFragment implements
 		startAdapter.notifyDataSetChanged();
 		endAdapter.notifyDataSetChanged();
 
-		String sumTransBalances = "Sum(" + DBHelper.TRANSACTION_VALUE + ")";
-		query();
-
-		Log.i("Spend", DatabaseUtils.dumpCursorToString(dataCursor));
-
-		dataCursor.moveToFirst();
-
-		String from[] = { DBHelper.TRANSACTION_CATEGORY, sumTransBalances };
-		int to[] = { R.id.spending_category, R.id.spending_balance };
-
-		dataCursor.moveToFirst();
-
-		mListAdapter = new SimpleCursorAdapter(getActivity(),
-				R.layout.listblock_spending_report, dataCursor, from, to);
 		// Utility.setListViewHeightBasedOnChildren(spendingList);
 
 		Log.i("Spend", "Moded");
@@ -289,14 +279,12 @@ public class SpendingReportsFragment extends BaseFragment implements
 		// rootLayout =
 		// (LinearLayout)view.findViewById(R.id.child_linearlayout);
 
-		mLinLayout = (LinearLayout) view
-				.findViewById(R.id.spending_graphicalview);
-
 		ListView mListView = (ListView) view
 				.findViewById(R.id.spending_listview);
-		mListView.setAdapter(mListAdapter);
 
-		refreshGraph();
+		spendingAdapter = new SpendingAdapter(getActivity(),
+				new ArrayList<Entry<String, Double>>());
+		mListView.setAdapter(spendingAdapter);
 
 		displayView(0);
 		Log.i("Spending", "Added Graph");
@@ -316,7 +304,7 @@ public class SpendingReportsFragment extends BaseFragment implements
 			mLinLayout.setVisibility(View.GONE);
 			mListView.setVisibility(View.VISIBLE);
 
-		}	
+		}
 
 		else
 		{
@@ -343,12 +331,10 @@ public class SpendingReportsFragment extends BaseFragment implements
 		{
 			// TODO Auto-generated method stub
 
-			
-				final Calendar c = Calendar.getInstance();
-				int day = c.get(Calendar.DAY_OF_MONTH);
-				int month = c.get(Calendar.MONTH);
-				int year = c.get(Calendar.YEAR);
-			
+			final Calendar c = Calendar.getInstance();
+			int day = c.get(Calendar.DAY_OF_MONTH);
+			int month = c.get(Calendar.MONTH);
+			int year = c.get(Calendar.YEAR);
 
 			return new DatePickerDialog(getActivity(), this, year, month, day);
 
@@ -383,11 +369,12 @@ public class SpendingReportsFragment extends BaseFragment implements
 
 			String date = year + "-" + month + "-" + day;
 			String longStartDate = "";
-
+			Date longDate = null;
 			try
 			{
 
-				longStartDate = Utility.longDateFormat.format(Utility.dateFormat.parse(date));
+				longDate = Vars.dateFormat.parse(date);
+				longStartDate = Vars.longDateFormat.format(longDate);
 
 			}
 			catch (ParseException e)
@@ -398,31 +385,75 @@ public class SpendingReportsFragment extends BaseFragment implements
 
 			if (whichSpinner == 0)
 			{
-				SpendingReportsFragment.startDateString = date;
+				SpendingReportsFragment.startDate = longDate;
 				startRange[0] = longStartDate;
 				startSpinner.setSelection(0);
 			}
 			else
 			{
-				SpendingReportsFragment.endDateString = date;
+				SpendingReportsFragment.endDate = longDate;
 				endRange[0] = longStartDate;
 				endSpinner.setSelection(0);
 			}
 
-			query();
-			Log.i("Spend", "queried");
-
-
-				Log.i("Spend", "listed");
-				refreshList();
+			spendingAdapter.clear();
+			spendingAdapter.addAll(regroup());
+			refreshGraph();
 
 
 
+		}
 
-				Log.i("Spend", "refreshing");
-				refreshGraph();
-				Log.i("Spend", "called refresh");
+	}
 
+	class SpendingAdapter extends ArrayAdapter<Entry<String, Double>>
+	{
+
+		private Context context;
+		private List<Entry<String, Double>> entries;
+
+		public SpendingAdapter(Context _context,
+				List<Entry<String, Double>> _parseList)
+		{
+			super(_context, R.layout.listblock_spending_report, _parseList);
+			context = _context;
+			entries = _parseList;
+
+			/*
+			 * String from[] = { DBHelper.TRANSACTION_CATEGORY, sumTransBalances
+			 * }; String sumTransBalances = "Sum(" + DBHelper.TRANSACTION_VALUE
+			 * + ")"; int to[] = { R.id.spending_category, R.id.spending_balance
+			 * };
+			 * 
+			 * dataCursor.moveToFirst();
+			 * 
+			 * mListAdapter = new SimpleCursorAdapter(getActivity(),
+			 * R.layout.listblock_spending_report, dataCursor, from, to);
+			 */
+
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent)
+		{
+			// TODO Auto-generated method stub
+
+			if (convertView == null)
+			{
+				convertView = LayoutInflater.from(context).inflate(
+						R.layout.listblock_spending_report, null);
+			}
+
+			Map.Entry<String, Double>
+
+			object = entries.get(position);
+
+			((TextView) convertView.findViewById(R.id.transactions_currency))
+					.setText(object.getKey());
+			((TextView) convertView.findViewById(R.id.spending_balance))
+					.setText("" + object.getValue());
+
+			return convertView;
 
 		}
 

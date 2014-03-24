@@ -25,7 +25,6 @@
         android:gravity="center"
         android:hint="Login Password"
         android:inputType="textPassword"
-        android:text="rc"
         android:textColor="#006600"
         android:textColorHint="#C0C0C0"
         android:textStyle="italic" />
@@ -50,7 +49,6 @@
         android:gravity="center"
         android:hint="Login Email"
         android:inputType="textEmailAddress"
-        android:text="rchawla8@yahoo.com"
         android:textColor="#009900"
         android:textColorHint="#C0C0C0"
         android:textColorLink="#009900"

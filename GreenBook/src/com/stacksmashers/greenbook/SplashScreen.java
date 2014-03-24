@@ -1,11 +1,18 @@
 package com.stacksmashers.greenbook;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 /**
  * this method helps to make splashscreen 
@@ -42,26 +49,35 @@ public class SplashScreen extends Activity
 	{
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);  // create savedinstancestate 
-	
+		
+		
 		DBDriver driver = new DBDriver(getBaseContext());
+		ParseDriver parseDriver = new ParseDriver(this, getIntent());
 		setContentView(R.layout.splash_screen); // set contentview 
 		new Vars();
+	//	defineCurrencies();
+
 		
-new Handler().postDelayed(new Runnable(){
+new Handler().post(new Runnable(){
 			
 			@Override
 			/**
 			 * @return void 
 			 */
+			
 			public void run(){
 				
+				
 			//	defineCurrencies();
+				getCurrencies();
+				
+				
 				
 				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 				SharedPreferences.Editor editor = prefs.edit();
 				if(!prefs.getBoolean("firstTimeRun", false))
 				{
-					defineCurrencies();
+		//			defineCurrencies();
 					
 					
 					
@@ -84,28 +100,46 @@ new Handler().postDelayed(new Runnable(){
 			
 			
 			
-		}, SPLASH_TIME_OUT);
+		});
 
 	
 	
 	}
 	
+	public void getCurrencies()
+	{
+		ParseQuery<ParseObject> currencyQuery = ParseQuery.getQuery(ParseDriver.CURRENCY_TABLE);
+		currencyQuery.findInBackground(new FindCallback<ParseObject>()
+		{
+			
+			@Override
+			public void done(List<ParseObject> arg0, ParseException arg1)
+			{
+				// TODO Auto-generated method stub
+			
+				Vars.currencyParseList = arg0; 
+				
+			}
+		});
+	}
+	
+	
 	public void defineCurrencies()
 	{
-		DBDriver.INSERT_CURRENCY("Australian Dollar", "AUD", Vars.DOLLAR);
-		DBDriver.INSERT_CURRENCY("Brazillian Real", "BRL", Vars.REAL);
-		DBDriver.INSERT_CURRENCY("British Pound", "GBP", Vars.POUND);
-		DBDriver.INSERT_CURRENCY("Canadian Dollar", "CAD", Vars.DOLLAR);
-		DBDriver.INSERT_CURRENCY("Chinese Yuan", "CNY", Vars.YUAN);
-		DBDriver.INSERT_CURRENCY("Europian Euro", "EUR", Vars.EURO);
-		DBDriver.INSERT_CURRENCY("Hong Kong Dollar", "HKD", Vars.DOLLAR);
-		DBDriver.INSERT_CURRENCY("Indian Rupee", "INR", Vars.RUPEE);
-		DBDriver.INSERT_CURRENCY("Japanese Yen", "JPY", Vars.YUAN);
-		DBDriver.INSERT_CURRENCY("Mexican Peso", "MXN", Vars.DOLLAR);
-		DBDriver.INSERT_CURRENCY("Russian Ruble", "RUB", Vars.RUBLE);
-		DBDriver.INSERT_CURRENCY("South African Rand", "ZAR", Vars.RAND);
-		DBDriver.INSERT_CURRENCY("Swiss Franc", "CHF", Vars.FRANC);
-		DBDriver.INSERT_CURRENCY("United States Dollar", "USD", Vars.DOLLAR);
+		ParseDriver.INSERT_CURRENCY("Australian Dollar", "AUD", Vars.DOLLAR);
+		ParseDriver.INSERT_CURRENCY("Brazillian Real", "BRL", Vars.REAL);
+		ParseDriver.INSERT_CURRENCY("British Pound", "GBP", Vars.POUND);
+		ParseDriver.INSERT_CURRENCY("Canadian Dollar", "CAD", Vars.DOLLAR);
+		ParseDriver.INSERT_CURRENCY("Chinese Yuan", "CNY", Vars.YUAN);
+		ParseDriver.INSERT_CURRENCY("Europian Euro", "EUR", Vars.EURO);
+		ParseDriver.INSERT_CURRENCY("Hong Kong Dollar", "HKD", Vars.DOLLAR);
+		ParseDriver.INSERT_CURRENCY("Indian Rupee", "INR", Vars.RUPEE);
+		ParseDriver.INSERT_CURRENCY("Japanese Yen", "JPY", Vars.YUAN);
+		ParseDriver.INSERT_CURRENCY("Mexican Peso", "MXN", Vars.DOLLAR);
+		ParseDriver.INSERT_CURRENCY("Russian Ruble", "RUB", Vars.RUBLE);
+		ParseDriver.INSERT_CURRENCY("South African Rand", "ZAR", Vars.RAND);
+		ParseDriver.INSERT_CURRENCY("Swiss Franc", "CHF", Vars.FRANC);
+		ParseDriver.INSERT_CURRENCY("United States Dollar", "USD", Vars.DOLLAR);
 	}
 	
 

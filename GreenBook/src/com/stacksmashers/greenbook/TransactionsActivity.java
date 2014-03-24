@@ -4,14 +4,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Vector;
 
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -20,16 +18,23 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.text.Html;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 public class TransactionsActivity extends BaseActivity implements
 		ActionBar.TabListener
@@ -39,22 +44,29 @@ public class TransactionsActivity extends BaseActivity implements
 	private ViewPager viewpager;
 	private TransactionsFragment transactionFragment;
 	private ActionBar actionBar;
-	protected int userID;
+	protected String userID;
 	protected int accountID = -1;
-	protected String accountName;
-	public Cursor navCursor;
-	public SimpleCursorAdapter navAdap;
 	private ListView navList;
 	private DrawerLayout navigationDrawer;
 	private ActionBarDrawerToggle actionToggle;
-	
+
+	ParseQuery<ParseObject> userQuery = ParseQuery
+			.getQuery(ParseDriver.USER_TABLE);
+	ParseQuery<ParseObject> currencyQuery = ParseQuery
+			.getQuery(ParseDriver.CURRENCY_TABLE);
+
+	ArrayAdapter navigationAdapter;
+
 	// private TabsPageAdapter tabsPageAdapter;
 
 	int spendingMode;
+	int incomeMode;
 	String SPENDING_TAG;
+	String INCOME_TAG;
 	String TRANSACTIONS_TAG;
 
 	protected SpendingReportsFragment spendingReportsFragment;
+	//protected IncomeSourceReportsFragment incomeSourceReportsFragment;
 
 	/**
 	 * this class make sure about transction activity
@@ -75,9 +87,91 @@ public class TransactionsActivity extends BaseActivity implements
 
 	public void query()
 	{
-		navCursor = DBDriver.GET_ALL_ACCOUNT_INFO(userID, DBHelper.ACCOUNT_ID);
+		ParseQuery<ParseObject> accountQuery = ParseQuery
+				.getQuery(ParseDriver.ACCOUNT_TABLE);
+		accountQuery.whereEqualTo(ParseDriver.USER_ACCOUNT, Vars.userParseObj);
+
+		accountQuery.findInBackground(new FindCallback<ParseObject>()
+		{
+
+			@Override
+			public void done(List<ParseObject> accountList, ParseException exe)
+			{
+				// TODO Auto-generated method stub
+
+				if (accountList != null)
+				{
+					Vars.accountsParseList = accountList;
+					navigationAdapter.clear();
+					navigationAdapter.addAll(accountList);
+				}
+
+			}
+		});
+
 	}
-	
+
+	public void queryTransactions()
+	{
+		ParseQuery<ParseObject> transactionQuery = ParseQuery
+				.getQuery(ParseDriver.TRANSACTION_TABLE);
+		transactionQuery.whereEqualTo(ParseDriver.ACCOUNT_TRANSACTION,
+				Vars.accountParseObj);
+
+		final TransactionsFragment transactionsFragment = (TransactionsFragment) getSupportFragmentManager()
+				.findFragmentByTag(TRANSACTIONS_TAG);
+
+		final SpendingReportsFragment spendingFragment = (SpendingReportsFragment) getSupportFragmentManager()
+				.findFragmentByTag(SPENDING_TAG);
+
+	//	final IncomeSourceReportsFragment incomeFragment = (IncomeSourceReportsFragment) getSupportFragmentManager()
+	//			.findFragmentByTag(INCOME_TAG);
+
+		Log.i("transfrag ", "" + (Vars.accountParseObj == null));
+		transactionQuery.findInBackground(new FindCallback<ParseObject>()
+		{
+
+			@Override
+			public void done(List<ParseObject> transactionList,
+					ParseException exe)
+			{
+				// TODO Auto-generated method stub
+
+				if (transactionList != null)
+				{
+					try
+					{
+						Vars.transactionParseList = transactionList;
+						transactionsFragment.transactionAdapter.clear();
+						transactionsFragment.transactionAdapter
+								.addAll(transactionList);
+						spendingFragment.spendingAdapter.clear();
+
+						spendingFragment.spendingAdapter
+								.addAll(spendingFragment.regroup());
+						spendingFragment.refreshGraph();
+
+		//				incomeFragment.spendingAdapter.clear();
+			//			incomeFragment.spendingAdapter.addAll(incomeFragment
+				//				.regroup());
+					//	incomeFragment.refreshGraph();
+
+						transactionsFragment.updateTotal();
+					}
+
+					catch (Exception aout)
+					{
+						
+					}
+				}
+				else
+					Log.i("transfragerr ", exe.getMessage());
+
+			}
+		});
+
+	}
+
 	/**
 	 * @param savedInstanceState
 	 * @return void we call this method to initalize this activity
@@ -92,18 +186,36 @@ public class TransactionsActivity extends BaseActivity implements
 		setContentView(R.layout.activity_transaction); // call setcontentview
 		Bundle extras = getIntent().getExtras(); // get intent bundle extras
 
-		userID = extras.getInt("User ID");
+		userID = extras.getString("User ID");
 		viewpager = (ViewPager) findViewById(R.id.transactoins_viewpager);
 
-		navCursor = DBDriver.GET_DEFAULT_CURRENCY(userID);
-		navCursor.moveToFirst();
-		Vars.DEF_CURRENT_ID = navCursor.getInt(0);
-		navCursor = DBDriver.GET_CURRENCY(navCursor.getInt(0));
-		navCursor.moveToFirst();
-		Vars.DEF_CURRENCY_SYMBOL = navCursor.getString(2);
-		Vars.DEF_CURRENCY_TICKER = navCursor.getString(1);
-		// initializePaging();
+		currencyQuery.whereEqualTo(ParseDriver.OBJECT_ID,
+				Vars.currencyParseObj.getObjectId());
 
+		currencyQuery.findInBackground(new FindCallback<ParseObject>()
+		{
+
+			@Override
+			public void done(List<ParseObject> currencyList, ParseException exe)
+			{
+				// TODO Auto-generated method stub
+
+				if (currencyList != null)
+				{
+					// Vars.DEF_CURRENT_ID =
+					// usersList.get(0).getString(ParseDriver.USER_CURRENCY);
+
+					ParseObject object = currencyList.get(0);
+
+					Vars.DEF_CURRENCY_SYMBOL = object
+							.getString(ParseDriver.CURRENCY_SYMBOL);
+					Vars.DEF_CURRENCY_TICKER = object
+							.getString(ParseDriver.CURRENCY_TICKER);
+					Vars.DEF_CURRENT_ID = object
+							.getString(ParseDriver.OBJECT_ID);
+				}
+			}
+		});
 		actionBar = getActionBar(); // get action bar
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		// actionBar.setDisplayShowTitleEnabled(true); // enabled display show
@@ -133,22 +245,11 @@ public class TransactionsActivity extends BaseActivity implements
 
 		navigationDrawer.setDrawerListener(actionToggle);
 
-		String from[] = { DBHelper.ACCOUNT_NAME };
-		int to[] = { R.id.drawer_textView };
+		navigationAdapter = new NavigationAdapter(getApplicationContext(),
+				new ArrayList<ParseObject>());
+		navList.setAdapter(navigationAdapter);
 
 		query();
-
-		Log.i("TAG", "Cursor Adap = null: " + navCursor.getCount());
-		Log.i("Trans", DatabaseUtils.dumpCursorToString(navCursor));
-		if (navCursor.getCount() != 0)
-		{
-			navCursor.moveToFirst();
-			navAdap = new SimpleCursorAdapter(
-					getApplicationContext(), R.layout.drawer_item, navCursor, from,
-					to);
-
-			navList.setAdapter(navAdap);
-		}
 
 		navList.setOnItemClickListener(new OnItemClickListener()
 		{
@@ -164,29 +265,15 @@ public class TransactionsActivity extends BaseActivity implements
 				SpendingReportsFragment spendingFragment = (SpendingReportsFragment) getSupportFragmentManager()
 						.findFragmentByTag(SPENDING_TAG);
 
-				accountID = (int) id;
-				
-				
+				//IncomeSourceReportsFragment incomeFragment = (IncomeSourceReportsFragment) getSupportFragmentManager()
+				//		.findFragmentByTag(INCOME_TAG);
 
-				Cursor caeser = DBDriver.ACCOUNT_NAME_FROM_ID(accountID);
+				Vars.accountParseObj = Vars.accountsParseList.get(pos);
+
 				String titleText = "Transactions";
-				if (caeser.getCount() != 0)
-				{
-					caeser.moveToFirst();
-					accountName = caeser.getString(0);
 
-				}
-
-				Toast.makeText(getApplicationContext(),
-						"Switching Class to: " + accountName, Toast.LENGTH_LONG)
-						.show();
-				transactionsFragment.query(accountID, userID);
-				transactionsFragment.refreshList();
-
-				spendingFragment.query();
-				spendingFragment.refreshList();
-				spendingFragment.refreshGraph();
-
+				queryTransactions();
+				accountID = pos;
 				navigationDrawer.closeDrawer(navList);
 
 			}
@@ -198,37 +285,7 @@ public class TransactionsActivity extends BaseActivity implements
 		Utility.dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
 				Locale.getDefault());
 
-		Cursor caeser = DBDriver.ACCOUNT_NAME_FROM_ID(accountID);
 		String titleText = "Transactions";
-		if (caeser.getCount() != 0)
-		{
-			caeser.moveToFirst();
-			accountName = caeser.getString(0);
-
-		}
-
-		// actionBar.addTab(tab);
-
-		/*
-		 * viewpager .setOnPageChangeListener(new
-		 * ViewPager.SimpleOnPageChangeListener() {
-		 * 
-		 * /**
-		 * 
-		 * @param position
-		 * 
-		 * @return void we use this method when new page become selected
-		 */
-		/*
-		 * @Override public void onPageSelected(int position) {
-		 * getActionBar().setSelectedNavigationItem(position);
-		 * 
-		 * invalidateOptionsMenu();
-		 * 
-		 * }
-		 * 
-		 * });
-		 */
 
 		pageAdapter = new FragmentPagerAdapter(getSupportFragmentManager())
 		{
@@ -250,9 +307,13 @@ public class TransactionsActivity extends BaseActivity implements
 
 					case 1:
 						spendingReportsFragment = new SpendingReportsFragment();
-
 						spendingReportsFragment.setRetainInstance(true);
 						return spendingReportsFragment;
+
+					//case 2:
+						//incomeSourceReportsFragment = new IncomeSourceReportsFragment();
+					//	incomeSourceReportsFragment.setRetainInstance(true);
+						//return incomeSourceReportsFragment;
 
 				}
 
@@ -272,11 +333,8 @@ public class TransactionsActivity extends BaseActivity implements
 
 				actionBar.setSelectedNavigationItem(position);
 
-				if (position == 1)
-				{
-					Log.i("Transct", "calling onREsume()");
-					pageAdapter.getItem(position).onResume();
-				}
+				Log.i("Transct", "calling onREsume()");
+				pageAdapter.getItem(position).onResume();
 
 				invalidateOptionsMenu();
 			}
@@ -297,14 +355,15 @@ public class TransactionsActivity extends BaseActivity implements
 		});
 
 		viewpager.setAdapter(pageAdapter);
-	//	actionBar.setHomeButtonEnabled(false);
+		// actionBar.setHomeButtonEnabled(false);
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
 		actionBar.addTab(actionBar.newTab().setText("Transactions")
 				.setTabListener(this));
 		actionBar.addTab(actionBar.newTab().setText("Spending Report")
 				.setTabListener(this));
-
+		//actionBar.addTab(actionBar.newTab().setText("Income Report")
+			//	.setTabListener(this));
 		new Handler().postDelayed(new Runnable()
 		{
 
@@ -327,15 +386,12 @@ public class TransactionsActivity extends BaseActivity implements
 	protected void onResume()
 	{
 		// TODO Auto-generated method stub
-	
+
 		query();
-		navAdap.changeCursor(navCursor);
-		navAdap.notifyDataSetChanged();
-		
+
 		super.onResume();
 	}
-	
-	
+
 	/**
 	 * 
 	 * @param menu
@@ -345,21 +401,24 @@ public class TransactionsActivity extends BaseActivity implements
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
 
-		if(navigationDrawer.isDrawerOpen(navList))
+		if (navigationDrawer.isDrawerOpen(navList))
 			getMenuInflater().inflate(R.menu.menu_drawer, menu);
-		
-		else{
-		
-		// TODO Auto-generated method stub
-		Log.i("Debug", "Create");
-		if (getActionBar().getSelectedNavigationIndex() == 0)
-			getMenuInflater().inflate(R.menu.menu_transactions, menu);
 
 		else
+		{
 
-			getMenuInflater().inflate(R.menu.menu_spending, menu);
+			// TODO Auto-generated method stub
+			Log.i("Debug", "Create");
+			int sel = getActionBar().getSelectedNavigationIndex();
+			if (sel == 0)
+				getMenuInflater().inflate(R.menu.menu_transactions, menu);
 
-		// submenu.add("Stranger").setIcon(R.drawable.content_forgot);
+			else if (sel == 1)
+				getMenuInflater().inflate(R.menu.menu_spending, menu);
+
+			//else if (sel == 2)
+			//	getMenuInflater().inflate(R.menu.menu_income, menu);
+			// submenu.add("Stranger").setIcon(R.drawable.content_forgot);
 		}
 		// }
 
@@ -384,13 +443,20 @@ public class TransactionsActivity extends BaseActivity implements
 			return true;
 		}
 
-		if(item.getItemId() == R.id.drawer_edit)
+		if (item.getItemId() == R.id.transactions_refresh)
+			queryTransactions();
+
+		if (item.getItemId() == R.id.accounts_refresh)
+			query();
+
+		if (item.getItemId() == R.id.drawer_edit)
 		{
-			Intent accounts = new Intent(getApplicationContext(), AccountsFragment.class);
+			Intent accounts = new Intent(getApplicationContext(),
+					AccountsFragment.class);
 			accounts.putExtra("User ID", userID);
 			startActivity(accounts);
 		}
-		
+
 		if (item.getItemId() == R.id.accounts_settings)
 		{
 			Intent settings = new Intent(getApplicationContext(),
@@ -402,10 +468,12 @@ public class TransactionsActivity extends BaseActivity implements
 		}
 		if (item.getItemId() == R.id.transactions_add)
 		{
-		
-			if(accountID == -1)
-				Toast.makeText(getApplicationContext(), "Please Select an account from the sidebar", Toast.LENGTH_LONG).show();
-			
+
+			if (accountID == -1)
+				Toast.makeText(getApplicationContext(),
+						"Please Select an account from the sidebar",
+						Toast.LENGTH_LONG).show();
+
 			else
 				transactionsFragment.addTransaction();
 
@@ -414,6 +482,9 @@ public class TransactionsActivity extends BaseActivity implements
 
 		SpendingReportsFragment spendingFragment = (SpendingReportsFragment) getSupportFragmentManager()
 				.findFragmentByTag(SPENDING_TAG);
+
+		//IncomeSourceReportsFragment incomeFragment = (IncomeSourceReportsFragment) getSupportFragmentManager()
+		//		.findFragmentByTag(INCOME_TAG);
 
 		if (item.getItemId() == R.id.spending_view_type)
 		{
@@ -436,6 +507,28 @@ public class TransactionsActivity extends BaseActivity implements
 			return super.onOptionsItemSelected(item);
 
 		}
+
+		/*if (item.getItemId() == R.id.income_view_type)
+		{
+
+			if (item.isChecked())
+			{
+				item.setIcon(R.drawable.content_graph);
+
+				incomeFragment.displayView(1);
+				item.setChecked(false);
+			}
+			else
+			{
+				item.setIcon(R.drawable.content_list);
+
+				incomeFragment.displayView(0);
+				item.setChecked(true);
+			}
+
+			return super.onOptionsItemSelected(item);
+
+		}*/
 
 		return super.onOptionsItemSelected(item);
 
@@ -465,9 +558,19 @@ public class TransactionsActivity extends BaseActivity implements
 		SPENDING_TAG = tag;
 	}
 
+	public void setIncomeReportTag(String tag)
+	{
+		INCOME_TAG = tag;
+	}
+
 	public String getSpendingReportTag()
 	{
 		return SPENDING_TAG;
+	}
+
+	public String getIncomeReportTag()
+	{
+		return INCOME_TAG;
 	}
 
 	public void setTransactionTag(String tag)
@@ -478,51 +581,6 @@ public class TransactionsActivity extends BaseActivity implements
 	public String getTransactionTag()
 	{
 		return TRANSACTIONS_TAG;
-	}
-
-	/**
-	 * @return void we use this method to initialize age
-	 */
-	private void initializePaging()
-	{
-		// TODO Auto-generated method stub
-
-		List<Fragment> fragments = new Vector<Fragment>();
-		fragments.add(Fragment.instantiate(this,
-				TransactionsFragment.class.getName()));
-
-		final List<Fragment> finalFragments = fragments;
-
-		// get new fragmentpageradapter from pageadapter
-		pageAdapter = new FragmentPagerAdapter(getSupportFragmentManager())
-		{
-
-			/**
-			 * @return int
-			 */
-			@Override
-			public int getCount()
-			{
-
-				// TODO Auto-generated method stub
-				return finalFragments.size();
-			}
-
-			/**
-			 * @param pos
-			 * @return fragment
-			 * 
-			 */
-			@Override
-			public Fragment getItem(int pos)
-			{
-				// TODO Auto-generated method stub
-				return finalFragments.get(pos); // return final fragments
-			}
-		};
-
-		viewpager.setAdapter(pageAdapter); // set adapter
-
 	}
 
 	@Override
@@ -545,6 +603,41 @@ public class TransactionsActivity extends BaseActivity implements
 	public void onTabUnselected(Tab tab, FragmentTransaction ft)
 	{
 		// TODO Auto-generated method stub
+
+	}
+
+	class NavigationAdapter extends ArrayAdapter<ParseObject>
+	{
+		private Context context;
+		private List<ParseObject> parseList;
+
+		public NavigationAdapter(Context _context, List<ParseObject> _parseList)
+		{
+			super(_context, R.layout.drawer_item, _parseList);
+			context = _context;
+			parseList = _parseList;
+
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent)
+		{
+			// TODO Auto-generated method stub
+
+			if (convertView == null)
+			{
+				convertView = LayoutInflater.from(context).inflate(
+						R.layout.drawer_item, null);
+			}
+
+			ParseObject object = parseList.get(position);
+
+			((TextView) convertView.findViewById(R.id.drawer_textView))
+					.setText(object.getString(ParseDriver.ACCOUNT_NAME));
+
+			return convertView;
+
+		}
 
 	}
 

@@ -1,21 +1,20 @@
 package com.stacksmashers.greenbook;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.database.Cursor;
+import android.content.Intent;
 import android.database.DatabaseUtils;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -36,6 +35,13 @@ import android.widget.NumberPicker.OnValueChangeListener;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.RefreshCallback;
+import com.parse.SaveCallback;
 
 /**
  * this method make sure about settings activity
@@ -68,6 +74,7 @@ public class SettingsActivity extends BaseActivity
 			"Select your default Currency", R.drawable.ic_launcher);
 
 	Setting[] settings = { verification, region };
+	private CustomArrayAdapter settingsAdapter;
 
 	private final static int SETTING_VERIFY_EMAIL = 0;
 	private final static int SETTING_REGION_SETTING = 1;
@@ -109,9 +116,9 @@ public class SettingsActivity extends BaseActivity
 		// Arrays.asList(setting_names);
 
 		// call new customerarrayadapater
-		final CustomArrayAdapter adapter = new CustomArrayAdapter(this,
+		settingsAdapter = new CustomArrayAdapter(this,
 				setting_names);
-		list.setAdapter(adapter);
+		list.setAdapter(settingsAdapter);
 
 		list.setOnItemClickListener(new AdapterView.OnItemClickListener()
 		{
@@ -199,11 +206,11 @@ public class SettingsActivity extends BaseActivity
 
 			View row = inflater.inflate(R.layout.nice_list_layout, parent,
 					false);
-			TextView text = (TextView) row.findViewById(R.id.transaction_title);
+			TextView text = (TextView) row.findViewById(R.id.settings_title);
 			TextView description = (TextView) row
-					.findViewById(R.id.transactions_total_balance);
+					.findViewById(R.id.settings_description);
 			ImageView image = (ImageView) row
-					.findViewById(R.id.transactions_total_icon);
+					.findViewById(R.id.settings_icon);
 
 			text.setText(settings[position].name);
 			description.setText(settings[position].description);
@@ -223,14 +230,13 @@ public class SettingsActivity extends BaseActivity
 	public void verify(final int user_id)
 	{
 
-		Cursor caeser = DBDriver.GET_USER_TYPE(user_id);
 
-		caeser.moveToFirst();
-		if (caeser.getCount() != 0 && !caeser.getString(0).equals("auth")
-				&& !caeser.getString(0).equals("admin"))
+		
+
+		final ParseObject user = Vars.userParseObj;
+		final String code = user.getString(ParseDriver.USER_TYPE);
+		if(!code.equals("auth") && !code.equals("admin"))
 		{
-
-			final String code = caeser.getString(0);
 
 			View view = getLayoutInflater().inflate(R.layout.settings_verify,
 					null);
@@ -253,21 +259,21 @@ public class SettingsActivity extends BaseActivity
 								{
 									// TODO Auto-generated method stub
 
-									Cursor caeser = DBDriver.GET_ALL_USERS();
 
-									if (caeser.getCount() != 0)
-									{
-										caeser.moveToFirst();
 
-										String name = caeser.getString(0); // get
-																			// string
-																			// name
-										String email = caeser.getString(1); // get
-																			// string
-																			// email
-										String code = codeEmail(email); // get
-																		// string
-																		// code
+
+
+
+
+										String name = user.getString(ParseDriver.USER_NAME);
+																			
+																			
+										String email = user.getString(ParseDriver.USER_EMAIL); 
+																			
+																			
+										String code = codeEmail(email); 
+																		
+																		
 
 										// string messege
 										String message = Mail
@@ -287,7 +293,7 @@ public class SettingsActivity extends BaseActivity
 										send(mail);
 									}
 
-								}
+								
 							}).create(); // create
 
 			dialog.show();
@@ -339,14 +345,29 @@ public class SettingsActivity extends BaseActivity
 
 					if (textView.getText().toString().equals(code))
 					{
-						dialog.dismiss();
-						Toast.makeText(getApplicationContext(), "Verified!",
-								Toast.LENGTH_LONG).show();
+						user.put(ParseDriver.USER_TYPE, "auth");
+						user.saveInBackground(new SaveCallback()
+						{
+							
+							@Override
+							public void done(ParseException arg0)
+							{
+								// TODO Auto-generated method stub
 
-						verification.description = "Email Verified!";
+								dialog.dismiss();
+								Toast.makeText(getApplicationContext(), "Verified!",
+										Toast.LENGTH_LONG).show();
 
-						DBDriver.UPDATE_USER_TYPE("auth", user_id);
+								verification.description = "Email Verified!";
+								settingsAdapter.notifyDataSetChanged();
+								
+								
+							}
+						});
+						
 
+						
+						
 					}
 
 				}
@@ -365,40 +386,40 @@ public class SettingsActivity extends BaseActivity
 
 		Log.i("settings", "changeregion()");
 
-		Cursor csr = DBDriver.GET_ALL_CURRENCIES();
+		
 		View view = getLayoutInflater().inflate(R.layout.picker_exchangerates,
 				null);
 		final NumberPicker exchangePicker = (NumberPicker) view
 				.findViewById(R.id.exchange_picker);
 		exchangePicker.setMinValue(0);
-		exchangePicker.setMaxValue(csr.getCount()-1);
+		exchangePicker.setMaxValue(Vars.currencyParseList.size() -1);
 		exchangePicker.setWrapSelectorWheel(false);
 		exchangePicker
 				.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
 
 		String URL = "http://download.finance.yahoo.com/d/quotes.csv?";
 
-		String names[] = new String[csr.getCount()];
+		String names[] = new String[Vars.currencyParseList.size()];
 
-		csr.moveToFirst();
+		
 		currencySymbols = new ArrayList<String>();
 		backupExchangeValues = new ArrayList<Double>();
 		int i = 0;
-		Log.i("settings: ", DatabaseUtils.dumpCursorToString(csr));
-		while (!csr.isAfterLast())
+		
+		for(ParseObject object: Vars.currencyParseList)
 		{
-			Log.i("Setting", "ids: " + csr.getInt(4));
+			
 
-			currencySymbols.add(csr.getString(2));
-			backupExchangeValues.add(csr.getDouble(3));
-			tickers.add(csr.getString(1));
+			currencySymbols.add(object.getString(ParseDriver.CURRENCY_SYMBOL));
+			backupExchangeValues.add(object.getDouble(ParseDriver.CURRENCY_VALUE));
+			tickers.add(object.getString(ParseDriver.CURRENCY_TICKER));
 			URL += "s=";
 			URL += Vars.DEF_CURRENCY_TICKER;
-			URL += csr.getString(1);
+			URL += tickers.get(i);
 			URL += "=X&";
 
-			names[i++] = csr.getString(0) + " (" + csr.getString(1) + ")";
-			csr.moveToNext();
+			names[i] = object.getString(ParseDriver.CURRENCY_NAME) + " (" + tickers.get(i++) + ")";
+			
 		}
 
 		URL += "f=l1&e=.cs";
@@ -416,12 +437,59 @@ public class SettingsActivity extends BaseActivity
 					{
 
 						
-						int value = exchangePicker.getValue();
-						DBDriver.UPDATE_TRANSACTION_VALUES(user_id,
-								exchangeValues.get(value));
-
-						DBDriver.UPDATE_DEFAULT_CURRENCY(user_id,
-								value);
+						final int value = exchangePicker.getValue();
+						final double multiplier = exchangeValues.get(value);
+						
+						final NotificationManager man = NotifyUser(3, "Updating All Transactions", "This message will cancel automatically when all updates have completed", new Intent());
+						ParseQuery<ParseObject> transactionsQuery = new ParseQuery<ParseObject>(ParseDriver.TRANSACTION_TABLE);
+						transactionsQuery.whereEqualTo(ParseDriver.USER_TRANSACTION, Vars.userParseObj);
+						transactionsQuery.findInBackground(new FindCallback<ParseObject>()
+						{
+							
+							@Override
+							public void done(List<ParseObject> list, ParseException arg1)
+							{
+								// TODO Auto-generated method stub
+								for(ParseObject obj: list)
+									{
+									obj.put(ParseDriver.TRANSACTION_VALUE, Vars.decimalFormat.format(obj.getDouble(ParseDriver.TRANSACTION_VALUE) * multiplier));
+									obj.saveInBackground(new SaveCallback()
+									{
+										
+										@Override
+										public void done(ParseException arg0)
+										{
+											// TODO Auto-generated method stub
+											man.cancel(3);
+											
+										}
+									});
+									}
+									
+							}
+						});
+						
+						
+						for(ParseObject obj: Vars.accountsParseList)
+							{
+							obj.put(ParseDriver.ACCOUNT_BALANCE, Vars.decimalFormat.format(obj.getDouble(ParseDriver.ACCOUNT_BALANCE) * multiplier));
+							obj.saveInBackground();
+							}
+						
+						for(ParseObject obj: Vars.transactionParseList)
+							obj.refreshInBackground(new RefreshCallback()
+							{
+								
+								@Override
+								public void done(ParseObject arg0, ParseException arg1)
+								{
+									// TODO Auto-generated method stub
+									
+								}
+							});
+						
+						Vars.userParseObj.put(ParseDriver.USER_CURRENCY, value);
+						Vars.userParseObj.saveInBackground();
 						
 						Vars.DEF_CURRENCY_SYMBOL = currencySymbols.get(value);
 						Vars.DEF_CURRENCY_TICKER = tickers.get(value);
@@ -429,7 +497,7 @@ public class SettingsActivity extends BaseActivity
 
 					}
 				}).create();
-		updateExchangeRates(dialog, URL, csr.getCount());
+		updateExchangeRates(dialog, URL, Vars.currencyParseList.size());
 
 		exchangePicker.setOnValueChangedListener(new OnValueChangeListener()
 		{
