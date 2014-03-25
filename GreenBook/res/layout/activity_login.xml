@@ -4,21 +4,11 @@
     android:layout_height="match_parent"
     android:background="#606060" >
 
-    <ImageView
-        android:id="@+id/imageView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="58dp"
-        android:src="@drawable/greenbooklauncher" />
-
     <EditText
         android:id="@+id/login_password"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/imageView1"
         android:layout_marginTop="154dp"
         android:drawableBottom="#000000"
         android:ems="10"
@@ -29,21 +19,11 @@
         android:textColorHint="#C0C0C0"
         android:textStyle="italic" />
 
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="52dp"
-        android:text="Login" />
-
     <EditText
         android:id="@+id/login_name"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/imageView1"
         android:layout_marginTop="80dp"
         android:ems="10"
         android:gravity="center"
@@ -52,7 +32,6 @@
         android:textColorHint="#C0C0C0"
         android:textColorLink="#009900"
         android:textStyle="italic" >
-
     </EditText>
 
 </RelativeLayout>

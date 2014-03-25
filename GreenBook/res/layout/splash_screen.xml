@@ -22,24 +22,6 @@
         android:textColor="#009900"
         android:textSize="58dp" />
 
-    <ProgressBar
-        android:id="@+id/progressBar1"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/transactions_currency"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="28dp" />
-
-    <ImageSwitcher
-        android:id="@+id/imageSwitcher1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/progressBar1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="37dp" >
-    </ImageSwitcher>
-
     <!--  <TextClock
         android:id="@+id/textClock1"
         android:layout_width="wrap_content"
@@ -49,15 +31,6 @@
         android:layout_marginBottom="22dp"
         android:text="TextClock"
         android:textColor="#009900" />
--->
-    <ImageView
-        android:id="@+id/spending_report_graph"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/progressBar1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="46dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/greenbooklauncher" /> 
+--> 
 
 </RelativeLayout>

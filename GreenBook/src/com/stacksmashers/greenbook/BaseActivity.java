@@ -25,7 +25,7 @@ import android.widget.Toast;
 public class BaseActivity extends FragmentActivity
 {
 
-	String currency = "�";
+	String currency = "���";
 	public BaseActivity()
 	{
 		// TODO Auto-generated constructor stub
@@ -82,7 +82,7 @@ public class BaseActivity extends FragmentActivity
 		// send new notification 
 				.setContentTitle(title).setContentText(message)  // setcontent title and text 
 				.setContentIntent(pIntent) // setcontent intent 
-				.setSmallIcon(R.drawable.greenbooklauncher).build();  //set small icon 
+				.setSmallIcon(R.drawable.testlauncher).build();  //set small icon 
 		// manage notification 
 		NotificationManager nManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		nManager.notify(id, noti);
