@@ -313,7 +313,7 @@ public class AccountsFragment extends BaseActivity
 			{
 				// TODO Auto-generated method stub
 
-				Button plus = ArtDialog.getButton(AlertDialog.BUTTON_POSITIVE); // alert
+				Button plus = ArtDialog.getButton(DialogInterface.BUTTON_POSITIVE); // alert
 																				// dialog
 
 				plus.setOnClickListener(new View.OnClickListener()
@@ -530,6 +530,7 @@ class AccountsAdapter extends ArrayAdapter<ParseObject>
 	class AccountsComparator implements Comparator<ParseObject>
 	{
 
+		@Override
 		public int compare(ParseObject one, ParseObject two)
 		{
 			switch (Vars.ACCOUNT_SORT_TYPE)

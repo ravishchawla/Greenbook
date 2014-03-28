@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -443,7 +444,9 @@ public class RegisterFragment extends BaseFragment
 	public void onActivityResult(int request, int result, Intent data)
 	{
 
-		if (result == getActivity().RESULT_OK) // if result for getactivity is
+		;
+		getActivity();
+		if (result == Activity.RESULT_OK) // if result for getactivity is
 												// ok
 		{
 			if (request == PICTURE_REQUEST) // request picture

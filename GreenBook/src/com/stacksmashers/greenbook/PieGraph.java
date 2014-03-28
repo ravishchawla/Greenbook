@@ -1,9 +1,5 @@
 package com.stacksmashers.greenbook;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.PrintWriter;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -17,7 +13,6 @@ import org.achartengine.renderer.SimpleSeriesRenderer;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
-import android.widget.Toast;
 
 public class PieGraph extends GraphicalView
 {
@@ -82,9 +77,9 @@ public class PieGraph extends GraphicalView
 		{
 			
 			
-			series.add((String) item.getKey(), 100 * item.getValue()
-					/ (double) Vars.transactionTotalSum);
-			Log.i("pie: ", "" + 100 * item.getValue() / (double) Vars.transactionTotalSum);
+			series.add(item.getKey(), 100 * item.getValue()
+					/ Vars.transactionTotalSum);
+			Log.i("pie: ", "" + 100 * item.getValue() / Vars.transactionTotalSum);
 
 		}
 		/*

@@ -17,7 +17,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -231,11 +230,13 @@ public class TransactionsActivity extends BaseActivity implements
 				R.string.close_drawer)
 		{
 
+			@Override
 			public void onDrawerClosed(View view)
 			{
 				invalidateOptionsMenu();
 			}
 
+			@Override
 			public void onDrawerOpened(View view)
 			{
 				invalidateOptionsMenu();

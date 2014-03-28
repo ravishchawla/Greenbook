@@ -1,10 +1,8 @@
 package com.stacksmashers.greenbook;
 
-import java.io.Serializable;
 import java.util.List;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;

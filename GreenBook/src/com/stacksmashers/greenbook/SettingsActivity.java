@@ -15,7 +15,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.database.DatabaseUtils;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -395,7 +394,7 @@ public class SettingsActivity extends BaseActivity
 		exchangePicker.setMaxValue(Vars.currencyParseList.size() -1);
 		exchangePicker.setWrapSelectorWheel(false);
 		exchangePicker
-				.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+				.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
 
 		String URL = "http://download.finance.yahoo.com/d/quotes.csv?";
 
@@ -692,6 +691,7 @@ public class SettingsActivity extends BaseActivity
 		 * @param result
 		 * @return void this method execute result for any object
 		 */
+		@Override
 		protected void onPostExecute(Object result)
 		{
 

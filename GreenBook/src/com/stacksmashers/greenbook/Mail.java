@@ -3,11 +3,8 @@ package com.stacksmashers.greenbook;
 import java.util.Date; 
 import java.util.Properties; 
 import javax.activation.CommandMap; 
-import javax.activation.DataHandler; 
-import javax.activation.DataSource; 
-import javax.activation.FileDataSource; 
 import javax.activation.MailcapCommandMap; 
-import javax.mail.BodyPart; 
+import javax.mail.Message.RecipientType;
 import javax.mail.Multipart; 
 import javax.mail.PasswordAuthentication; 
 import javax.mail.Session; 
@@ -15,9 +12,7 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress; 
 import javax.mail.internet.MimeBodyPart; 
 import javax.mail.internet.MimeMessage; 
-import javax.mail.internet.MimeMultipart; 
-
-import android.os.AsyncTask;
+import javax.mail.internet.MimeMultipart;
 
 
 // extends mail from javax 
@@ -179,7 +174,7 @@ public class Mail extends javax.mail.Authenticator
 			Session session = Session.getInstance(properties, this);
 			MimeMessage message = new MimeMessage(session);
 			message.setFrom(new InternetAddress(addressFrom));
-			message.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress(addressTo));
+			message.setRecipient(RecipientType.TO, new InternetAddress(addressTo));
 			message.setSubject(subject);
 			message.setSentDate(new Date());
 			

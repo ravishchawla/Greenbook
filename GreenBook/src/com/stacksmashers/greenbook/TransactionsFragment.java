@@ -1,19 +1,11 @@
 package com.stacksmashers.greenbook;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
-
-import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.parse.SaveCallback;
-import com.stacksmashers.greenbook.TransactionsActivity.NavigationAdapter;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -195,7 +187,7 @@ public class TransactionsFragment extends BaseFragment
 			public void onShow(DialogInterface dyalog)
 			{
 
-				Button plus = dialog.getButton(AlertDialog.BUTTON_POSITIVE); // get
+				Button plus = dialog.getButton(DialogInterface.BUTTON_POSITIVE); // get
 																				// dialog
 																				// button
 
