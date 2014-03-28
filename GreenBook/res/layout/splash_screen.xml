@@ -10,19 +10,8 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
-    <TextView
-        android:id="@+id/transactions_currency"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:text="Greenbook"
-        android:textAppearance="@style/AppTheme"
-        android:textColor="#009900"
-        android:textSize="58dp" />
-
-    <!--  <TextClock
+    <!--
+          <TextClock
         android:id="@+id/textClock1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,7 +19,36 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="22dp"
         android:text="TextClock"
-        android:textColor="#009900" />
---> 
+        
+        />
+    -->
+
+    <TextView
+        android:id="@+id/transactions_currency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Greenbook"
+        android:textAppearance="@style/AppTheme"
+        android:textColor="#009900"
+        android:textSize="58dp" />
+
+    <ProgressBar
+        android:id="@+id/progressBar1"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/transactions_currency"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="14dp" />
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_below="@+id/progressBar1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:src="@drawable/greenbook" />
 
 </RelativeLayout>

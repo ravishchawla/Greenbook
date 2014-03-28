@@ -42,10 +42,11 @@ public class Mail extends javax.mail.Authenticator
 	public static String EMAIL_FOR_FORGOTTEN_PASSWORD(String name, String pass)
 	{
 		String message = "Hello " + name
-		+ ",\n" + "Hi " + name
 		+ ",\n"
-		+ "Here's your Password!"
-		+ "\n" + "\n" + "\n" + pass
+		+ "You have indicated that you forgot the password" +
+		"for your Greenbook account."
+		+ "Here's your Password:"
+		+ "\n" + "\n" + pass
 		+ "\n" + "\n" + "--"
 		+ "The GreenBook Team";
 		
@@ -54,16 +55,24 @@ public class Mail extends javax.mail.Authenticator
 	
 	public static String EMAIL_FOR_NEW_REGISTRATION(String name, String username, String code, String password)
 	{
-		String message = "Hello "
+		String message = "Welcome to Greenbook!"
 				+ name
 				+ ",\n"
-				+ "Thankyou for creating an account with GreenBook!"
+				+ "Thank you for creating an account with GreenBook!"
+				+ "We're glad you're taking the next step to financial management." +
+				"Greenbook is an app that allows you to manage your finances in a simple and colorful way." +
+				"With Greenbook you will have the ability to manage multiple bank accounts as well as monthly bill payments." +
+				"You will be able to make use of sleek graphs to visualize spending reports and create budgets. " +
+				"Thank you for being apart of the early stages of Greenbook. There will be many new features and updates soon!"
 				+ "\n"
 				+ "\n"
 				+ "\n"
-				+ "Please Verify your email Address by using the following code:  "
+				+ "To get started please verify your email address by using the following code:  "
 				+ code + "\n" + "\n" + "Other Account Information"
-				+ "\nUsername: " + username + "\nPassword: " + password;
+				+ "For your reference here is your login credentials for Greenbook."
+				+ "\nUsername: " + username + "\nPassword: " + password
+				+ "\n" + "\n" + "--"
+				+ "The GreenBook Team";
 
 		
 		return message;
@@ -72,7 +81,7 @@ public class Mail extends javax.mail.Authenticator
 	public static String EMAIL_FOR_RESENDING_VERIFICATION_CODE(String name, String code)
 	{
 		String message = "Hello " + name + ",\n" +
-				"Here's your code!" +
+				"The following is the verification code you requested" +
 				"\n" +
 				"\n" +
 				"\n" +
