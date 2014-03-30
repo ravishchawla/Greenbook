@@ -3,9 +3,11 @@ package com.stacksmashers.greenbook;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.SaveCallback;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -17,15 +19,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.SaveCallback;
 
 public class TransactionsFragment extends BaseFragment
 {
@@ -36,6 +44,9 @@ public class TransactionsFragment extends BaseFragment
 
 	ArrayAdapter<ParseObject> transactionAdapter;
 
+	private AdView adView;
+	
+	
 	public TransactionsFragment()
 	{
 		// TODO Auto-generated constructor stub
@@ -67,6 +78,13 @@ public class TransactionsFragment extends BaseFragment
 		trans = (TransactionsActivity) getActivity();
 
 		totalBalance = (TextView) view.findViewById(R.id.balance_total);
+		
+		adView = (AdView)view.findViewById(R.id.adViewTransactions);
+		adView.setAdUnitId(Vars.TRANSACTIONS_AD_UNIT_IT);
+		
+		AdRequest adRequest = new AdRequest.Builder().addTestDevice(Vars.HASHED_DEVICE_ID).build();
+		
+		adView.loadAd(adRequest);
 		
 		transactionAdapter = new TransactionAdapter(getActivity(),
 				new ArrayList<ParseObject>());
@@ -335,7 +353,7 @@ public class TransactionsFragment extends BaseFragment
 			
 			
 			
-			totalBalance.setText(""+Vars.accountParseObj.getDouble(ParseDriver.ACCOUNT_BALANCE));
+			totalBalance.setText(""+Vars.decimalFormat.format(Vars.accountParseObj.getDouble(ParseDriver.ACCOUNT_BALANCE)));
 		
 	
 	

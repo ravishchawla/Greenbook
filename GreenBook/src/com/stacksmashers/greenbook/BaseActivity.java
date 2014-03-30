@@ -80,7 +80,7 @@ public class BaseActivity extends FragmentActivity
 		// send new notification 
 				.setContentTitle(title).setContentText(message)  // setcontent title and text 
 				.setContentIntent(pIntent) // setcontent intent 
-				.setSmallIcon(R.drawable.testlauncher).build();  //set small icon 
+				.setSmallIcon(R.drawable.greenbook).build();  //set small icon 
 		// manage notification 
 		NotificationManager nManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		nManager.notify(id, noti);

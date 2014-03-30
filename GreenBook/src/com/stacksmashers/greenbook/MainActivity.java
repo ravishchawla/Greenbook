@@ -10,13 +10,17 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.parse.FindCallback;
+import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 /**
  * called when the activity first created
@@ -129,42 +133,64 @@ public class MainActivity extends BaseActivity
 									
 									
 								//	Cursor caeser = DBDriver.FORGET_USER_INFO(textviewer.getText().toString());
-									List<ParseObject> parseList = ParseDriver.FORGET_USER_INFO(textviewer.getText().toString());
-									
-									if (parseList.size() != 0) // caeser.getcount is not 0 
+									//List<ParseObject> parseList = ParseDriver.FORGET_USER_INFO(textviewer.getText().toString());
+									ParseQuery<ParseObject> query = ParseQuery.getQuery(ParseDriver.USER_TABLE);
+									query.whereEqualTo(ParseDriver.USER_EMAIL, textviewer.getText().toString());
+									query.findInBackground(new FindCallback<ParseObject>()
 									{
-										  // move to first 
-
 										
-										ParseObject object = parseList.get(0);
-									//	if (!caeser.getString(1).equals("auth"))
-										if(!object.getString(ParseDriver.USER_TYPE).equals("auth"))
+										@Override
+										public void done(List<ParseObject> usersList, ParseException exe)
 										{
-											String name = object.getString(ParseDriver.USER_EMAIL);
-											// string name 
-											String email = textviewer.getText()
-													.toString();
-											//view text from tostring 
-											//String pass = caeser.getString(2);
-											String pass = object.getString(ParseDriver.USER_PASS);
-											// pass the string 
+											// TODO Auto-generated method stub
+											
+											if(usersList != null)
+											{
+												if (usersList.size() != 0) // caeser.getcount is not 0 
+												{
+													  // move to first 
 
-											// string messege 
-											String message = Mail.EMAIL_FOR_FORGOTTEN_PASSWORD(name, pass);
+													
+													ParseObject object = usersList.get(0);
+												//	if (!caeser.getString(1).equals("auth"))
+													
+													
+														String name = object.getString(ParseDriver.USER_EMAIL);
+														// string name 
+														String email = textviewer.getText()
+																.toString();
+														//view text from tostring 
+														//String pass = caeser.getString(2);
+														String pass = object.getString(ParseDriver.USER_PASS);
+														// pass the string 
 
-											// get new mail 
-											Mail mail = new Mail(
-													"no.reply.greenbook@gmail.com",
-													"hello world");
-											mail.setFrom("no.reply.greenbook");
-											mail.setTo(email);
-											mail.setSubject("GreenBook email verifcation");
-											mail.setMessage(message);
+														// string messege 
+														String message = Mail.EMAIL_FOR_FORGOTTEN_PASSWORD(name, pass);
 
-											send(mail);      // send mail 
+														// get new mail 
+														Mail mail = new Mail(
+																"no.reply.greenbook@gmail.com",
+																"hello world");
+														mail.setFrom("no.reply.greenbook");
+														mail.setTo(email);
+														mail.setSubject("GreenBook email verifcation");
+														mail.setMessage(message);
+
+														send(mail);      // send mail 
+													
+
+												}
+											}
+											else
+												Log.i("Parse", exe.getMessage());
+												
+											
+											
+											
 										}
+									});
+								
 
-									}
 
 								}
 							}).create();      

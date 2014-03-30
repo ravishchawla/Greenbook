@@ -97,7 +97,7 @@ public class IncomeSourceReportsFragment extends BaseFragment
 		endSpinner = (Spinner) view.findViewById(R.id.spending_spinner_end);
 
 		graphLayout = (LinearLayout) view
-				.findViewById(R.id.spending_report_graph);
+				.findViewById(R.id.spending_graphicalview);
 
 		trans = (TransactionsActivity) getActivity();
 		startDate = new Date();

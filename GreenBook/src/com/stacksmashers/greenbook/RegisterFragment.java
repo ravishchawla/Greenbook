@@ -62,7 +62,7 @@ public class RegisterFragment extends BaseFragment
 	 */
 
 	private String text;
-	private Cursor caeser;
+	
 	private List<ParseObject> parseList;
 	private boolean name_bool = false, email_bool = false,
 			password_bool = false, checkpassword_bool = false;
@@ -533,7 +533,7 @@ public class RegisterFragment extends BaseFragment
 		// caeser = DBDriver.CHECK_DUPLICATE_USERS(username);
 
 		query = new ParseQuery<ParseObject>(ParseDriver.USER_TABLE);
-		query.whereEqualTo(ParseDriver.USER_NAME, username);
+		query.whereEqualTo(ParseDriver.USER_EMAIL, username);
 
 		query.findInBackground(new FindCallback<ParseObject>()
 		{
@@ -571,7 +571,7 @@ public class RegisterFragment extends BaseFragment
 		if (condition)
 			new AlertDialog.Builder(getActivity())
 					.setMessage(
-							"Login Now with Email: " + caeser.getString(1)
+							"Login Now with Email: " + username
 									+ "?")
 					.setTitle("Email Alreaddy Registered")
 					.setPositiveButton("Yes",

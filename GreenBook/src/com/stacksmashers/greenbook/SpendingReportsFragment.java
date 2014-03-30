@@ -52,8 +52,7 @@ public class SpendingReportsFragment extends BaseFragment
 	View view;
 	LinearLayout mLinLayout;
 	public int viewMode;
-	public static int LIST_VIEW = 0;
-	public static int GRAPH_VIEW = 1;
+	
 
 	public SpendingReportsFragment()
 	{
@@ -97,7 +96,7 @@ public class SpendingReportsFragment extends BaseFragment
 		endSpinner = (Spinner) view.findViewById(R.id.spending_spinner_end);
 
 		graphLayout = (LinearLayout) view
-				.findViewById(R.id.spending_report_graph);
+				.findViewById(R.id.spending_graphicalview);
 
 		trans = (TransactionsActivity) getActivity();
 		startDate = new Date();
@@ -278,7 +277,7 @@ public class SpendingReportsFragment extends BaseFragment
 				new ArrayList<Entry<String, Double>>());
 		mListView.setAdapter(spendingAdapter);
 
-		displayView(0);
+		displayView(1);
 		Log.i("Spending", "Added Graph");
 
 		return;
@@ -291,7 +290,7 @@ public class SpendingReportsFragment extends BaseFragment
 				.findViewById(R.id.spending_graphicalview);
 		ListView mListView = (ListView) view
 				.findViewById(R.id.spending_listview);
-		if (LIST_VIEW == (viewMode = mode))
+		if (0 == (viewMode = mode))
 		{
 			mLinLayout.setVisibility(View.GONE);
 			mListView.setVisibility(View.VISIBLE);

@@ -345,8 +345,11 @@ public class AccountsFragment extends BaseActivity
 						account.put(ParseDriver.ACCOUNT_BALANCE, Double.parseDouble(add_balance
 								.getText().toString()));
 
-						account.put(ParseDriver.ACCOUNT_BANK, choose_bank
-								.getSelectedItem().toString());
+						if(add_custom.getVisibility() == View.GONE)
+							account.put(ParseDriver.ACCOUNT_BANK, choose_bank
+									.getSelectedItem().toString());
+						else
+							account.put(ParseDriver.ACCOUNT_BANK, add_custom.getText().toString());
 
 						account.put(ParseDriver.USER_ACCOUNT, Vars.userParseObj);
 
@@ -391,24 +394,20 @@ public class AccountsFragment extends BaseActivity
 						else
 							account.put(ParseDriver.ACCOUNT_INTEREST, "-1");
 
-						duplicateQuery.whereEqualTo(ParseDriver.ACCOUNT_NAME,
-								add_name.getText().toString());
-
-						duplicateQuery
-								.findInBackground(new FindCallback<ParseObject>()
-								{
-
-									@Override
-									public void done(
-											List<ParseObject> accountList,
-											ParseException exe)
+					
+					
+						boolean duplicate = false;
+						for(ParseObject obj: Vars.accountsParseList)
+						{
+							if(obj.getString(ParseDriver.ACCOUNT_NAME).equals(add_name.getText().toString()))
 									{
-										// TODO Auto-generated method stub
-
-										if (accountList != null)
-										{
-
-											if (accountList.size() != 0)
+										duplicate = true;
+										break;
+									}
+						}
+						
+						
+											if (duplicate)
 												Toast.makeText(
 														getApplicationContext(),
 														"Account Alreaddy Exists\nPlease Rename the Account",
@@ -434,10 +433,7 @@ public class AccountsFragment extends BaseActivity
 												ArtDialog.dismiss();
 												query(ParseDriver.OBJECT_ID);
 											}
-										}
 
-									}
-								});
 
 						// caeser.put(DBHelper.ACCOUNT, value)
 

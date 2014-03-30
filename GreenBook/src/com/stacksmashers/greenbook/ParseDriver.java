@@ -103,26 +103,6 @@ public class ParseDriver
 	{
 		
 	
-		ParseQuery<ParseObject> query = ParseQuery.getQuery(USER_TABLE);
-		query.whereEqualTo(USER_EMAIL, _EMAIL);
-		query.findInBackground(new FindCallback<ParseObject>()
-		{
-			
-			@Override
-			public void done(List<ParseObject> usersList, ParseException exe)
-			{
-				// TODO Auto-generated method stub
-				
-				if(exe == null)
-					list = usersList;
-				else
-					Log.i("Parse", exe.getMessage());
-					
-				
-				
-				
-			}
-		});
 	
 		return list;
 		

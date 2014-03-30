@@ -492,16 +492,16 @@ public class TransactionsActivity extends BaseActivity implements
 
 			if (item.isChecked())
 			{
-				item.setIcon(R.drawable.content_graph);
+				item.setIcon(R.drawable.content_list);
 
-				spendingFragment.displayView(1);
+				spendingFragment.displayView(0);
 				item.setChecked(false);
 			}
 			else
 			{
-				item.setIcon(R.drawable.content_list);
+				item.setIcon(R.drawable.content_graph);
 
-				spendingFragment.displayView(0);
+				spendingFragment.displayView(1);
 				item.setChecked(true);
 			}
 
