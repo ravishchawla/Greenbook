@@ -3,72 +3,51 @@
     android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical" xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
+    <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/adViewTransactions"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginBottom="60dp" >
+        app:adSize="BANNER"
+        app:adUnitId="@string/transaction_ad_unit_id" >
+    </com.google.android.gms.ads.AdView>
 
-        <ListView
-            android:id="@+id/transactions_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true" >
-        </ListView>
-    </RelativeLayout>
+    <TextView
+        android:id="@+id/balance_total"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="0.0"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <RelativeLayout
-        android:id="@+id/relativeLayout2"
+    <ImageView
+        android:id="@+id/imageView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true" >
+        android:layout_alignTop="@+id/balance_total_text"
+        android:src="@drawable/content_right" />
 
-        <TextView
-            android:id="@+id/TextView01"
-            android:layout_width="wrap_content"
-            android:layout_height="26dip"
-            android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@+id/settings_icon"
-            android:ellipsize="marquee"
-            android:gravity="right"
-            android:singleLine="true"
-            android:text="Total Balance"
-            android:textSize="24sp" />
+    <TextView
+        android:id="@+id/balance_total_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/imageView1"
+        android:text="Total Balance"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
-        <ImageView
-            android:id="@+id/settings_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:src="@drawable/content_right" />
-
-        <TextView
-            android:id="@+id/balance_total"
-            android:layout_width="wrap_content"
-            android:layout_height="26dip"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:ellipsize="marquee"
-            android:gravity="right"
-            android:singleLine="true"
-            android:textSize="24sp" />
-
-        
-    <com.google.android.gms.ads.AdView
-        xmlns:ads="http://schemas.android.com/apk/lib/com.google.android.gms.ads"
-        android:id="@+id/adViewTransactions"
-        android:layout_height="24dp"
-        ads:adSize="BANNER"
-        android:layout_width="match_parent" >
-    </com.google.android.gms.ads.AdView>
-        
-        
-    </RelativeLayout>
-
+    <ListView
+        android:id="@+id/transactions_list"
+        android:layout_width="match_parent"
+        android:layout_height="320dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/adViewTransactions" >
+    </ListView>
+    
 </RelativeLayout>

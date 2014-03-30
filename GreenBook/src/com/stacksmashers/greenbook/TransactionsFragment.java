@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.SaveCallback;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -29,6 +25,8 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.google.ads.AdRequest.ErrorCode;
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.parse.ParseException;
@@ -80,11 +78,50 @@ public class TransactionsFragment extends BaseFragment
 		totalBalance = (TextView) view.findViewById(R.id.balance_total);
 		
 		adView = (AdView)view.findViewById(R.id.adViewTransactions);
-		adView.setAdUnitId(Vars.TRANSACTIONS_AD_UNIT_IT);
 		
 		AdRequest adRequest = new AdRequest.Builder().addTestDevice(Vars.HASHED_DEVICE_ID).build();
 		
 		adView.loadAd(adRequest);
+		
+		adView.setAdListener(new AdListener()
+		{
+			@Override
+			public void onAdOpened()
+			{
+				Log.d("adopen", "ad opened");
+			}
+			
+			@Override
+			public void onAdFailedToLoad(int error)
+			{
+				switch(error){
+					case AdRequest.ERROR_CODE_INTERNAL_ERROR:
+						Log.d("adfailed", "error code internal error");
+						break;
+					case AdRequest.ERROR_CODE_INVALID_REQUEST:
+						Log.d("adfailed", "error code invalid request");
+						break;
+					case AdRequest.ERROR_CODE_NETWORK_ERROR:
+						Log.d("adfailed", "error code network error");
+						break;
+					case AdRequest.ERROR_CODE_NO_FILL:
+						Log.d("adfailed", "error code no fill");
+						break;
+					
+					
+				}
+
+				
+			}
+			
+			@Override
+			public void onAdLoaded()
+			{
+				Log.d("adload", "ad loaded properly");
+			}
+				
+			
+		});
 		
 		transactionAdapter = new TransactionAdapter(getActivity(),
 				new ArrayList<ParseObject>());
@@ -365,10 +402,31 @@ public class TransactionsFragment extends BaseFragment
 	{
 		// TODO Auto-generated method stub
 		super.onResume();
-
+		
+		if(adView != null)
+			adView.resume();
 	
 	}
 
+	@Override
+	public void onPause()
+	{
+		super.onPause();
+
+		if(adView != null)
+			adView.pause();
+	}
+	
+	
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+		
+		if(adView != null)
+			adView.destroy();
+	}
+	
 	class TransactionAdapter extends ArrayAdapter<ParseObject>
 	{
 		private Context context;

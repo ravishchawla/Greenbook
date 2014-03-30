@@ -31,6 +31,9 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.parse.ParseObject;
 
 public class SpendingReportsFragment extends BaseFragment
@@ -52,7 +55,7 @@ public class SpendingReportsFragment extends BaseFragment
 	View view;
 	LinearLayout mLinLayout;
 	public int viewMode;
-	
+	private AdView adView;
 
 	public SpendingReportsFragment()
 	{
@@ -177,6 +180,55 @@ public class SpendingReportsFragment extends BaseFragment
 		});
 
 		((TransactionsActivity) getActivity()).setSpendingReportTag(getTag());
+		
+adView = (AdView)view.findViewById(R.id.adViewSpending);
+		
+		AdRequest adRequest = new AdRequest.Builder().addTestDevice(Vars.HASHED_DEVICE_ID).build();
+		
+		adView.loadAd(adRequest);
+		
+		adView.setAdListener(new AdListener()
+		{
+			@Override
+			public void onAdOpened()
+			{
+				Log.d("adopen", "ad opened");
+			}
+			
+			@Override
+			public void onAdFailedToLoad(int error)
+			{
+				switch(error){
+					case AdRequest.ERROR_CODE_INTERNAL_ERROR:
+						Log.d("adfailed", "error code internal error");
+						break;
+					case AdRequest.ERROR_CODE_INVALID_REQUEST:
+						Log.d("adfailed", "error code invalid request");
+						break;
+					case AdRequest.ERROR_CODE_NETWORK_ERROR:
+						Log.d("adfailed", "error code network error");
+						break;
+					case AdRequest.ERROR_CODE_NO_FILL:
+						Log.d("adfailed", "error code no fill");
+						break;
+					
+					
+				}
+
+				
+			}
+			
+			@Override
+			public void onAdLoaded()
+			{
+				Log.d("adload", "ad loaded properly");
+			}
+				
+			
+		});
+
+		
+		
 		updateData();
 
 		return view;
@@ -187,10 +239,15 @@ public class SpendingReportsFragment extends BaseFragment
 	{
 		// TODO Auto-generated method stub
 
+		
+		if(adView != null)
+			adView.resume();
+		
 		super.onResume();
 		Log.i("Spending", "Actually called onREsume");
 		state = true;
-
+		
+		
 		
 		// updateData(null, null, 0);
 		// if(trans.spendingMode == 1 && items!= null)
@@ -198,6 +255,25 @@ public class SpendingReportsFragment extends BaseFragment
 
 	}
 
+	@Override
+	public void onPause()
+	{
+		if(adView != null)
+			adView.pause();
+		super.onPause();
+		
+		
+	}
+	
+	@Override
+	public void onDestroy()
+	{
+		if(adView != null)
+			adView.destroy();
+		super.onDestroy();
+		
+	}
+	
 	public List<Entry<String, Double>> regroup()
 	{
 		LinkedHashMap<String, Double> transactionGroups = new LinkedHashMap<String, Double>();

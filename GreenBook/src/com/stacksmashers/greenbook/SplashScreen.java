@@ -54,7 +54,7 @@ public class SplashScreen extends Activity
 		DBDriver driver = new DBDriver(getBaseContext());
 		ParseDriver parseDriver = new ParseDriver(this, getIntent());
 		setContentView(R.layout.splash_screen); // set contentview 
-		new Vars();
+		new Vars(getApplicationContext());
 	//	defineCurrencies();
 
 		

@@ -245,9 +245,8 @@ containing a value of this type.
     public static final class id {
         public static final int LinearLayout1=0x7f050043;
         public static final int RelativeLayout1=0x7f050012;
-        public static final int TextView01=0x7f050031;
-        public static final int account_display_balance=0x7f050037;
-        public static final int account_display_bank=0x7f050036;
+        public static final int account_display_balance=0x7f050036;
+        public static final int account_display_bank=0x7f050035;
         public static final int account_display_name=0x7f05001a;
         public static final int accounts_add=0x7f05004f;
         public static final int accounts_balance_sort=0x7f05004d;
@@ -267,8 +266,10 @@ containing a value of this type.
         public static final int accounts_sort=0x7f05004a;
         public static final int action_check=0x7f050048;
         public static final int action_forgot_password=0x7f050047;
-        public static final int adViewTransactions=0x7f050034;
-        public static final int balance_total=0x7f050033;
+        public static final int adViewSpending=0x7f05002b;
+        public static final int adViewTransactions=0x7f050030;
+        public static final int balance_total=0x7f050031;
+        public static final int balance_total_text=0x7f050032;
         public static final int checkpasswordCheck=0x7f05000f;
         public static final int drawer_edit=0x7f050051;
         public static final int drawer_layout=0x7f050014;
@@ -295,20 +296,19 @@ containing a value of this type.
         public static final int register_password=0x7f05000c;
         public static final int register_pic=0x7f050011;
         public static final int register_username=0x7f05000b;
-        public static final int relativeLayout2=0x7f050030;
         public static final int satellite=0x7f050002;
         public static final int settings_description=0x7f050040;
-        public static final int settings_icon=0x7f050032;
+        public static final int settings_icon=0x7f050038;
         public static final int settings_list=0x7f050013;
         public static final int settings_title=0x7f050041;
         public static final int simple_progress_bar=0x7f050045;
         public static final int spending_balance=0x7f050039;
-        public static final int spending_graphicalview=0x7f05002d;
-        public static final int spending_icon=0x7f050038;
-        public static final int spending_listview=0x7f05002e;
-        public static final int spending_report_graph_layout=0x7f050035;
-        public static final int spending_spinner_end=0x7f05002c;
-        public static final int spending_spinner_start=0x7f05002b;
+        public static final int spending_graphicalview=0x7f05002e;
+        public static final int spending_icon=0x7f050037;
+        public static final int spending_listview=0x7f05002f;
+        public static final int spending_report_graph_layout=0x7f050034;
+        public static final int spending_spinner_end=0x7f05002d;
+        public static final int spending_spinner_start=0x7f05002c;
         public static final int spending_view_type=0x7f050054;
         public static final int terrain=0x7f050003;
         public static final int transaction_add_reasno=0x7f050021;
@@ -323,7 +323,7 @@ containing a value of this type.
         public static final int transactions_add=0x7f050055;
         public static final int transactions_currency=0x7f050024;
         public static final int transactions_description=0x7f05003d;
-        public static final int transactions_list=0x7f05002f;
+        public static final int transactions_list=0x7f050033;
         public static final int transactions_refresh=0x7f050052;
         public static final int transactoins_viewpager=0x7f050015;
         public static final int verify_email=0x7f050044;
@@ -467,6 +467,7 @@ containing a value of this type.
          */
         public static final int location_client_powered_by_google=0x7f06001a;
         public static final int open_drawer=0x7f06001e;
+        public static final int transaction_ad_unit_id=0x7f060020;
         public static final int welcome=0x7f06001d;
     }
     public static final class style {

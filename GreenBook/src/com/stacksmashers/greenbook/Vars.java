@@ -90,7 +90,7 @@ public class Vars
 
 	
 	public static String HASHED_DEVICE_ID;
-	public final static String TRANSACTIONS_AD_UNIT_IT = "ca-app-pub-8311338123994124/5214395496";
+	public static String TRANSACTIONS_AD_UNIT_IT;
 	
 
 
@@ -122,7 +122,7 @@ public class Vars
 
 		decimalFormat = new DecimalFormat("#.##");
 
-		
+		TRANSACTIONS_AD_UNIT_IT = context.getResources().getString(R.string.transaction_ad_unit_id);
 		HASHED_DEVICE_ID = ((TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
 		
 		

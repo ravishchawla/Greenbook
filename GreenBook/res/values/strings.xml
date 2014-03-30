@@ -30,4 +30,6 @@
      
     <string name="open_drawer">Open Drawer</string>
 	<string name="close_drawer">Close Drawer</string>
+	
+	<string name="transaction_ad_unit_id">ca-app-pub-8311338123994124/5214395496</string>
 </resources>
