@@ -46,8 +46,10 @@
         android:id="@+id/transactions_list"
         android:layout_width="match_parent"
         android:layout_height="320dp"
+        android:layout_above="@+id/balance_total"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/adViewTransactions" >
+
     </ListView>
     
 </RelativeLayout>

@@ -49,6 +49,7 @@ public class TransactionsActivity extends BaseActivity implements
 	private DrawerLayout navigationDrawer;
 	private ActionBarDrawerToggle actionToggle;
 
+	private boolean onCreateBeingCalled = false;
 	ParseQuery<ParseObject> userQuery = ParseQuery
 			.getQuery(ParseDriver.USER_TABLE);
 	ParseQuery<ParseObject> currencyQuery = ParseQuery
@@ -65,7 +66,10 @@ public class TransactionsActivity extends BaseActivity implements
 	String TRANSACTIONS_TAG;
 
 	protected SpendingReportsFragment spendingReportsFragment;
-	//protected IncomeSourceReportsFragment incomeSourceReportsFragment;
+
+	protected IncomeSourceReportsFragment incomeSourceReportsFragment;
+
+
 
 	/**
 	 * this class make sure about transction activity
@@ -110,12 +114,12 @@ public class TransactionsActivity extends BaseActivity implements
 
 	}
 
-	public void queryTransactions()
+	public void queryTransactions(final boolean callUpdate)
 	{
 		ParseQuery<ParseObject> transactionQuery = ParseQuery
 				.getQuery(ParseDriver.TRANSACTION_TABLE);
-		transactionQuery.whereEqualTo(ParseDriver.ACCOUNT_TRANSACTION,
-				Vars.accountParseObj);
+		// transactionQuery.whereEqualTo(ParseDriver.ACCOUNT_TRANSACTION,
+		// Vars.accountParseObj);
 
 		final TransactionsFragment transactionsFragment = (TransactionsFragment) getSupportFragmentManager()
 				.findFragmentByTag(TRANSACTIONS_TAG);
@@ -123,8 +127,9 @@ public class TransactionsActivity extends BaseActivity implements
 		final SpendingReportsFragment spendingFragment = (SpendingReportsFragment) getSupportFragmentManager()
 				.findFragmentByTag(SPENDING_TAG);
 
-	//	final IncomeSourceReportsFragment incomeFragment = (IncomeSourceReportsFragment) getSupportFragmentManager()
-	//			.findFragmentByTag(INCOME_TAG);
+		final IncomeSourceReportsFragment incomeFragment = (IncomeSourceReportsFragment) getSupportFragmentManager()
+				.findFragmentByTag(INCOME_TAG);
+
 
 		Log.i("transfrag ", "" + (Vars.accountParseObj == null));
 		transactionQuery.findInBackground(new FindCallback<ParseObject>()
@@ -141,26 +146,14 @@ public class TransactionsActivity extends BaseActivity implements
 					try
 					{
 						Vars.transactionParseList = transactionList;
-						transactionsFragment.transactionAdapter.clear();
-						transactionsFragment.transactionAdapter
-								.addAll(transactionList);
-						spendingFragment.spendingAdapter.clear();
+						if (callUpdate)
+							updateData();
 
-						spendingFragment.spendingAdapter
-								.addAll(spendingFragment.regroup());
-						spendingFragment.refreshGraph();
-
-		//				incomeFragment.spendingAdapter.clear();
-			//			incomeFragment.spendingAdapter.addAll(incomeFragment
-				//				.regroup());
-					//	incomeFragment.refreshGraph();
-
-						transactionsFragment.updateTotal();
 					}
 
 					catch (Exception aout)
 					{
-						
+
 					}
 				}
 				else
@@ -182,6 +175,7 @@ public class TransactionsActivity extends BaseActivity implements
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState); // initalize savedinstancestate
 
+		onCreateBeingCalled = true;
 		setContentView(R.layout.activity_transaction); // call setcontentview
 		Bundle extras = getIntent().getExtras(); // get intent bundle extras
 
@@ -251,7 +245,7 @@ public class TransactionsActivity extends BaseActivity implements
 		navList.setAdapter(navigationAdapter);
 
 		query();
-
+		queryTransactions(false);
 		navList.setOnItemClickListener(new OnItemClickListener()
 		{
 
@@ -266,14 +260,15 @@ public class TransactionsActivity extends BaseActivity implements
 				SpendingReportsFragment spendingFragment = (SpendingReportsFragment) getSupportFragmentManager()
 						.findFragmentByTag(SPENDING_TAG);
 
-				//IncomeSourceReportsFragment incomeFragment = (IncomeSourceReportsFragment) getSupportFragmentManager()
-				//		.findFragmentByTag(INCOME_TAG);
+				IncomeSourceReportsFragment incomeFragment = (IncomeSourceReportsFragment) getSupportFragmentManager()
+						.findFragmentByTag(INCOME_TAG);
+
 
 				Vars.accountParseObj = Vars.accountsParseList.get(pos);
 
 				String titleText = "Transactions";
 
-				queryTransactions();
+				updateData();
 				accountID = pos;
 				navigationDrawer.closeDrawer(navList);
 
@@ -295,7 +290,7 @@ public class TransactionsActivity extends BaseActivity implements
 			public int getCount()
 			{
 				// TODO Auto-generated method stub
-				return 2;
+				return 3;
 			}
 
 			@Override
@@ -311,10 +306,11 @@ public class TransactionsActivity extends BaseActivity implements
 						spendingReportsFragment.setRetainInstance(true);
 						return spendingReportsFragment;
 
-					//case 2:
-						//incomeSourceReportsFragment = new IncomeSourceReportsFragment();
-					//	incomeSourceReportsFragment.setRetainInstance(true);
-						//return incomeSourceReportsFragment;
+					case 2:
+						incomeSourceReportsFragment = new IncomeSourceReportsFragment();
+						incomeSourceReportsFragment.setRetainInstance(true);
+						return incomeSourceReportsFragment;
+
 
 				}
 
@@ -324,6 +320,7 @@ public class TransactionsActivity extends BaseActivity implements
 
 			}
 		};
+		viewpager.setOffscreenPageLimit(2);
 		viewpager.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
 		{
 
@@ -363,8 +360,10 @@ public class TransactionsActivity extends BaseActivity implements
 				.setTabListener(this));
 		actionBar.addTab(actionBar.newTab().setText("Spending Report")
 				.setTabListener(this));
-		//actionBar.addTab(actionBar.newTab().setText("Income Report")
-			//	.setTabListener(this));
+		actionBar.addTab(actionBar.newTab().setText("Income Report")
+				.setTabListener(this));
+		
+
 		new Handler().postDelayed(new Runnable()
 		{
 
@@ -379,18 +378,105 @@ public class TransactionsActivity extends BaseActivity implements
 
 			}
 
-		}, 1000);
+		}, 2000);
 
+	}
+
+	protected void updateData()
+	{
+		// TODO Auto-generated method stub
+		final TransactionsFragment transactionsFragment = (TransactionsFragment) getSupportFragmentManager()
+				.findFragmentByTag(TRANSACTIONS_TAG);
+
+		final SpendingReportsFragment spendingFragment = (SpendingReportsFragment) getSupportFragmentManager()
+				.findFragmentByTag(SPENDING_TAG);
+
+		final IncomeSourceReportsFragment incomeFragment = (IncomeSourceReportsFragment) getSupportFragmentManager()
+				.findFragmentByTag(INCOME_TAG);
+
+
+		
+		transactionsFragment.transactionAdapter.clear();
+		String objId = Vars.accountParseObj.getObjectId();
+		Vars.transactionAccountParseList.clear();
+		Log.d("transacacc", Vars.transactionParseList.toString());
+		Vars.transactionTotalSum = 0.0;
+		for (ParseObject obj : Vars.transactionParseList)
+		{
+			if (obj.getParseObject(ParseDriver.ACCOUNT_TRANSACTION)
+					.getObjectId().equals(objId))
+			{
+				Vars.transactionAccountParseList.add(obj);
+
+				Log.d("transagcc",
+						"adding "
+								+ obj.getDouble(ParseDriver.TRANSACTION_VALUE));
+			}
+
+		}
+
+		Log.d("transac", Vars.transactionAccountParseList.toString() + "");
+		Log.d("transac", Vars.transactionTotalSum + "");
+
+		if (transactionsFragment != null)
+		{
+			transactionsFragment.transactionAdapter
+					.addAll(Vars.transactionAccountParseList);
+			transactionsFragment.updateTotal();
+		}
+
+		if (spendingFragment != null)
+		{
+			spendingFragment.spendingAdapter.clear();
+
+			spendingFragment.spendingAdapter.addAll(spendingFragment.regroup());
+			spendingFragment.refreshGraph();
+		}
+
+		if (incomeFragment != null)
+		{
+			incomeFragment.incomeAdapter.clear();
+			incomeFragment.incomeAdapter.addAll(incomeFragment.regroup());
+			incomeFragment.refreshGraph();
+		}
+		
+		
 	}
 
 	@Override
 	protected void onResume()
 	{
-		// TODO Auto-generated method stub
 
-		query();
-
+		Log.d("transac", "transactionactivity.onresume()");
 		super.onResume();
+
+		navigationAdapter.clear();
+		navigationAdapter.addAll(Vars.accountsParseList);
+
+		if (onCreateBeingCalled || Vars.accountParseObj == null)
+		{
+			onCreateBeingCalled = false;
+			return;
+		}
+
+		updateData();
+
+	}
+
+	@Override
+	protected void onPause()
+	{
+		super.onPause();
+		Log.d("transac", "transactionactivity.onpause()");
+
+		onCreateBeingCalled = false;
+	}
+
+	@Override
+	protected void onDestroy()
+	{
+		super.onDestroy();
+		Log.d("transac", "transactionactivity.ondestroy()");
 	}
 
 	/**
@@ -417,8 +503,11 @@ public class TransactionsActivity extends BaseActivity implements
 			else if (sel == 1)
 				getMenuInflater().inflate(R.menu.menu_spending, menu);
 
-			//else if (sel == 2)
-			//	getMenuInflater().inflate(R.menu.menu_income, menu);
+			else if (sel == 2)
+				getMenuInflater().inflate(R.menu.menu_income, menu);
+			
+			
+			
 			// submenu.add("Stranger").setIcon(R.drawable.content_forgot);
 		}
 		// }
@@ -445,7 +534,10 @@ public class TransactionsActivity extends BaseActivity implements
 		}
 
 		if (item.getItemId() == R.id.transactions_refresh)
-			queryTransactions();
+		{
+			queryTransactions(true);
+
+		}
 
 		if (item.getItemId() == R.id.accounts_refresh)
 			query();
@@ -484,9 +576,10 @@ public class TransactionsActivity extends BaseActivity implements
 		SpendingReportsFragment spendingFragment = (SpendingReportsFragment) getSupportFragmentManager()
 				.findFragmentByTag(SPENDING_TAG);
 
-		//IncomeSourceReportsFragment incomeFragment = (IncomeSourceReportsFragment) getSupportFragmentManager()
-		//		.findFragmentByTag(INCOME_TAG);
+		IncomeSourceReportsFragment incomeFragment = (IncomeSourceReportsFragment) getSupportFragmentManager()
+				.findFragmentByTag(INCOME_TAG);
 
+		
 		if (item.getItemId() == R.id.spending_view_type)
 		{
 
@@ -509,7 +602,7 @@ public class TransactionsActivity extends BaseActivity implements
 
 		}
 
-		/*if (item.getItemId() == R.id.income_view_type)
+		if (item.getItemId() == R.id.income_view_type)
 		{
 
 			if (item.isChecked())
@@ -529,8 +622,10 @@ public class TransactionsActivity extends BaseActivity implements
 
 			return super.onOptionsItemSelected(item);
 
-		}*/
+		}
 
+
+		
 		return super.onOptionsItemSelected(item);
 
 	}
@@ -564,6 +659,7 @@ public class TransactionsActivity extends BaseActivity implements
 		INCOME_TAG = tag;
 	}
 
+	
 	public String getSpendingReportTag()
 	{
 		return SPENDING_TAG;
@@ -574,6 +670,7 @@ public class TransactionsActivity extends BaseActivity implements
 		return INCOME_TAG;
 	}
 
+	
 	public void setTransactionTag(String tag)
 	{
 		TRANSACTIONS_TAG = tag;

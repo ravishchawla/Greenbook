@@ -29,13 +29,13 @@ public class PieGraph extends GraphicalView
 
 	}
 
-	public static GraphicalView getNewInstance(Context contxt)
+	public static GraphicalView getNewInstance(Context contxt, Map<String, Double> map, double sum)
 	{
 
 		
 		
-		return ChartFactory.getPieChartView(contxt, getDataSet(contxt, Vars.transactionParseMap),
-				getRenderer(Vars.transactionParseMap.size()));
+		return ChartFactory.getPieChartView(contxt, getDataSet(contxt, map, sum),
+				getRenderer(map.size()));
 
 		
 		
@@ -66,7 +66,7 @@ public class PieGraph extends GraphicalView
 	}
 
 	private static CategorySeries getDataSet(Context context,
-			Map<String, Double> items)
+			Map<String, Double> items, double sum)
 	{
 		CategorySeries series = new CategorySeries("Overall Spending");
 
@@ -78,8 +78,9 @@ public class PieGraph extends GraphicalView
 			
 			
 			series.add(item.getKey(), 100 * item.getValue()
-					/ Vars.transactionTotalSum);
-			Log.i("pie: ", "" + 100 * item.getValue() / Vars.transactionTotalSum);
+					/ sum);
+			Log.i("pie: ", "" + 100 * item.getValue() / sum);
+			Log.i("pie: ", "" + sum);
 
 		}
 		/*

@@ -30,6 +30,7 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="15dp"
         android:ems="10"
+        android:inputType="textEmailAddress"
         android:hint="Email"
         android:textColor="#009900"
         android:textColorHint="#C0C0C0" />

@@ -444,14 +444,20 @@ public class SettingsActivity extends BaseActivity
 						transactionsQuery.whereEqualTo(ParseDriver.USER_TRANSACTION, Vars.userParseObj);
 						transactionsQuery.findInBackground(new FindCallback<ParseObject>()
 						{
-							
+							int done = 1;
 							@Override
 							public void done(List<ParseObject> list, ParseException arg1)
 							{
 								// TODO Auto-generated method stub
+								Vars.transactionParseList = list;
+								final int size = list.size();
+								
 								for(ParseObject obj: list)
 									{
-									obj.put(ParseDriver.TRANSACTION_VALUE, Vars.decimalFormat.format(obj.getDouble(ParseDriver.TRANSACTION_VALUE) * multiplier));
+									
+								
+									obj.put(ParseDriver.TRANSACTION_VALUE, Double.parseDouble(Vars.decimalFormat.format(obj.getDouble(ParseDriver.TRANSACTION_VALUE) * multiplier)));
+									
 									obj.saveInBackground(new SaveCallback()
 									{
 										
@@ -459,7 +465,9 @@ public class SettingsActivity extends BaseActivity
 										public void done(ParseException arg0)
 										{
 											// TODO Auto-generated method stub
-											man.cancel(3);
+											done++;
+											if(done >= size)
+												man.cancel(3);
 											
 										}
 									});
@@ -471,7 +479,7 @@ public class SettingsActivity extends BaseActivity
 						
 						for(ParseObject obj: Vars.accountsParseList)
 							{
-							obj.put(ParseDriver.ACCOUNT_BALANCE, Vars.decimalFormat.format(obj.getDouble(ParseDriver.ACCOUNT_BALANCE) * multiplier));
+							obj.put(ParseDriver.ACCOUNT_BALANCE, Double.parseDouble(Vars.decimalFormat.format(obj.getDouble(ParseDriver.ACCOUNT_BALANCE) * multiplier)));
 							obj.saveInBackground();
 							}
 						
@@ -517,6 +525,30 @@ public class SettingsActivity extends BaseActivity
 
 	}
 
+
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		Log.d("settingsac", "settingsactivity.onresume()");
+	}
+	
+	@Override
+	protected void onPause()
+	{
+		super.onPause();
+		Log.d("transac", "settingsactivity.onpause()");
+	}
+	
+	@Override
+	protected void onDestroy()
+	{
+		super.onDestroy();
+		Log.d("transac", "settingsactivity.ondestroy()");
+	}
+
+	
+	
 	public void updateExchangeRates(AlertDialog secondDialog, String URL,
 			int length)
 	{

@@ -31,6 +31,9 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.parse.ParseObject;
 
 public class IncomeSourceReportsFragment extends BaseFragment
@@ -47,13 +50,12 @@ public class IncomeSourceReportsFragment extends BaseFragment
 	static String startDateString, endDateString;
 	static Date startDate, endDate;
 	private ArrayAdapter<String> startAdapter, endAdapter;
-	public ArrayAdapter<Entry<String, Double>> spendingAdapter;
+	public ArrayAdapter<Entry<String, Double>> incomeAdapter;
 	boolean state = false;
 	View view;
 	LinearLayout mLinLayout;
 	public int viewMode;
-	public static int LIST_VIEW = 0;
-	public static int GRAPH_VIEW = 1;
+	private AdView adView;
 
 	public IncomeSourceReportsFragment()
 	{
@@ -178,6 +180,55 @@ public class IncomeSourceReportsFragment extends BaseFragment
 		});
 
 		((TransactionsActivity) getActivity()).setIncomeReportTag(getTag());
+		
+adView = (AdView)view.findViewById(R.id.adViewSpending);
+		
+		AdRequest adRequest = new AdRequest.Builder().addTestDevice(Vars.HASHED_DEVICE_ID).build();
+		
+		adView.loadAd(adRequest);
+		
+		adView.setAdListener(new AdListener()
+		{
+			@Override
+			public void onAdOpened()
+			{
+				Log.d("adopen", "ad opened");
+			}
+			
+			@Override
+			public void onAdFailedToLoad(int error)
+			{
+				switch(error){
+					case AdRequest.ERROR_CODE_INTERNAL_ERROR:
+						Log.d("adfailed", "error code internal error");
+						break;
+					case AdRequest.ERROR_CODE_INVALID_REQUEST:
+						Log.d("adfailed", "error code invalid request");
+						break;
+					case AdRequest.ERROR_CODE_NETWORK_ERROR:
+						Log.d("adfailed", "error code network error");
+						break;
+					case AdRequest.ERROR_CODE_NO_FILL:
+						Log.d("adfailed", "error code no fill");
+						break;
+					
+					
+				}
+
+				
+			}
+			
+			@Override
+			public void onAdLoaded()
+			{
+				Log.d("adload", "ad loaded properly");
+			}
+				
+			
+		});
+
+		
+		
 		updateData();
 
 		return view;
@@ -188,10 +239,15 @@ public class IncomeSourceReportsFragment extends BaseFragment
 	{
 		// TODO Auto-generated method stub
 
+		
+		if(adView != null)
+			adView.resume();
+		
 		super.onResume();
 		Log.i("Spending", "Actually called onREsume");
 		state = true;
-
+		
+		
 		
 		// updateData(null, null, 0);
 		// if(trans.spendingMode == 1 && items!= null)
@@ -199,23 +255,42 @@ public class IncomeSourceReportsFragment extends BaseFragment
 
 	}
 
+	@Override
+	public void onPause()
+	{
+		if(adView != null)
+			adView.pause();
+		super.onPause();
+		
+		
+	}
+	
+	@Override
+	public void onDestroy()
+	{
+		if(adView != null)
+			adView.destroy();
+		super.onDestroy();
+		
+	}
+	
 	public List<Entry<String, Double>> regroup()
 	{
 		LinkedHashMap<String, Double> transactionGroups = new LinkedHashMap<String, Double>();
-		Log.i("trans entry ()", "" + Vars.transactionParseList.size());
-		Vars.transactionTotalSum = Vars.transactionWithrawSum = 0.0;
+		Log.i("trans entry ()", "" + Vars.transactionAccountParseList.size());
+		Vars.transactionTotalSum = 0.0;
 
-		for (ParseObject obj : Vars.transactionParseList)
+		for (ParseObject obj : Vars.transactionAccountParseList)
 		{
 			Double value = obj.getDouble(ParseDriver.TRANSACTION_VALUE);
 			Date createdAt = obj.getCreatedAt();
 			Vars.transactionTotalSum += value;
 
-			if ((value <= 0) || (createdAt.compareTo(startDate) < 0)
+			if ((value < 0) || (createdAt.compareTo(startDate) < 0)
 					|| (createdAt.compareTo(endDate) > 0))
 				continue;
 
-			Vars.transactionWithrawSum += value;
+			Vars.transactionTotalSum += value;
 			String name = obj.getString(ParseDriver.TRANSACTION_CATEGORY);
 			Double prev = transactionGroups.get(name);
 			if (prev == null)
@@ -230,7 +305,7 @@ public class IncomeSourceReportsFragment extends BaseFragment
 			Log.i("map entry", entry.getKey() + " , " + entry.getValue());
 		}
 
-		Vars.transactionParseMap = transactionGroups;
+		Vars.transactionTotalParseMap = transactionGroups;
 
 		return new ArrayList(transactionGroups.entrySet());
 
@@ -242,7 +317,7 @@ public class IncomeSourceReportsFragment extends BaseFragment
 		mLinLayout = (LinearLayout) view
 				.findViewById(R.id.spending_graphicalview);
 
-		graph = PieGraph.getNewInstance(getActivity());
+		graph = PieGraph.getNewInstance(getActivity(), Vars.transactionTotalParseMap, Vars.transactionTotalSum);
 		graph.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT));
 		mLinLayout.removeAllViews();
@@ -252,21 +327,13 @@ public class IncomeSourceReportsFragment extends BaseFragment
 	public void updateData()
 	{
 
-		/*
-		 * final Cursor caeser = sqldbase.query(DBHelper.TRANSACTION_TABLE, new
-		 * String[] { DBHelper.TRANSACTION_ID, DBHelper.TRANSACTION_USER,
-		 * DBHelper.TRANSACTION_ACCOUNT, DBHelper.TRANSACTION_ACCOUNT_NAME,
-		 * DBHelper.TRANSACTION_DEPOSIT_SOURCE,
-		 * DBHelper.TRANSACTION_WITHRAWAL_REASON, DBHelper.TRANSACTION_CATEGORY,
-		 * DBHelper.TRANSACTION_VALUE }, condition, null, null, null, null);
-		 */
 
 		startAdapter.notifyDataSetChanged();
 		endAdapter.notifyDataSetChanged();
 
 		// Utility.setListViewHeightBasedOnChildren(spendingList);
 
-		Log.i("Spend", "Moded");
+		Log.i("Income", "Moded");
 
 		// rootLayout =
 		// (LinearLayout)view.findViewById(R.id.child_linearlayout);
@@ -274,11 +341,11 @@ public class IncomeSourceReportsFragment extends BaseFragment
 		ListView mListView = (ListView) view
 				.findViewById(R.id.spending_listview);
 
-		spendingAdapter = new SpendingAdapter(getActivity(),
+		incomeAdapter = new IncomeAdapter(getActivity(),
 				new ArrayList<Entry<String, Double>>());
-		mListView.setAdapter(spendingAdapter);
+		mListView.setAdapter(incomeAdapter);
 
-		displayView(0);
+		displayView(1);
 		Log.i("Spending", "Added Graph");
 
 		return;
@@ -291,7 +358,7 @@ public class IncomeSourceReportsFragment extends BaseFragment
 				.findViewById(R.id.spending_graphicalview);
 		ListView mListView = (ListView) view
 				.findViewById(R.id.spending_listview);
-		if (LIST_VIEW == (viewMode = mode))
+		if (0 == (viewMode = mode))
 		{
 			mLinLayout.setVisibility(View.GONE);
 			mListView.setVisibility(View.VISIBLE);
@@ -388,8 +455,8 @@ public class IncomeSourceReportsFragment extends BaseFragment
 				endSpinner.setSelection(0);
 			}
 
-			spendingAdapter.clear();
-			spendingAdapter.addAll(regroup());
+			incomeAdapter.clear();
+			incomeAdapter.addAll(regroup());
 			refreshGraph();
 
 
@@ -398,13 +465,13 @@ public class IncomeSourceReportsFragment extends BaseFragment
 
 	}
 
-	class SpendingAdapter extends ArrayAdapter<Entry<String, Double>>
+	class IncomeAdapter extends ArrayAdapter<Entry<String, Double>>
 	{
 
 		private Context context;
 		private List<Entry<String, Double>> entries;
-
-		public SpendingAdapter(Context _context,
+		int posit = 0;
+		public IncomeAdapter(Context _context,
 				List<Entry<String, Double>> _parseList)
 		{
 			super(_context, R.layout.listblock_spending_report, _parseList);
@@ -425,6 +492,15 @@ public class IncomeSourceReportsFragment extends BaseFragment
 
 		}
 
+
+		@Override
+		public void clear() {
+			
+			posit = 0;
+			
+		};
+		
+		
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent)
 		{
@@ -444,7 +520,7 @@ public class IncomeSourceReportsFragment extends BaseFragment
 					.setText(object.getKey());
 			((TextView) convertView.findViewById(R.id.spending_balance))
 					.setText("" + object.getValue());
-
+			((View)convertView.findViewById(R.id.spending_icon)).setBackgroundColor(Utility.getColor(posit++));
 			return convertView;
 
 		}

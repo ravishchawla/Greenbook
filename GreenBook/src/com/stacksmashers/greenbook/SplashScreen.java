@@ -68,7 +68,7 @@ new Handler().post(new Runnable(){
 			public void run(){
 				
 				
-			//	defineCurrencies();
+				//defineCurrencies();
 				getCurrencies();
 				
 				

@@ -243,15 +243,15 @@ containing a value of this type.
         public static final int person=0x7f02002e;
     }
     public static final class id {
-        public static final int LinearLayout1=0x7f050043;
+        public static final int LinearLayout1=0x7f050042;
         public static final int RelativeLayout1=0x7f050012;
         public static final int account_display_balance=0x7f050036;
         public static final int account_display_bank=0x7f050035;
         public static final int account_display_name=0x7f05001a;
-        public static final int accounts_add=0x7f05004f;
-        public static final int accounts_balance_sort=0x7f05004d;
-        public static final int accounts_bank_sort=0x7f05004e;
-        public static final int accounts_date_sort=0x7f05004b;
+        public static final int accounts_add=0x7f05004e;
+        public static final int accounts_balance_sort=0x7f05004c;
+        public static final int accounts_bank_sort=0x7f05004d;
+        public static final int accounts_date_sort=0x7f05004a;
         public static final int accounts_dialog=0x7f050017;
         public static final int accounts_dialog_balance=0x7f05001b;
         public static final int accounts_dialog_bank=0x7f050019;
@@ -260,22 +260,23 @@ containing a value of this type.
         public static final int accounts_interst=0x7f05001c;
         public static final int accounts_interst_name=0x7f05001e;
         public static final int accounts_list=0x7f050005;
-        public static final int accounts_name_sort=0x7f05004c;
-        public static final int accounts_refresh=0x7f050050;
-        public static final int accounts_settings=0x7f050049;
-        public static final int accounts_sort=0x7f05004a;
-        public static final int action_check=0x7f050048;
-        public static final int action_forgot_password=0x7f050047;
+        public static final int accounts_name_sort=0x7f05004b;
+        public static final int accounts_refresh=0x7f050051;
+        public static final int accounts_settings=0x7f050048;
+        public static final int accounts_sort=0x7f050049;
+        public static final int action_check=0x7f050047;
+        public static final int action_forgot_password=0x7f050046;
         public static final int adViewSpending=0x7f05002b;
         public static final int adViewTransactions=0x7f050030;
         public static final int balance_total=0x7f050031;
         public static final int balance_total_text=0x7f050032;
+        public static final int cashflow_view_type=0x7f050050;
         public static final int checkpasswordCheck=0x7f05000f;
-        public static final int drawer_edit=0x7f050051;
+        public static final int drawer_edit=0x7f050052;
         public static final int drawer_layout=0x7f050014;
         public static final int drawer_textView=0x7f050025;
         public static final int emailCheck=0x7f05000d;
-        public static final int exchange_picker=0x7f050042;
+        public static final int exchange_picker=0x7f050041;
         public static final int hybrid=0x7f050004;
         public static final int imageView1=0x7f05002a;
         public static final int income_graphicalview=0x7f050028;
@@ -290,18 +291,18 @@ containing a value of this type.
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
         public static final int passwordCheck=0x7f05000e;
-        public static final int progressBar1=0x7f050046;
+        public static final int progressBar1=0x7f050045;
         public static final int register_checkpassword=0x7f050010;
         public static final int register_name=0x7f050009;
         public static final int register_password=0x7f05000c;
         public static final int register_pic=0x7f050011;
         public static final int register_username=0x7f05000b;
         public static final int satellite=0x7f050002;
-        public static final int settings_description=0x7f050040;
+        public static final int settings_description=0x7f05003f;
         public static final int settings_icon=0x7f050038;
         public static final int settings_list=0x7f050013;
-        public static final int settings_title=0x7f050041;
-        public static final int simple_progress_bar=0x7f050045;
+        public static final int settings_title=0x7f050040;
+        public static final int simple_progress_bar=0x7f050044;
         public static final int spending_balance=0x7f050039;
         public static final int spending_graphicalview=0x7f05002e;
         public static final int spending_icon=0x7f050037;
@@ -314,20 +315,19 @@ containing a value of this type.
         public static final int transaction_add_reasno=0x7f050021;
         public static final int transaction_add_source=0x7f05001f;
         public static final int transaction_add_value=0x7f050020;
-        public static final int transaction_block_balance=0x7f05003c;
-        public static final int transaction_block_description=0x7f05003f;
-        public static final int transaction_block_icon=0x7f05003b;
-        public static final int transaction_block_title=0x7f05003e;
+        public static final int transaction_block_balance=0x7f05003b;
+        public static final int transaction_block_description=0x7f05003e;
+        public static final int transaction_block_icon=0x7f05003a;
+        public static final int transaction_block_title=0x7f05003d;
         public static final int transaction_switch=0x7f050023;
         public static final int transactions_account_select=0x7f050022;
         public static final int transactions_add=0x7f050055;
         public static final int transactions_currency=0x7f050024;
-        public static final int transactions_description=0x7f05003d;
+        public static final int transactions_description=0x7f05003c;
         public static final int transactions_list=0x7f050033;
-        public static final int transactions_refresh=0x7f050052;
+        public static final int transactions_refresh=0x7f05004f;
         public static final int transactoins_viewpager=0x7f050015;
-        public static final int verify_email=0x7f050044;
-        public static final int view1=0x7f05003a;
+        public static final int verify_email=0x7f050043;
         public static final int viewpager=0x7f050006;
     }
     public static final class integer {
@@ -360,10 +360,11 @@ containing a value of this type.
     public static final class menu {
         public static final int main=0x7f0b0000;
         public static final int menu_accounts=0x7f0b0001;
-        public static final int menu_drawer=0x7f0b0002;
-        public static final int menu_income=0x7f0b0003;
-        public static final int menu_spending=0x7f0b0004;
-        public static final int menu_transactions=0x7f0b0005;
+        public static final int menu_cashflow=0x7f0b0002;
+        public static final int menu_drawer=0x7f0b0003;
+        public static final int menu_income=0x7f0b0004;
+        public static final int menu_spending=0x7f0b0005;
+        public static final int menu_transactions=0x7f0b0006;
     }
     public static final class string {
         public static final int action_settings=0x7f06001c;

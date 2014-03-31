@@ -285,6 +285,20 @@ public class LoginFragment extends BaseFragment
 									Vars.userParseObj = object;
 									Vars.currencyParseObj = object.getParseObject(ParseDriver.USER_CURRENCY);
 									
+									for(ParseObject obj: Vars.currencyParseList)
+										{
+										if(obj.getObjectId().equals(Vars.currencyParseObj.getObjectId()))
+										{
+											Vars.currencyParseObj = obj;
+										
+											break;
+										}
+										}
+										
+									Vars.DEF_CURRENCY_SYMBOL = Vars.currencyParseObj.getString(ParseDriver.CURRENCY_SYMBOL);
+									Vars.DEF_CURRENCY_TICKER = Vars.currencyParseObj.getString(ParseDriver.CURRENCY_TICKER);
+										
+									
 									
 			// getActivity().finish();
 									startActivity(homeIntent); // start activity

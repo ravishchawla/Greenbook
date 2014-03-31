@@ -13,6 +13,7 @@ import java.util.Locale;
 import android.content.Context;
 import android.telephony.TelephonyManager;
 import android.text.Html;
+import android.widget.ArrayAdapter;
 
 
 import com.parse.ParseObject;
@@ -63,7 +64,8 @@ public class Vars
 	public static List<ParseObject> transactionParseList = new ArrayList<ParseObject>();
 
 
-	public static LinkedHashMap<String, Double> transactionParseMap = new LinkedHashMap<String, Double>();
+	public static LinkedHashMap<String, Double> transactionWithrawParseMap = new LinkedHashMap<String, Double>();
+	public static LinkedHashMap<String, Double> transactionTotalParseMap = new LinkedHashMap<String, Double>();
 	public static Double transactionTotalSum = 0.0;
 	public static SimpleDateFormat dateFormat;
 	public static SimpleDateFormat longDateFormat;
@@ -91,6 +93,11 @@ public class Vars
 	
 	public static String HASHED_DEVICE_ID;
 	public static String TRANSACTIONS_AD_UNIT_IT;
+	protected static List<ParseObject> transactionAccountParseList = new ArrayList<ParseObject>();
+	public static ArrayAdapter<ParseObject> backupAdapter;
+	public static Double transactionDifferenceSum;
+	public static LinkedHashMap<String, Double> transactionDifferenceParseMap;
+	
 	
 
 

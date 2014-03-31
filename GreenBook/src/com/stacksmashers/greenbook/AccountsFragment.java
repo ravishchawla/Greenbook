@@ -187,9 +187,16 @@ public class AccountsFragment extends BaseActivity
 	public void addAccount()
 	{
 
+		
+		
+		
 		dialogView = getLayoutInflater()
 				.inflate(R.layout.dialog_accounts, null);
 
+		
+		TextView currencyCymbal = (TextView) dialogView.findViewById(R.id.account_display_name);
+		currencyCymbal.setText(Vars.DEF_CURRENCY_SYMBOL);
+		
 		add_name = (TextView) dialogView // add name
 				.findViewById(R.id.accounts_dialog_name);
 		add_balance = (TextView) dialogView // add balance
@@ -336,23 +343,6 @@ public class AccountsFragment extends BaseActivity
 						String addInt = add_interst.getText().toString(); // add
 																			// int
 
-						final ParseObject account = new ParseObject(
-								ParseDriver.ACCOUNT_TABLE);
-
-						account.put(ParseDriver.ACCOUNT_NAME, add_name
-								.getText().toString());
-
-						account.put(ParseDriver.ACCOUNT_BALANCE, Double.parseDouble(add_balance
-								.getText().toString()));
-
-						if(add_custom.getVisibility() == View.GONE)
-							account.put(ParseDriver.ACCOUNT_BANK, choose_bank
-									.getSelectedItem().toString());
-						else
-							account.put(ParseDriver.ACCOUNT_BANK, add_custom.getText().toString());
-
-						account.put(ParseDriver.USER_ACCOUNT, Vars.userParseObj);
-
 						boolean exit_now = false;
 						if (addName.equals("")) // addname
 						{
@@ -382,6 +372,25 @@ public class AccountsFragment extends BaseActivity
 							return;
 
 						}
+
+						
+						final ParseObject account = new ParseObject(
+								ParseDriver.ACCOUNT_TABLE);
+
+						account.put(ParseDriver.ACCOUNT_NAME, add_name
+								.getText().toString());
+
+						account.put(ParseDriver.ACCOUNT_BALANCE, Double.parseDouble(add_balance
+								.getText().toString()));
+
+						if(add_custom.getVisibility() == View.GONE)
+							account.put(ParseDriver.ACCOUNT_BANK, choose_bank
+									.getSelectedItem().toString());
+						else
+							account.put(ParseDriver.ACCOUNT_BANK, add_custom.getText().toString());
+
+						account.put(ParseDriver.USER_ACCOUNT, Vars.userParseObj);
+
 
 						if (check_interst.isChecked()) // check interest is
 														// checked
@@ -425,13 +434,20 @@ public class AccountsFragment extends BaseActivity
 													{
 														// TODO Auto-generated method stub
 														if(arg0 == null)
-														Log.i("starting save", "what the FUCK is going on here.");
+														{
+															Vars.accountsParseList.add(account);
+															listAdapter.clear();
+															listAdapter.addAll(Vars.accountsParseList);
+														}
 														else
 															Log.i("starting save", arg0.getMessage());
 													}
 												});
 												ArtDialog.dismiss();
-												query(ParseDriver.OBJECT_ID);
+												
+												
+												
+												
 											}
 
 
@@ -443,6 +459,7 @@ public class AccountsFragment extends BaseActivity
 			}
 		});
 
+		
 		ArtDialog.show();
 
 	}

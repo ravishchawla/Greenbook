@@ -43,8 +43,7 @@ public class TransactionsFragment extends BaseFragment
 	ArrayAdapter<ParseObject> transactionAdapter;
 
 	private AdView adView;
-	
-	
+
 	public TransactionsFragment()
 	{
 		// TODO Auto-generated constructor stub
@@ -76,13 +75,14 @@ public class TransactionsFragment extends BaseFragment
 		trans = (TransactionsActivity) getActivity();
 
 		totalBalance = (TextView) view.findViewById(R.id.balance_total);
-		
-		adView = (AdView)view.findViewById(R.id.adViewTransactions);
-		
-		AdRequest adRequest = new AdRequest.Builder().addTestDevice(Vars.HASHED_DEVICE_ID).build();
-		
+
+		adView = (AdView) view.findViewById(R.id.adViewTransactions);
+
+		AdRequest adRequest = new AdRequest.Builder().addTestDevice(
+				Vars.HASHED_DEVICE_ID).build();
+
 		adView.loadAd(adRequest);
-		
+
 		adView.setAdListener(new AdListener()
 		{
 			@Override
@@ -90,11 +90,12 @@ public class TransactionsFragment extends BaseFragment
 			{
 				Log.d("adopen", "ad opened");
 			}
-			
+
 			@Override
 			public void onAdFailedToLoad(int error)
 			{
-				switch(error){
+				switch (error)
+				{
 					case AdRequest.ERROR_CODE_INTERNAL_ERROR:
 						Log.d("adfailed", "error code internal error");
 						break;
@@ -107,25 +108,23 @@ public class TransactionsFragment extends BaseFragment
 					case AdRequest.ERROR_CODE_NO_FILL:
 						Log.d("adfailed", "error code no fill");
 						break;
-					
-					
+
 				}
 
-				
 			}
-			
+
 			@Override
 			public void onAdLoaded()
 			{
 				Log.d("adload", "ad loaded properly");
 			}
-				
-			
+
 		});
-		
+
 		transactionAdapter = new TransactionAdapter(getActivity(),
 				new ArrayList<ParseObject>());
 		list.setAdapter(transactionAdapter);
+		updateTotal();
 
 		return view;
 	}
@@ -144,7 +143,10 @@ public class TransactionsFragment extends BaseFragment
 		final Switch whichSwitch = (Switch) view
 				.findViewById(R.id.transaction_switch);
 
-	//	((TextView)view.findViewById(R.id.transactions_currency)).setText(Vars.currencyParseObj.getString(ParseDriver.CURRENCY_SYMBOL));
+		// ((TextView)view.findViewById(R.id.transactions_currency)).setText(Vars.currencyParseObj.getString(ParseDriver.CURRENCY_SYMBOL));
+
+		final TextView currency = (TextView)view.findViewById(R.id.transactions_currency);
+		currency.setText(Vars.DEF_CURRENCY_SYMBOL);
 		
 		final TextView balanceText = (TextView) view
 				.findViewById(R.id.transaction_add_value);
@@ -243,8 +245,8 @@ public class TransactionsFragment extends BaseFragment
 			{
 
 				Button plus = dialog.getButton(DialogInterface.BUTTON_POSITIVE); // get
-																				// dialog
-																				// button
+																					// dialog
+																					// button
 
 				plus.setOnClickListener(new OnClickListener() // set on click
 																// listener
@@ -312,7 +314,8 @@ public class TransactionsFragment extends BaseFragment
 								accountName);
 						transaction.put(ParseDriver.ACCOUNT_TRANSACTION,
 								Vars.accountParseObj);
-						transaction.put(ParseDriver.USER_TRANSACTION, Vars.userParseObj);
+						transaction.put(ParseDriver.USER_TRANSACTION,
+								Vars.userParseObj);
 						transaction.put(ParseDriver.TRANSACTION_CATEGORY,
 								source);
 						if (checked)
@@ -321,23 +324,29 @@ public class TransactionsFragment extends BaseFragment
 									ParseDriver.TRANSACTION_WITHRAWAL_REASON,
 									reason);
 
-							
-
 							transaction.put(ParseDriver.TRANSACTION_VALUE,
 									((-1) * balance));
-							
-							Vars.accountParseObj.put(ParseDriver.ACCOUNT_BALANCE, Vars.accountParseObj.getDouble(ParseDriver.ACCOUNT_BALANCE) - balance);
-							
+
+							Vars.accountParseObj
+									.put(ParseDriver.ACCOUNT_BALANCE,
+											Vars.accountParseObj
+													.getDouble(ParseDriver.ACCOUNT_BALANCE)
+													- balance);
+
 						}
 						else
 						{
 
 							transaction.put(ParseDriver.TRANSACTION_VALUE,
 									balance);
-							
-							Vars.accountParseObj.put(ParseDriver.ACCOUNT_BALANCE, Vars.accountParseObj.getDouble(ParseDriver.ACCOUNT_BALANCE) + balance);
+
+							Vars.accountParseObj
+									.put(ParseDriver.ACCOUNT_BALANCE,
+											Vars.accountParseObj
+													.getDouble(ParseDriver.ACCOUNT_BALANCE)
+													+ balance);
 						}
-						
+
 						Vars.accountParseObj.saveInBackground();
 						transaction.saveInBackground(new SaveCallback()
 						{
@@ -347,8 +356,10 @@ public class TransactionsFragment extends BaseFragment
 							{
 								if (arg0 == null)
 								{
-									((TransactionsActivity) getActivity())
-											.queryTransactions();
+
+									TransactionsActivity activity = ((TransactionsActivity) getActivity());
+									activity.queryTransactions(true);
+
 									dialog.dismiss(); // dismiss dialog
 								}
 							}
@@ -384,17 +395,17 @@ public class TransactionsFragment extends BaseFragment
 
 	public void updateTotal()
 	{
-		if(Vars.accountParseObj != null)
+		if (Vars.accountParseObj != null)
 		{
-			
-			
-			
-			
-			totalBalance.setText(""+Vars.decimalFormat.format(Vars.accountParseObj.getDouble(ParseDriver.ACCOUNT_BALANCE)));
-		
-	
-	
+
+			totalBalance.setText(Vars.DEF_CURRENCY_SYMBOL
+					+ Vars.decimalFormat.format(Vars.accountParseObj
+							.getDouble(ParseDriver.ACCOUNT_BALANCE)));
+
 		}
+
+		else
+			totalBalance.setText(Vars.DEF_CURRENCY_SYMBOL);
 	}
 
 	@Override
@@ -402,10 +413,12 @@ public class TransactionsFragment extends BaseFragment
 	{
 		// TODO Auto-generated method stub
 		super.onResume();
-		
-		if(adView != null)
+
+		if (adView != null)
 			adView.resume();
-	
+
+		Log.d("transac", "transactionfragment.onresume()");
+
 	}
 
 	@Override
@@ -413,20 +426,25 @@ public class TransactionsFragment extends BaseFragment
 	{
 		super.onPause();
 
-		if(adView != null)
+		if (adView != null)
 			adView.pause();
+
+		Log.d("transac", "transactionfragment.onpause()");
+
 	}
-	
-	
+
 	@Override
 	public void onDestroy()
 	{
 		super.onDestroy();
-		
-		if(adView != null)
+
+		if (adView != null)
 			adView.destroy();
+
+		Log.d("transac", "transactionfragment.ondestroy()");
+
 	}
-	
+
 	class TransactionAdapter extends ArrayAdapter<ParseObject>
 	{
 		private Context context;

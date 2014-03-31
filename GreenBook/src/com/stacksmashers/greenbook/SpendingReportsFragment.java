@@ -17,6 +17,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,6 +40,8 @@ import com.parse.ParseObject;
 public class SpendingReportsFragment extends BaseFragment
 {
 
+	
+	
 	private Spinner startSpinner;
 	private Spinner endSpinner;
 	private LinearLayout graphLayout;
@@ -277,10 +280,10 @@ adView = (AdView)view.findViewById(R.id.adViewSpending);
 	public List<Entry<String, Double>> regroup()
 	{
 		LinkedHashMap<String, Double> transactionGroups = new LinkedHashMap<String, Double>();
-		Log.i("trans entry ()", "" + Vars.transactionParseList.size());
-		Vars.transactionTotalSum = Vars.transactionWithrawSum = 0.0;
+		Log.i("trans entry ()", "" + Vars.transactionAccountParseList.size());
+		Vars.transactionWithrawSum = 0.0;
 
-		for (ParseObject obj : Vars.transactionParseList)
+		for (ParseObject obj : Vars.transactionAccountParseList)
 		{
 			Double value = obj.getDouble(ParseDriver.TRANSACTION_VALUE);
 			Date createdAt = obj.getCreatedAt();
@@ -305,7 +308,7 @@ adView = (AdView)view.findViewById(R.id.adViewSpending);
 			Log.i("map entry", entry.getKey() + " , " + entry.getValue());
 		}
 
-		Vars.transactionParseMap = transactionGroups;
+		Vars.transactionWithrawParseMap = transactionGroups;
 
 		return new ArrayList(transactionGroups.entrySet());
 
@@ -317,7 +320,7 @@ adView = (AdView)view.findViewById(R.id.adViewSpending);
 		mLinLayout = (LinearLayout) view
 				.findViewById(R.id.spending_graphicalview);
 
-		graph = PieGraph.getNewInstance(getActivity());
+		graph = PieGraph.getNewInstance(getActivity(), Vars.transactionWithrawParseMap, Vars.transactionWithrawSum);
 		graph.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT));
 		mLinLayout.removeAllViews();
@@ -478,7 +481,8 @@ adView = (AdView)view.findViewById(R.id.adViewSpending);
 
 		private Context context;
 		private List<Entry<String, Double>> entries;
-
+		private int posit = 0;
+		
 		public SpendingAdapter(Context _context,
 				List<Entry<String, Double>> _parseList)
 		{
@@ -486,20 +490,16 @@ adView = (AdView)view.findViewById(R.id.adViewSpending);
 			context = _context;
 			entries = _parseList;
 
-			/*
-			 * String from[] = { DBHelper.TRANSACTION_CATEGORY, sumTransBalances
-			 * }; String sumTransBalances = "Sum(" + DBHelper.TRANSACTION_VALUE
-			 * + ")"; int to[] = { R.id.spending_category, R.id.spending_balance
-			 * };
-			 * 
-			 * dataCursor.moveToFirst();
-			 * 
-			 * mListAdapter = new SimpleCursorAdapter(getActivity(),
-			 * R.layout.listblock_spending_report, dataCursor, from, to);
-			 */
 
 		}
 
+		@Override
+		public void clear() {
+			
+			posit = 0;
+			
+		};
+		
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent)
 		{
@@ -520,6 +520,10 @@ adView = (AdView)view.findViewById(R.id.adViewSpending);
 			((TextView) convertView.findViewById(R.id.spending_balance))
 					.setText("" + object.getValue());
 
+			
+			
+			((View)convertView.findViewById(R.id.spending_icon)).setBackgroundColor(Utility.getColor(posit++));
+			
 			return convertView;
 
 		}
@@ -527,3 +531,7 @@ adView = (AdView)view.findViewById(R.id.adViewSpending);
 	}
 
 }
+
+
+
+
