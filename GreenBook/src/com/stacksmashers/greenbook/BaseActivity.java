@@ -16,22 +16,27 @@ import android.widget.Toast;
 
 /**
  * 
- * this class calls all account activity within the application it make sure
- * basic stuff about activity life cycle
+ * A Base SuperClass that generalizes alot of variables and methods common to many activities
+ * All Activities in this project inherit this class.
  * 
  */
 public class BaseActivity extends FragmentActivity
 {
 
 	String currency = "���";
+	
+	/**
+	 * Auto-generated default constructor
+	 * 
+	 */
 	public BaseActivity()
 	{
 		// TODO Auto-generated constructor stub
 	}
 
 	/**
+	 * Auto-generated default main method
 	 * @param args
-	 *   main method
 	 */
 	public static void main(String[] args)
 	{
@@ -40,9 +45,9 @@ public class BaseActivity extends FragmentActivity
 	}
 
 	@Override
-	/**called this method to start the activity.  
-	 * @param savedInstanceState
-	 * @return void 
+	/**
+	 * Default auto-generated on Create() method
+	 * @param savedInstanceState saved data from previous instance 
 	 */
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -55,21 +60,24 @@ public class BaseActivity extends FragmentActivity
 	}
 
 	/**
-	 * @param message
-	 * @return void 
 	 * 
+	 * A simplified Log Method that writes to debug LogStream
+	 * @param message message to print out
+	 * @return void 
 	 */
 	public void Log(String message)
 	{
-		Log.i("GreenBook", message);
+		Log.d("GreenBook", message);
 	}
 	
 	/**
 	 * 
-	 * in this method we notify our user about title, messege and intent
-	 * @param title
-	 * @param message
-	 * @param intent 
+	 * Notifier method that pushes a message to the Notifcation Center 
+	 * @param id - unique id of notifaction
+	 * @param title - the title of the notification
+	 * @param message - the message to print
+	 * @param intent  - action to call when touched
+	 * @return NotifactionManager - the manager, can be used to cancel message outside scope
 	 */
 	public NotificationManager NotifyUser(int id, String title, String message, Intent intent)
 	{
@@ -90,8 +98,10 @@ public class BaseActivity extends FragmentActivity
 	}
 	
 	/**
-	 * @param email
-	 * this method normalize email for all string type eail 
+	 * 
+	 * Returns a normalized email address without `@` and `.` symbols
+	 * @param email - the email to normalize
+	 * @return String - normalized email 
 	 */
 	
 	public String normalizeEmail(String email)
@@ -110,8 +120,9 @@ public class BaseActivity extends FragmentActivity
 	}
 
 	/**
-	 * this method talk about code email for string email 
-	 * @param email
+	 * Generates a unique code based on an email address.  
+	 * @param email - the email to codify
+	 * @return String - the codified email address
 	 */
 	public String codeEmail(String email)
 	{
@@ -137,8 +148,8 @@ public class BaseActivity extends FragmentActivity
 	}
 	
 	/**
-	 * this method send mail
-	 * @param mail
+	 * Sends a Mail object through the Network
+	 * @param mail - the Mail to send
 	 * @return void 
 	 */
 	public void send(Mail mail)
@@ -148,11 +159,19 @@ public class BaseActivity extends FragmentActivity
 	
 	
 	
+	/**
+	 * Send an Email by running the process in a background process
+	 * @author Ravish Chawla
+	 *
+	 */
 	public class SendMail extends AsyncTask
 	{
 		
 		
-         // this method runs in backgrond for object mail 
+        /**
+         * Run a process in a Background Thread
+         * @param mails the Mail Object to send
+         */
 		@Override
 		protected Object doInBackground(Object... mails)
 		{
@@ -188,9 +207,11 @@ public class BaseActivity extends FragmentActivity
 		
 		
 		/**
-		 * @param values
+		 * 
+		 * Notifies user on status of the Email Sent
+		 * @param values 
 		 * @return void
-		 * this method check on progress update for object values 
+		 * 
 		 */
 		@Override
 		protected void onProgressUpdate(Object... values)

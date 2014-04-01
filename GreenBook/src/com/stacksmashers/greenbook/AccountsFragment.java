@@ -38,11 +38,13 @@ import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
 /**
+ * Controls and coordinates all actions for 
+ * the Activity Class. 
  * 
- * this class calls all account activity within the application it is registry
- * of user's account.
- * 
+ * @author Ravish Chawla
+ *
  */
+
 public class AccountsFragment extends BaseActivity
 {
 	private View dialogView;
@@ -62,14 +64,20 @@ public class AccountsFragment extends BaseActivity
 
 	private List<ParseObject> parseList;
 
+	
+	/**
+	 * Auto Generated Constructor for Activity
+	 */
 	public AccountsFragment()
 	{
 		// TODO Auto-generated constructor stub
 	}
 
 	/**
-	 * @param args
-	 *            main method that calls other method
+	 *
+	 * Auto Generated Main Method for java class
+	 * @param args arguments
+	 *          
 	 */
 	public static void main(String[] args)
 	{
@@ -77,14 +85,16 @@ public class AccountsFragment extends BaseActivity
 
 	}
 
-	@Override
-	/**called this method to start the activity.  
-	 * Maintain the activity and application.
-	 *@param savedInstanceState 
-	 *@param inflater
-	 *@param container
+
+	/**
+	 * Inflate Layout View,
+	 * identify all views in the Layout,
+	 * and define an adapter for the main list 
+	 * 
+	 *@param savedInstanceState Saved Data 
 	 * @return void 
 	 */
+	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		// TODO Auto-generated method stub
@@ -112,11 +122,19 @@ public class AccountsFragment extends BaseActivity
 		list.setAdapter(listAdapter); // set adapter
 		query(ParseDriver.OBJECT_ID);
 
+		
+		return;
 	}
+	
 
 	/**
-	 * @param item
-	 * @return boolean we use this method to select option intem
+	 * Method called when an item in the Options Menu 
+	 * is selected. 
+	 * Handles options for adding an account, viewing settings, and 
+	 * sorting accounts by calling appropriate method.
+	 * 
+	 * @param item the MenuItem that has been selected
+	 * @return boolean true if option was handled properly, false otherwise
 	 */
 
 	@Override
@@ -171,6 +189,14 @@ public class AccountsFragment extends BaseActivity
 		return super.onOptionsItemSelected(item);
 	}
 
+
+	
+	/**
+	 * Inflate the Menu for Accounts Layout. 
+	 * 
+	 * @param menu Menu Object to inflate
+	 * @return boolean true if inflated properly
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
@@ -182,6 +208,12 @@ public class AccountsFragment extends BaseActivity
 	}
 
 	/**
+	 * Handles Adding a new Account by 
+	 * opening a new Dialog Fragment that prompts for data. 
+	 * 
+	 * Data is checked for correctness, and then updated in the online database. 
+	 * 
+	 * @param void
 	 * @return void
 	 */
 	public void addAccount()
@@ -464,13 +496,30 @@ public class AccountsFragment extends BaseActivity
 
 	}
 
+	
+	/**
+	 * Resorts the current list of Accounts based on the 
+	 * current Sort Parameter. 
+	 * Refreshes the List with updated adapter
+	 * 
+	 * @param void
+	 * @return void
+	 */
 	public void reorder()
 	{
 		Collections.sort(Vars.accountsParseList, new AccountsComparator());
 		listAdapter.clear();
 		listAdapter.addAll(Vars.accountsParseList);
 	}
+
 	
+	/**
+	 * Requeries the Database for all accounts for the current User
+	 * 
+	 * 
+	 * @param Sort the Sort factor to order the query results by
+	 * @return void
+	 */
 	public void query(String Sort)
 	{
 		ParseQuery<ParseObject> accountQuery = ParseQuery
@@ -502,12 +551,28 @@ public class AccountsFragment extends BaseActivity
 
 }
 
+
+/**
+ * A Custom Array Adapter that stores sets the 
+ * listblocks for the adapter from values in the list queried
+ * from the database. 
+ * 
+ * @author Ravish Chawla
+ *
+ */
 class AccountsAdapter extends ArrayAdapter<ParseObject>
 {
 
 	private Context context;
 	private List<ParseObject> parseList;
 
+	
+	/**
+	 * Default constructor that initializes main variables
+	 * 
+	 * @param _context Base Application Context of the App
+	 * @param _parseList List of ParseObjects to initialize the adapter with
+	 */
 	public AccountsAdapter(Context _context, List<ParseObject> _parseList)
 	{
 		super(_context, R.layout.listblock_accounts, _parseList);
@@ -516,6 +581,16 @@ class AccountsAdapter extends ArrayAdapter<ParseObject>
 
 	}
 
+	
+	
+	/**
+	 * Sets view values from ParseObject values
+	 * 
+	 * @param position the ListBlock currently being set
+	 * @parse convertView view inflated for individual listblock
+	 * @param parent parent viewgroup
+	 * @return return updated view with new values
+	 */
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
@@ -540,6 +615,12 @@ class AccountsAdapter extends ArrayAdapter<ParseObject>
 	}
 }
 
+/**
+ * A custom comparator that sorts based on defined paramater
+ * 
+ * @author Ravish Chawla
+ *
+ */
 	class AccountsComparator implements Comparator<ParseObject>
 	{
 

@@ -4,11 +4,10 @@ import android.os.Bundle;
 import android.util.Log;
 
 
-
 /**
- * 
- * this class calls all account activity within the application 
- * it make sure basic stuff about activity life cycle 
+ * A basic Fragment class that all fragments inherit, with common 
+ * variables and methods. 
+ * @author Ravish Chawla
  *
  */
 public class BaseFragment extends android.support.v4.app.Fragment
@@ -16,15 +15,19 @@ public class BaseFragment extends android.support.v4.app.Fragment
 
 	
 	
-	
+	/**
+	 * Auto generated default constructor
+	 * 
+	 */
 	public BaseFragment()
 	{
 		// TODO Auto-generated constructor stub
 	}
 
 	/**
+	 * 
+	 * Auto generated default main method
 	 * @param args
-	 * main method 
 	 */
 	public static void main(String[] args)
 	{
@@ -33,8 +36,8 @@ public class BaseFragment extends android.support.v4.app.Fragment
 	}
 
 	@Override
-	/**called this method to start the activity.  
-	 * @param savedInstanceState
+	/**Auto generated default onCreate method  
+	 * @param savedInstanceState - saved state from previous instance
 	 * @return void 
 	 */
 	public void onCreate(Bundle savedInstanceState)
@@ -50,9 +53,9 @@ public class BaseFragment extends android.support.v4.app.Fragment
 	}
 	
 	/**
-	 * @param message
-	 * @return void
-	 * we use this method to log string messege  
+	 * A general log method that prints to Log info stream
+	 * @param message - the message to print out
+	 * @return void   
 	 */
 	
 	

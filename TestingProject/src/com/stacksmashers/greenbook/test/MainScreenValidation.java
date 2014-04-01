@@ -40,7 +40,7 @@ TextView nameField = (TextView)activity.findViewById(R.id.register_name);
 		if(fragment != null)
 		{
 			assertTrue("Handle Situation", 
-			fragment.handlesituation(true, "Ravish Chawla", "stack@smashers.com", "ss") == 0);
+			fragment.handleRegistration(true, "Ravish Chawla", "stack@smashers.com", "ss") == 0);
 			
 		}
 		
@@ -50,7 +50,7 @@ TextView nameField = (TextView)activity.findViewById(R.id.register_name);
 	{
 		if(fragment!= null)
 		{
-			fragment.handlesituation(true, "Ravish Chawla", "stack@smashers.com", "ss");
+			fragment.handleRegistration(true, "Ravish Chawla", "stack@smashers.com", "ss");
 			assertTrue("dialogs", fragment.falseDialog != null && fragment.trueDialog == null);
 		}
 		
@@ -67,7 +67,7 @@ TextView nameField = (TextView)activity.findViewById(R.id.register_name);
 		if(fragment != null)
 		{
 			assertTrue("Handle Situation", 
-			fragment.handlesituation(false, "Ravish Chawla", "stack@smashers.edu", "ss") == 1);
+			fragment.handleRegistration(false, "Ravish Chawla", "stack@smashers.edu", "ss") == 1);
 			
 		}
 		
@@ -79,7 +79,7 @@ TextView nameField = (TextView)activity.findViewById(R.id.register_name);
 	{
 		if(fragment!= null)
 		{
-			fragment.handlesituation(false, "Ravish Chawla", "stack@smashers.com", "ss");
+			fragment.handleRegistration(false, "Ravish Chawla", "stack@smashers.com", "ss");
 			assertTrue("dialogs", fragment.falseDialog == null && fragment.trueDialog != null);
 		}
 		
@@ -99,7 +99,7 @@ TextView nameField = (TextView)activity.findViewById(R.id.register_name);
 		{
 			
 			activity.getActionBar().setSelectedNavigationItem(1);
-			fragment.handlesituation(false, "Ravish Chawla", "stack@smashers.com", "ss");
+			fragment.handleRegistration(false, "Ravish Chawla", "stack@smashers.com", "ss");
 			assertTrue("Handle Situation",
 					activity.getActionBar().getSelectedNavigationIndex() == 0);
 					
@@ -108,7 +108,27 @@ TextView nameField = (TextView)activity.findViewById(R.id.register_name);
 		
 	}
 	
+	public void testMainIsNull()
+	{
+		
+		if(fragment != null)
+		{
+			fragment.main = null;
+			fragment.handleRegistration(false, "Ravish Chawla", "stack@smashers.com", "ss");
+			assertTrue("Check null", activity.getActionBar().getSelectedNavigationIndex() == 1);
+		}
+		
+	}
 	
+	public void testMainIsNotNull()
+	{
+		if(fragment != null)
+		{
+			fragment.handleRegistration(false, "Ravish Chawla", "stack@smashers.com", "ss");
+			assertTrue("Check not null", activity.getActionBar().getSelectedNavigationIndex() == 0);
+		}
+	}
+
 	
 	
 	
@@ -125,7 +145,7 @@ TextView nameField = (TextView)activity.findViewById(R.id.register_name);
 		registerPic.setImageResource(R.drawable.avatar);
 		
 		assertTrue("Handle Situation", 
-				fragment.handlesituation(true, "Ravish Chawl", "stack@smashers.com", "ss") == 1);
+				fragment.handleRegistration(true, "Ravish Chawl", "stack@smashers.com", "ss") == 1);
 		
 		}
 		
@@ -140,7 +160,7 @@ TextView nameField = (TextView)activity.findViewById(R.id.register_name);
 		
 		if(fragment != null)
 		{
-			fragment.handlesituation(true, "Ravish Chawla", "stack@smashers.com", "ss");
+			fragment.handleRegistration(true, "Ravish Chawla", "stack@smashers.com", "ss");
 			
 			assertTrue("Notification Manager notnull", fragment.man != null);
 		}

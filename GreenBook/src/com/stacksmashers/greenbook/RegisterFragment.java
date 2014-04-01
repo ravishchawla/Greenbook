@@ -6,11 +6,11 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -67,7 +67,10 @@ public class RegisterFragment extends BaseFragment
 	private boolean name_bool = false, email_bool = false,
 			password_bool = false, checkpassword_bool = false;
 
-	private MainActivity main;
+	public static MainActivity main;
+	public static NotificationManager man;
+	public static AlertDialog falseDialog;
+	public static AlertDialog trueDialog;
 
 	private Bitmap photo;
 
@@ -547,11 +550,11 @@ public class RegisterFragment extends BaseFragment
 				{
 					if (usersList.size() > 0)
 					{
-						handlesituation(true, name, username, password);
+						handleRegistration(true, name, username, password);
 
 					}
 					else
-						handlesituation(false, name, username, password);
+						handleRegistration(false, name, username, password);
 
 				}
 
@@ -564,12 +567,14 @@ public class RegisterFragment extends BaseFragment
 
 	}
 
-	public void handlesituation(boolean condition, String name,
+	public int handleRegistration(boolean condition, String name,
 			String username, String password)
 	{
 
 		if (condition)
-			new AlertDialog.Builder(getActivity())
+			{
+			
+			falseDialog = new AlertDialog.Builder(getActivity())
 					.setMessage(
 							"Login Now with Email: " + username
 									+ "?")
@@ -618,6 +623,9 @@ public class RegisterFragment extends BaseFragment
 
 								}
 							}).show(); // show username register
+			
+			return 0;
+			}
 
 		else
 		{
@@ -653,6 +661,8 @@ public class RegisterFragment extends BaseFragment
 																		// text
 						Toast.LENGTH_SHORT);
 				e.printStackTrace();
+				
+				return 0;
 			}
 
 			// DBDriver.INSERT_USER(name, username, password,
@@ -660,14 +670,14 @@ public class RegisterFragment extends BaseFragment
 		//	ParseDriver.INSERT_USER(name, username, password,
 			//		main.codeEmail(username), 14);
 
-			main.NotifyUser(1, "Please verify your Email Address",
+		man = 	main.NotifyUser(1, "Please verify your Email Address",
 					"Click to open Default Email client",
 					getActivity().getPackageManager()
 							.getLaunchIntentForPackage("com.android.email"));
 			sendMessage(name, username, password, main.codeEmail(username));
 			// user table
 
-			new AlertDialog.Builder(getActivity())
+		trueDialog= 	new AlertDialog.Builder(getActivity())
 					.setTitle("Login Now?")
 					.setPositiveButton("Yes",
 							new DialogInterface.OnClickListener()
@@ -723,9 +733,11 @@ public class RegisterFragment extends BaseFragment
 
 								}
 							}).show(); // show the activity
+			
+			
 
 		}
-
+		return 1;
 	}
 
 	/**
