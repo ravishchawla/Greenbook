@@ -8,10 +8,11 @@
     <android.support.v4.view.ViewPager
         android:id="@+id/transactoins_viewpager"
         android:layout_width="fill_parent"
-		android:background="#ffe6e1d4"
-		android:focusable="true"
-		android:focusableInTouchMode="true"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent"
+        android:background="#606060"
+        android:focusable="true"
+        android:focusableInTouchMode="true" >
+
         </android.support.v4.view.ViewPager>
         
     <ListView

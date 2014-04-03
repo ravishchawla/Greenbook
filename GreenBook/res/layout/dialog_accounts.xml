@@ -3,6 +3,7 @@
     android:id="@+id/accounts_dialog"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#606060"
     android:orientation="vertical" >
 
     <EditText
@@ -12,7 +13,9 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:ems="10"
-        android:hint="Account Name" >
+        android:hint="Account Name"
+        android:textColor="#009900"
+        android:textColorHint="#C0C0C0" >
 
         <requestFocus />
     </EditText>
@@ -43,7 +46,9 @@
         android:layout_below="@+id/accounts_dialog_bank"
         android:ems="10"
         android:hint="Balance"
-        android:inputType="numberDecimal" />
+        android:inputType="numberDecimal"
+        android:textColor="#009900"
+        android:textColorHint="#C0C0C0" />
 
     <CheckBox
         android:id="@+id/accounts_interst"
@@ -62,7 +67,9 @@
         android:layout_below="@+id/accounts_interst"
         android:autoText="true"
         android:ems="10"
-        android:hint="Custom Bank" />
+        android:hint="Custom Bank"
+        android:textColor="#009900"
+        android:textColorHint="#C0C0C0" />
 
     <EditText
         android:id="@+id/accounts_interst_name"
@@ -70,6 +77,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/accounts_interst"
-        android:ems="10" />
+        android:ems="10"
+        android:hint="Interest Rate"
+        android:textColor="#009900"
+        android:textColorHint="#C0C0C0" />
 
 </RelativeLayout>

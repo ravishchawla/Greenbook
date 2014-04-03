@@ -8,20 +8,24 @@
     <Spinner
         android:id="@+id/income_spinner_start"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="#A0A0A0" />
 
     <Spinner
         android:id="@+id/income_spinner_end"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="true"
+        android:background="#A0A0A0" />
 
     <LinearLayout
+        android:id="@+id/income_graphicalview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/income_graphicalview"
+        android:background="#606060"
         android:orientation="vertical" >
+
     </LinearLayout>
     
     <ListView

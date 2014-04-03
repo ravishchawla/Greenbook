@@ -230,17 +230,19 @@ containing a value of this type.
         public static final int content_sort=0x7f020021;
         public static final int drawer_shadow=0x7f020022;
         public static final int error_edittext=0x7f020023;
-        public static final int greenbook=0x7f020024;
-        public static final int ic_action_edit=0x7f020025;
-        public static final int ic_action_refresh=0x7f020026;
-        public static final int ic_drawer=0x7f020027;
-        public static final int ic_launcher=0x7f020028;
-        public static final int ic_plusone_medium_off_client=0x7f020029;
-        public static final int ic_plusone_small_off_client=0x7f02002a;
-        public static final int ic_plusone_standard_off_client=0x7f02002b;
-        public static final int ic_plusone_tall_off_client=0x7f02002c;
-        public static final int klipsch=0x7f02002d;
-        public static final int person=0x7f02002e;
+        public static final int greenbookicon=0x7f020024;
+        public static final int greenbooklauncher=0x7f020025;
+        public static final int ic_action_edit=0x7f020026;
+        public static final int ic_action_refresh=0x7f020027;
+        public static final int ic_drawer=0x7f020028;
+        public static final int ic_launcher=0x7f020029;
+        public static final int ic_plusone_medium_off_client=0x7f02002a;
+        public static final int ic_plusone_small_off_client=0x7f02002b;
+        public static final int ic_plusone_standard_off_client=0x7f02002c;
+        public static final int ic_plusone_tall_off_client=0x7f02002d;
+        public static final int klipsch=0x7f02002e;
+        public static final int person=0x7f02002f;
+        public static final int transactions=0x7f020030;
     }
     public static final class id {
         public static final int LinearLayout1=0x7f050042;
