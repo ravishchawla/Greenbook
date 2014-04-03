@@ -76,10 +76,10 @@ public class RegisterFragment extends BaseFragment
 	public static NotificationManager man;
 
 	/** The false dialog. */
-	public static AlertDialog falseDialog;
+	public AlertDialog falseDialog;
 
 	/** The true dialog. */
-	public static AlertDialog trueDialog;
+	public AlertDialog trueDialog;
 
 	/** The photo. */
 	private Bitmap photo;
@@ -558,7 +558,7 @@ public class RegisterFragment extends BaseFragment
 	 * @return int - debugging output for JUnit testing
 	 */
 
-	public int handleRegistration(boolean condition, String name,
+	public void handleRegistration(boolean condition, String name,
 			String username, String password)
 	{
 		if (condition)
@@ -609,7 +609,7 @@ public class RegisterFragment extends BaseFragment
 									register_username.setText("");
 								}
 							}).show();
-			return 0;
+			
 		}
 
 		else
@@ -639,7 +639,7 @@ public class RegisterFragment extends BaseFragment
 				Toast.makeText(getActivity(), "Couldn't save photo",
 						Toast.LENGTH_SHORT);
 				e.printStackTrace();
-				return 0;
+			
 			}
 			man = main.NotifyUser(1, "Please verify your Email Address",
 					"Click to open Default Email client",
@@ -700,7 +700,7 @@ public class RegisterFragment extends BaseFragment
 								}
 							}).show();
 		}
-		return 1;
+	
 	}
 
 	/**

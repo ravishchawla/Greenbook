@@ -105,7 +105,7 @@ int id adViewSpending 0x7f050030
 int id adViewTransactions 0x7f050035
 int id balance_total 0x7f050036
 int id balance_total_text 0x7f050037
-int id button1 0x7f05000a
+int id button1 0x7f05000b
 int id cashflow_view_type 0x7f050055
 int id checkpasswordCheck 0x7f050016
 int id drawer_edit 0x7f050057
@@ -114,7 +114,7 @@ int id drawer_textView 0x7f05002b
 int id emailCheck 0x7f050014
 int id exchange_picker 0x7f050046
 int id hybrid 0x7f050004
-int id imageView1 0x7f05000b
+int id imageView1 0x7f05000a
 int id income_graphicalview 0x7f05002e
 int id income_listview 0x7f05002f
 int id income_spinner_end 0x7f05002d

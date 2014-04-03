@@ -270,7 +270,7 @@ containing a value of this type.
         public static final int adViewTransactions=0x7f050035;
         public static final int balance_total=0x7f050036;
         public static final int balance_total_text=0x7f050037;
-        public static final int button1=0x7f05000a;
+        public static final int button1=0x7f05000b;
         public static final int cashflow_view_type=0x7f050055;
         public static final int checkpasswordCheck=0x7f050016;
         public static final int drawer_edit=0x7f050057;
@@ -279,7 +279,7 @@ containing a value of this type.
         public static final int emailCheck=0x7f050014;
         public static final int exchange_picker=0x7f050046;
         public static final int hybrid=0x7f050004;
-        public static final int imageView1=0x7f05000b;
+        public static final int imageView1=0x7f05000a;
         public static final int income_graphicalview=0x7f05002e;
         public static final int income_listview=0x7f05002f;
         public static final int income_spinner_end=0x7f05002d;
