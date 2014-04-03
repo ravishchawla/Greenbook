@@ -8,16 +8,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import org.achartengine.GraphicalView;
-
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,49 +28,80 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.parse.ParseObject;
 
+/**
+ * The Class that displays to the user an Spending Report, and controls all
+ * actions related to that report
+ * 
+ * @author Ravish Chawla
+ */
 public class SpendingReportsFragment extends BaseFragment
 {
-
-	
-	
+	/** The start spinner. */
 	private Spinner startSpinner;
+
+	/** The end spinner. */
 	private Spinner endSpinner;
-	private LinearLayout graphLayout;
-	private TransactionsActivity trans;
-	// private ListView spendingList;
-	GraphicalView graph;
+
+	/** The graph. */
+	private GraphicalView graph;
+
+	/** The start range. */
 	private String startRange[] = new String[2];
+
+	/** The end range. */
 	private String endRange[] = new String[2];
-	static String startDateString, endDateString;
-	static Date startDate, endDate;
+
+	/** The end date. */
+	private static Date startDate, endDate;
+
+	/** The end adapter. */
 	private ArrayAdapter<String> startAdapter, endAdapter;
+
+	/** The spending adapter. */
 	public ArrayAdapter<Entry<String, Double>> spendingAdapter;
-	boolean state = false;
-	View view;
-	LinearLayout mLinLayout;
+
+	/** The view. */
+	private View view;
+
+	/** The m lin layout. */
+	private LinearLayout mLinLayout;
+
+	/** The view mode. */
 	public int viewMode;
+
+	/** The ad view. */
 	private AdView adView;
 
+	/**
+	 * Instantiates a new spending reports fragment.
+	 */
 	public SpendingReportsFragment()
 	{
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
+	 * The main method.
+	 * 
 	 * @param args
+	 *            the arguments
 	 */
 	public static void main(String[] args)
 	{
-		// TODO Auto-generated method stub
-
 	}
 
+	/**
+	 * Creates a new instance of this fragment and returns it, used for external
+	 * intents
+	 * 
+	 * @param text
+	 *            the text
+	 * @return the spending reports fragment
+	 */
 	public static SpendingReportsFragment newInstance(String text)
 	{
 		SpendingReportsFragment frag = new SpendingReportsFragment();
@@ -84,39 +112,39 @@ public class SpendingReportsFragment extends BaseFragment
 		return frag;
 	}
 
+	/**
+	 * Automatically called when the Fragment is first initialized. Inflates the
+	 * xml layout, finds associated views, and adds listeners to views
+	 * 
+	 * @param inflater
+	 *            - the LayoutInflater of parent activity
+	 * @param container
+	 *            - The group this view is associated with
+	 * @param savedInstanceState
+	 *            - saved state from a previous instance
+	 * @return View - modified View with correct inflation
+	 */
+	@SuppressWarnings("deprecation")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState)
 	{
 
-		super.onCreateView(inflater, container, savedInstanceState); // create
-		// savedinstancestate
-
+		super.onCreateView(inflater, container, savedInstanceState);
 		view = inflater.inflate(R.layout.fragment_spending_report_table,
-				container, false);// calling activity register
-
+				container, false);
 		startRange[1] = "Select Date";
 		endRange[1] = "Select Date";
-
 		startSpinner = (Spinner) view.findViewById(R.id.spending_spinner_start);
 		endSpinner = (Spinner) view.findViewById(R.id.spending_spinner_end);
-
-		graphLayout = (LinearLayout) view
-				.findViewById(R.id.spending_graphicalview);
-
-		trans = (TransactionsActivity) getActivity();
 		startDate = new Date();
 		endDate = new Date();
 		startDate.setYear(startDate.getYear() - 1);
 		endDate.setYear(endDate.getYear() + 1);
-
 		String currentDate = Vars.longDateFormat.format(startDate);
 		startRange[0] = currentDate;
-		// TODO Auto-generated method stub
 		currentDate = Vars.longDateFormat.format(endDate);
-
 		endRange[0] = currentDate;
-
 		startAdapter = new ArrayAdapter<String>(getActivity(),
 				android.R.layout.simple_spinner_dropdown_item, startRange);
 		startAdapter
@@ -129,6 +157,18 @@ public class SpendingReportsFragment extends BaseFragment
 		endSpinner.setAdapter(endAdapter);
 		startSpinner.setSelection(0, false);
 		endSpinner.setSelection(0, false);
+		/**
+		 * Automatically called when a spinner item is selected
+		 * 
+		 * @param arg0
+		 *            - The adapter associated with the spinner
+		 * @param view
+		 *            - the view associated with the spinner
+		 * @param pos
+		 *            - the position currently selected
+		 * @param arg3
+		 *            - id of the item from the adapter
+		 */
 
 		startSpinner.setOnItemSelectedListener(new OnItemSelectedListener()
 		{
@@ -136,7 +176,7 @@ public class SpendingReportsFragment extends BaseFragment
 			@Override
 			public void onItemSelected(AdapterView<?> arg0, View arg1, int pos,
 					long arg3)
-			{ // TODO Auto-generated method stub
+			{
 
 				if (pos == 1)
 				{
@@ -147,6 +187,10 @@ public class SpendingReportsFragment extends BaseFragment
 
 			}
 
+			/**
+			 * called automatically if no item is selected (ie. back pressed)
+			 */
+
 			@Override
 			public void onNothingSelected(AdapterView<?> arg0)
 			{
@@ -156,22 +200,37 @@ public class SpendingReportsFragment extends BaseFragment
 
 		});
 
+		/**
+		 * Automatically called when a spinner item is selected
+		 * 
+		 * @param arg0
+		 *            - The adapter associated with the spinner
+		 * @param view
+		 *            - the view associated with the spinner
+		 * @param pos
+		 *            - the position currently selected
+		 * @param arg3
+		 *            - id of the item from the adapter
+		 */
+
 		endSpinner.setOnItemSelectedListener(new OnItemSelectedListener()
 		{
 
 			@Override
 			public void onItemSelected(AdapterView<?> arg0, View arg1, int pos,
 					long arg3)
-			{ // TODO Auto-generated method stub
-
+			{
 				if (pos == 1)
 				{
 					DatePicker dateFragment = new DatePicker(1);
 					dateFragment.show(getActivity().getFragmentManager(),
 							"DatePicker");
 				}
-
 			}
+
+			/**
+			 * automatically called if no item is selected (ie. back pressed)
+			 */
 
 			@Override
 			public void onNothingSelected(AdapterView<?> arg0)
@@ -183,25 +242,41 @@ public class SpendingReportsFragment extends BaseFragment
 		});
 
 		((TransactionsActivity) getActivity()).setSpendingReportTag(getTag());
-		
-adView = (AdView)view.findViewById(R.id.adViewSpending);
-		
-		AdRequest adRequest = new AdRequest.Builder().addTestDevice(Vars.HASHED_DEVICE_ID).build();
-		
+
+		adView = (AdView) view.findViewById(R.id.adViewSpending);
+
+		AdRequest adRequest = new AdRequest.Builder().addTestDevice(
+				Vars.HASHED_DEVICE_ID).build();
+
 		adView.loadAd(adRequest);
-		
+
 		adView.setAdListener(new AdListener()
 		{
+			/**
+			 * called when the ad is first initialized
+			 * 
+			 * @return void
+			 */
+
 			@Override
 			public void onAdOpened()
 			{
 				Log.d("adopen", "ad opened");
 			}
-			
+
+			/**
+			 * called if the ad fails to load. diplays appropriate error log
+			 * 
+			 * @param error
+			 *            - the error code
+			 * @return void
+			 */
+
 			@Override
 			public void onAdFailedToLoad(int error)
 			{
-				switch(error){
+				switch (error)
+				{
 					case AdRequest.ERROR_CODE_INTERNAL_ERROR:
 						Log.d("adfailed", "error code internal error");
 						break;
@@ -214,69 +289,81 @@ adView = (AdView)view.findViewById(R.id.adViewSpending);
 					case AdRequest.ERROR_CODE_NO_FILL:
 						Log.d("adfailed", "error code no fill");
 						break;
-					
-					
+
 				}
 
-				
 			}
-			
+
+			/**
+			 * called when the ad is ifinished loading
+			 * 
+			 * @return void
+			 */
 			@Override
 			public void onAdLoaded()
 			{
 				Log.d("adload", "ad loaded properly");
 			}
-				
-			
+
 		});
 
-		
-		
 		updateData();
 
 		return view;
 	}
 
+	/**
+	 * Automatically called when the Activity enters into the resume state from
+	 * a paused state
+	 * 
+	 * 
+	 */
 	@Override
 	public void onResume()
 	{
-		// TODO Auto-generated method stub
 
-		
-		if(adView != null)
+		if (adView != null)
 			adView.resume();
-		
+
 		super.onResume();
 		Log.i("Spending", "Actually called onREsume");
-		state = true;
 		
-		
-		
-		// updateData(null, null, 0);
-		// if(trans.spendingMode == 1 && items!= null)
-		// repaintGraph(items);
-
 	}
 
+	/**
+	 * Automatically called when the activity gets destroyed
+	 * 
+	 * @param void
+	 */
 	@Override
 	public void onPause()
 	{
-		if(adView != null)
+		if (adView != null)
 			adView.pause();
 		super.onPause();
-		
-		
+
 	}
-	
+
+	/**
+	 * Automatically called when the activity gets destroyed
+	 * 
+	 * @param void
+	 */
 	@Override
 	public void onDestroy()
 	{
-		if(adView != null)
+		if (adView != null)
 			adView.destroy();
 		super.onDestroy();
-		
+
 	}
-	
+
+	/**
+	 * Regroup the query elements into a collection of objects needed for this
+	 * report. Mimics the Group by clause of SQL
+	 * 
+	 * @return List the collection of reformated objects
+	 */
 	public List<Entry<String, Double>> regroup()
 	{
 		LinkedHashMap<String, Double> transactionGroups = new LinkedHashMap<String, Double>();
@@ -310,59 +397,57 @@ adView = (AdView)view.findViewById(R.id.adViewSpending);
 
 		Vars.transactionWithrawParseMap = transactionGroups;
 
-		return new ArrayList(transactionGroups.entrySet());
+		return new ArrayList<Entry<String, Double>>(transactionGroups.entrySet());
 
 	}
 
+	/**
+	 * Reload the graph with newer data.
+	 * 
+	 * @return void
+	 */
 	public void refreshGraph()
 	{
 
 		mLinLayout = (LinearLayout) view
 				.findViewById(R.id.spending_graphicalview);
 
-		graph = PieGraph.getNewInstance(getActivity(), Vars.transactionWithrawParseMap, Vars.transactionWithrawSum);
+		graph = PieGraph.getNewInstance(getActivity(),
+				Vars.transactionWithrawParseMap, Vars.transactionWithrawSum);
 		graph.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT));
 		mLinLayout.removeAllViews();
 		mLinLayout.addView(graph);
 	}
 
+	/**
+	 * Update the list with refreshed data from Database
+	 * 
+	 * @return void
+	 */
 	public void updateData()
 	{
-
-		/*
-		 * final Cursor caeser = sqldbase.query(DBHelper.TRANSACTION_TABLE, new
-		 * String[] { DBHelper.TRANSACTION_ID, DBHelper.TRANSACTION_USER,
-		 * DBHelper.TRANSACTION_ACCOUNT, DBHelper.TRANSACTION_ACCOUNT_NAME,
-		 * DBHelper.TRANSACTION_DEPOSIT_SOURCE,
-		 * DBHelper.TRANSACTION_WITHRAWAL_REASON, DBHelper.TRANSACTION_CATEGORY,
-		 * DBHelper.TRANSACTION_VALUE }, condition, null, null, null, null);
-		 */
-
 		startAdapter.notifyDataSetChanged();
 		endAdapter.notifyDataSetChanged();
-
-		// Utility.setListViewHeightBasedOnChildren(spendingList);
-
 		Log.i("Spend", "Moded");
-
-		// rootLayout =
-		// (LinearLayout)view.findViewById(R.id.child_linearlayout);
-
 		ListView mListView = (ListView) view
 				.findViewById(R.id.spending_listview);
 
 		spendingAdapter = new SpendingAdapter(getActivity(),
 				new ArrayList<Entry<String, Double>>());
 		mListView.setAdapter(spendingAdapter);
-
 		displayView(1);
 		Log.i("Spending", "Added Graph");
 
 		return;
-
 	}
 
+	/**
+	 * Replaces the current view (from graph to view and viceversa)
+	 * 
+	 * @param mode
+	 *            - which mode to switch to
+	 */
 	public void displayView(int mode)
 	{
 		LinearLayout mLinLayout = (LinearLayout) view
@@ -373,7 +458,6 @@ adView = (AdView)view.findViewById(R.id.adViewSpending);
 		{
 			mLinLayout.setVisibility(View.GONE);
 			mListView.setVisibility(View.VISIBLE);
-
 		}
 
 		else
@@ -383,38 +467,58 @@ adView = (AdView)view.findViewById(R.id.adViewSpending);
 		}
 	}
 
+	/**
+	 * A DatePicker Dialog class that asks user to enter a date
+	 * 
+	 * @author Ravish Chawla
+	 */
 	@SuppressLint("ValidFragment")
 	private class DatePicker extends DialogFragment implements
 			DatePickerDialog.OnDateSetListener
 	{
 
-		int whichSpinner = 0;
+		/** The which spinner. */
+		private int whichSpinner = 0;
 
+		/**
+		 * Instantiates a new date picker.
+		 * 
+		 * @param whichSpinner
+		 *            the which spinner
+		 */
 		public DatePicker(int whichSpinner)
 		{
 
 			this.whichSpinner = whichSpinner;
 		}
 
+		/**
+		 * Automatically called when the dialog is firs created
+		 * 
+		 * @param savedInstanceState
+		 *            - saved data from previous instance
+		 */
 		@Override
 		public Dialog onCreateDialog(Bundle savedInstanceState)
 		{
-			// TODO Auto-generated method stub
-
 			final Calendar c = Calendar.getInstance();
 			int day = c.get(Calendar.DAY_OF_MONTH);
 			int month = c.get(Calendar.MONTH);
 			int year = c.get(Calendar.YEAR);
 
 			return new DatePickerDialog(getActivity(), this, year, month, day);
-
 		}
 
+		/**
+		 * Automatically called when the cancel button is clicked in the dialog
+		 * 
+		 * @param dialog
+		 *            - reference to the dialog currently in view
+		 * @return void
+		 */
 		@Override
 		public void onCancel(DialogInterface dialog)
 		{
-			// TODO Auto-generated method stub
-
 			if (whichSpinner == 0)
 				startSpinner.setSelection(0);
 			else
@@ -423,12 +527,22 @@ adView = (AdView)view.findViewById(R.id.adViewSpending);
 			super.onCancel(dialog);
 		}
 
+		/**
+		 * Automatically called when a date from the picker is selected
+		 * 
+		 * @param view
+		 *            - reference to the dialog currently being viewed
+		 * @param year
+		 *            - the year selected
+		 * @param monthOfYear
+		 *            - the month selected
+		 * @param dayOfMonth
+		 *            - the day selected
+		 */
 		@Override
 		public void onDateSet(android.widget.DatePicker view, int year,
 				int monthOfYear, int dayOfMonth)
 		{
-			// TODO Auto-generated method stub
-
 			monthOfYear++;
 			String month = "" + monthOfYear, day = "" + dayOfMonth;
 			if (monthOfYear < 10)
@@ -449,7 +563,6 @@ adView = (AdView)view.findViewById(R.id.adViewSpending);
 			}
 			catch (ParseException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -469,20 +582,33 @@ adView = (AdView)view.findViewById(R.id.adViewSpending);
 			spendingAdapter.clear();
 			spendingAdapter.addAll(regroup());
 			refreshGraph();
-
-
-
 		}
-
 	}
 
+	/**
+	 * An arrayadapter used to fill the list of items with data from the parse
+	 * database
+	 */
 	class SpendingAdapter extends ArrayAdapter<Entry<String, Double>>
 	{
 
+		/** The context. */
 		private Context context;
+
+		/** The entries. */
 		private List<Entry<String, Double>> entries;
+
+		/** The posit. */
 		private int posit = 0;
-		
+
+		/**
+		 * Instantiates a new income adapter.
+		 * 
+		 * @param _context
+		 *            the _context
+		 * @param _parseList
+		 *            the _parse list
+		 */
 		public SpendingAdapter(Context _context,
 				List<Entry<String, Double>> _parseList)
 		{
@@ -490,16 +616,25 @@ adView = (AdView)view.findViewById(R.id.adViewSpending);
 			context = _context;
 			entries = _parseList;
 
-
 		}
 
+		/**
+		 * called to clear all elements in the current adapter
+		 * 
+		 * @return void
+		 */
 		@Override
-		public void clear() {
-			
+		public void clear()
+		{
+
 			posit = 0;
-			
+
 		};
-		
+
+		/**
+		 * used by the adapter to get view for each individual item. overriden
+		 * to use parsed data
+		 */
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent)
 		{
@@ -520,10 +655,9 @@ adView = (AdView)view.findViewById(R.id.adViewSpending);
 			((TextView) convertView.findViewById(R.id.spending_balance))
 					.setText("" + object.getValue());
 
-			
-			
-			((View)convertView.findViewById(R.id.spending_icon)).setBackgroundColor(Utility.getColor(posit++));
-			
+			((View) convertView.findViewById(R.id.spending_icon))
+					.setBackgroundColor(Utility.getColor(posit++));
+
 			return convertView;
 
 		}
@@ -531,7 +665,3 @@ adView = (AdView)view.findViewById(R.id.adViewSpending);
 	}
 
 }
-
-
-
-

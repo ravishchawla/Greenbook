@@ -2,17 +2,20 @@ package com.stacksmashers.greenbook;
 
 import android.os.Bundle;
 
+// TODO: Auto-generated Javadoc
 /**
- * we use this method to verify email 
- * @author CARE
+ * A class left empty for future use. Later, all functionality to verify an email
+ * may be transfered here, instead of keeping it in the Settings Class
  *
+ * @author Ravish Chawla
  */
 public class VerifyEmail extends BaseActivity
 {
-
 /**
- * @param savedInstanceState
- * @return void 
+ * On create.
+ *
+ * @param savedInstanceState the saved instance state
+ * @return void
  */
 	@Override
 	protected void onCreate(Bundle savedInstanceState)

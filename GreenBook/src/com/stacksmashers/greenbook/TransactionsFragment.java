@@ -3,7 +3,6 @@ package com.stacksmashers.greenbook;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -24,8 +23,6 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
-
-import com.google.ads.AdRequest.ErrorCode;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -33,64 +30,90 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.SaveCallback;
 
+/**
+ * A fragment class that handles all code for showing and deeling with
+ * transactions
+ * 
+ * @author Ravish Chawla
+ */
 public class TransactionsFragment extends BaseFragment
 {
 
+	/** The list. */
 	private ListView list;
-	private TransactionsActivity trans;
+
+	/** The total balance. */
 	private TextView totalBalance;
 
+	/** The transaction adapter. */
 	ArrayAdapter<ParseObject> transactionAdapter;
 
+	/** The ad view. */
 	private AdView adView;
 
+	/**
+	 * Instantiates a new transactions fragment.
+	 */
 	public TransactionsFragment()
 	{
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
+	 * The main method.
+	 * 
 	 * @param args
+	 *            the arguments
 	 */
 	public static void main(String[] args)
 	{
-		// TODO Auto-generated method stub
-
 	}
 
+	/**
+	 * called automatically when the fragment is first created. inflates the xml
+	 * layout, finds all views by id, and sets listeners and adapters
+	 * 
+	 * @param inflater
+	 *            - the inflater from base context
+	 * @param container
+	 *            - a group for all views in this layout
+	 * @param savedInstanceState
+	 *            - saved state from a previous instance
+	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState)
 	{
-		// TODO Auto-generated method stub
-		super.onCreateView(inflater, container, savedInstanceState); // create
-		// savedinstancestate
-
+		super.onCreateView(inflater, container, savedInstanceState);
 		View view = inflater.inflate(R.layout.fragment_transactions, container,
-				false);// calling activity register
-
+				false);
 		list = (ListView) view.findViewById(R.id.transactions_list);
-
 		((TransactionsActivity) getActivity()).setTransactionTag(getTag());
-		trans = (TransactionsActivity) getActivity();
-
 		totalBalance = (TextView) view.findViewById(R.id.balance_total);
-
 		adView = (AdView) view.findViewById(R.id.adViewTransactions);
-
 		AdRequest adRequest = new AdRequest.Builder().addTestDevice(
 				Vars.HASHED_DEVICE_ID).build();
-
 		adView.loadAd(adRequest);
-
 		adView.setAdListener(new AdListener()
 		{
+			/**
+			 * called automatically when the ad is first created.
+			 * 
+			 * @return void
+			 */
 			@Override
 			public void onAdOpened()
 			{
 				Log.d("adopen", "ad opened");
 			}
 
+			/**
+			 * called automatically when the ad fails to load. prints out the
+			 * corresponding error
+			 * 
+			 * @param error
+			 *            - the error code
+			 * @return void
+			 */
 			@Override
 			public void onAdFailedToLoad(int error)
 			{
@@ -108,17 +131,19 @@ public class TransactionsFragment extends BaseFragment
 					case AdRequest.ERROR_CODE_NO_FILL:
 						Log.d("adfailed", "error code no fill");
 						break;
-
 				}
-
 			}
 
+			/**
+			 * called automatically when the ad finishes loading
+			 * 
+			 * @return void
+			 */
 			@Override
 			public void onAdLoaded()
 			{
 				Log.d("adload", "ad loaded properly");
 			}
-
 		});
 
 		transactionAdapter = new TransactionAdapter(getActivity(),
@@ -130,24 +155,24 @@ public class TransactionsFragment extends BaseFragment
 	}
 
 	/**
-	 * return void we use this method to add transction
+	 * called to handle adding a new transaction. It creates a new dialog that
+	 * asks for user input, and then reads that input, and syncs it into the
+	 * database.
+	 * 
+	 * @return void
 	 */
 	public void addTransaction()
 	{
 
 		View view = getActivity().getLayoutInflater().inflate(
 				R.layout.dialog_transactions, null);
-
 		Log.i("class widget ", view.findViewById(R.id.transaction_switch)
 				.getClass().getName());
 		final Switch whichSwitch = (Switch) view
 				.findViewById(R.id.transaction_switch);
-
-		// ((TextView)view.findViewById(R.id.transactions_currency)).setText(Vars.currencyParseObj.getString(ParseDriver.CURRENCY_SYMBOL));
-
-		final TextView currency = (TextView)view.findViewById(R.id.transactions_currency);
+		final TextView currency = (TextView) view
+				.findViewById(R.id.transactions_currency);
 		currency.setText(Vars.DEF_CURRENCY_SYMBOL);
-		
 		final TextView balanceText = (TextView) view
 				.findViewById(R.id.transaction_add_value);
 		final TextView sourceText = (TextView) view
@@ -156,42 +181,40 @@ public class TransactionsFragment extends BaseFragment
 				.findViewById(R.id.transaction_add_reasno);
 		final Spinner spinner = (Spinner) view
 				.findViewById(R.id.transactions_account_select);
-
 		spinner.setVisibility(View.GONE);
 
-		String[] from = { DBHelper.ACCOUNT_NAME };
-		int[] to = { android.R.id.text1 };
-
+		
 		ArrayAdapter<ParseObject> spinnerAdap = new SpinnerAdapter(
 				getActivity(), new ArrayList<ParseObject>());
 		spinnerAdap
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinner.setAdapter(spinnerAdap);
-
 		whichSwitch.setOnCheckedChangeListener(new OnCheckedChangeListener()
 		{
 			/**
-			 * @param buttonview
+			 * called automatically when the state of a checkbox changes from
+			 * being clicked to being not
+			 * 
+			 * @param buttonView
+			 *            - a reference to the checkbox
+			 * @param isChecked
+			 *            - the current state of the checkbox
 			 * @return void
-			 * @return boolean
 			 */
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked)
 			{
-				// TODO Auto-generated method stub
-
 				if (isChecked)
 				{
-					sourceText.setHint("Spending Category"); // set hint text
+					sourceText.setHint("Spending Category");
 					reasonText.setVisibility(View.VISIBLE);
 				}
 				else
 				{
-					sourceText.setHint("Money Source"); // set hint text
+					sourceText.setHint("Money Source");
 					reasonText.setVisibility(View.GONE);
 				}
-
 			}
 		});
 
@@ -201,77 +224,78 @@ public class TransactionsFragment extends BaseFragment
 				.setPositiveButton("Enter",
 						new DialogInterface.OnClickListener()
 						{
-
 							/**
+							 * automatically called when the positive button on
+							 * the dialog is clicked
+							 * 
 							 * @param dialog
+							 *            - a reference to the currently visible
+							 *            dialog
 							 * @param which
+							 *            - which button is clicked, (position)
 							 * @return void
 							 */
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which)
 							{
-								// TODO Auto-generated method stub
-
 							}
-
 						})
 				.setNegativeButton("Cancel",
 						new DialogInterface.OnClickListener()
 						// set navigate button
 						{
 							/**
+							 * automatically called when the negative button on
+							 * the dialog is clicked
+							 * 
 							 * @param dialog
+							 *            - a reference to the currently visible
+							 *            dialog
 							 * @param which
+							 *            - which button just got clickekd, by
+							 *            position
 							 * @return void
+							 * 
 							 */
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which)
 							{
-								// TODO Auto-generated method stub
-
 								dialog.dismiss();
 							}
 						}).create();
 		dialog.setOnShowListener(new OnShowListener()
 		{
 			/**
+			 * called automatically when the dialog is first shown
+			 * 
 			 * @param dyalog
-			 * @return void we use this method to show
+			 *            - a reference to the dialog shown
+			 * 
 			 */
 			@Override
 			public void onShow(DialogInterface dyalog)
 			{
 
-				Button plus = dialog.getButton(DialogInterface.BUTTON_POSITIVE); // get
-																					// dialog
-																					// button
-
-				plus.setOnClickListener(new OnClickListener() // set on click
-																// listener
+				Button plus = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+				plus.setOnClickListener(new OnClickListener()
 				{
-
 					private String accountName;
 
 					@SuppressLint("NewApi")
 					@Override
 					/**
-					 * @param v
-					 * @return void 
+					 * automatically called when the positive button on the dialog is clicked
+					 * @param dialog - a reference to the currently visible dialog
+					 * @return void
 					 */
 					public void onClick(View v)
 					{
-						// TODO Auto-generated method stub
-
 						String balanceStr = balanceText.getText().toString();
 						String source = sourceText.getText().toString();
-						// string souce from to string
 						String reason = reasonText.getText().toString();
 						boolean checked = whichSwitch.isChecked();
-
-						// TODO Auto-generated method stub
-
 						boolean exit_now = false;
 
 						if (balanceStr.equals("") && !balanceStr.matches("\\d"))
@@ -296,20 +320,15 @@ public class TransactionsFragment extends BaseFragment
 
 						Double balance = Double.parseDouble(balanceText
 								.getText().toString());
-
 						accountName = Vars.accountsParseList.get(
 								(int) spinner.getSelectedItemId()).getString(
 								ParseDriver.ACCOUNT_NAME);
-
 						Date date = new Date();
 						Log.i("date == null", "" + (date == null));
-
 						String string = Vars.dateFormat.format(date).toString();
 						Log.i("date string", string);
-
 						ParseObject transaction = new ParseObject(
 								ParseDriver.TRANSACTION_TABLE);
-
 						transaction.put(ParseDriver.TRANSACTION_ACCOUNT_NAME,
 								accountName);
 						transaction.put(ParseDriver.ACCOUNT_TRANSACTION,
@@ -332,25 +351,20 @@ public class TransactionsFragment extends BaseFragment
 											Vars.accountParseObj
 													.getDouble(ParseDriver.ACCOUNT_BALANCE)
 													- balance);
-
 						}
 						else
 						{
-
 							transaction.put(ParseDriver.TRANSACTION_VALUE,
 									balance);
-
 							Vars.accountParseObj
 									.put(ParseDriver.ACCOUNT_BALANCE,
 											Vars.accountParseObj
 													.getDouble(ParseDriver.ACCOUNT_BALANCE)
 													+ balance);
 						}
-
 						Vars.accountParseObj.saveInBackground();
 						transaction.saveInBackground(new SaveCallback()
 						{
-
 							@Override
 							public void done(ParseException arg0)
 							{
@@ -367,60 +381,66 @@ public class TransactionsFragment extends BaseFragment
 
 					}
 				});
-
-				// TODO Auto-generated method stub
-
 			}
 		});
-
-		dialog.show(); // show dialog
-
+		dialog.show();
 	}
 
 	/**
-	 * @param userId
-	 * @return int we use this method to getblanace sum
+	 * Gets the latest balance by adding up all sums
+	 * 
+	 * @return int - the balance
 	 */
 	public double getBalanceSum()
 	{
-
 		double sum = 0;
 		for (ParseObject obj : Vars.accountsParseList)
 		{
 			sum += obj.getDouble(ParseDriver.TRANSACTION_VALUE);
 		}
-		return sum; // return sum
-
+		return sum;
 	}
 
+	/**
+	 * updates the totalBalance textView with the latest balance
+	 * 
+	 * @return void
+	 */
 	public void updateTotal()
 	{
 		if (Vars.accountParseObj != null)
 		{
-
 			totalBalance.setText(Vars.DEF_CURRENCY_SYMBOL
 					+ Vars.decimalFormat.format(Vars.accountParseObj
 							.getDouble(ParseDriver.ACCOUNT_BALANCE)));
-
 		}
 
 		else
 			totalBalance.setText(Vars.DEF_CURRENCY_SYMBOL);
 	}
 
+	/**
+	 * automatically called when the activity goes into a resumed state from a
+	 * paused
+	 * 
+	 * @return void
+	 */
 	@Override
 	public void onResume()
 	{
-		// TODO Auto-generated method stub
 		super.onResume();
 
 		if (adView != null)
 			adView.resume();
 
 		Log.d("transac", "transactionfragment.onresume()");
-
 	}
 
+	/**
+	 * called automatcialy when the activity is paused
+	 * 
+	 * @return void
+	 */
 	@Override
 	public void onPause()
 	{
@@ -433,6 +453,9 @@ public class TransactionsFragment extends BaseFragment
 
 	}
 
+	/**
+	 * called automatically when the activity is destroyed
+	 */
 	@Override
 	public void onDestroy()
 	{
@@ -442,27 +465,51 @@ public class TransactionsFragment extends BaseFragment
 			adView.destroy();
 
 		Log.d("transac", "transactionfragment.ondestroy()");
-
 	}
 
+	/**
+	 * a custom array adapter, that is ued to update lists with parse objec
+	 * data.
+	 * 
+	 * @author Ravish Chawla
+	 */
 	class TransactionAdapter extends ArrayAdapter<ParseObject>
 	{
+
+		/** The context. */
 		private Context context;
+
+		/** The parse list. */
 		private List<ParseObject> parseList;
 
+		/**
+		 * Instantiates a new transaction adapter.
+		 * 
+		 * @param _context
+		 *            the _context
+		 * @param _parseList
+		 *            the _parse list
+		 */
 		public TransactionAdapter(Context _context, List<ParseObject> _parseList)
 		{
 			super(_context, R.layout.listblock_transactions, _parseList);
 			context = _context;
 			parseList = _parseList;
-
 		}
 
+		/**
+		 * method called internally to get a view by position. overridden here
+		 * to update view with parse data before it it read.
+		 * 
+		 * @param convertView
+		 *            - a rerence to the view being read
+		 * @param parent
+		 *            - a group in which the view belongs
+		 * @return View - the modified view
+		 */
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent)
 		{
-			// TODO Auto-generated method stub
-
 			if (convertView == null)
 			{
 				convertView = LayoutInflater.from(context).inflate(
@@ -478,9 +525,8 @@ public class TransactionsFragment extends BaseFragment
 			((TextView) convertView
 					.findViewById(R.id.transaction_block_balance))
 					.setText(Vars.DEF_CURRENCY_SYMBOL + balances);
-			if (balances > 0) // balances less than 0
+			if (balances > 0)
 			{
-
 				((TextView) convertView
 						.findViewById(R.id.transaction_block_title))
 						.setText(object
@@ -490,11 +536,9 @@ public class TransactionsFragment extends BaseFragment
 						.findViewById(R.id.transaction_block_icon))
 						.setImageDrawable(getResources().getDrawable(
 								R.drawable.content_positive));
-
 			}
 			else
 			{
-
 				((TextView) convertView
 						.findViewById(R.id.transaction_block_title))
 						.setText(object
@@ -504,45 +548,56 @@ public class TransactionsFragment extends BaseFragment
 						.findViewById(R.id.transaction_block_icon))
 						.setImageDrawable(getResources().getDrawable(
 								R.drawable.content_negative));
-
 			}
 
 			return convertView;
-
 		}
-
 	}
-
-	class SpinnerAdapter extends ArrayAdapter
+	/**
+	 * A custom array adapter for spinners, which 
+	 * sets a view based on datetime objects. 
+	 * 
+	 * @author Ravish Chawla
+	 */
+	class SpinnerAdapter extends ArrayAdapter<ParseObject>
 	{
-		private Context context;
-		private List<ParseObject> parseList;
 
+		/** The context. */
+		private Context context;
+
+		/**
+		 * Instantiates a new spinner adapter.
+		 * 
+		 * @param _context
+		 *            the _context
+		 * @param _parseList
+		 *            the _parse list
+		 */
 		public SpinnerAdapter(Context _context, List<ParseObject> _parseList)
 		{
 			super(_context, android.R.layout.simple_spinner_item, _parseList);
 			context = _context;
-			parseList = _parseList;
-
 		}
 
+		/**
+		 * method called interanlly to return a view based on position. overridden here to modify the view before it is read. 
+		 * @param position - the position of the view
+		 * @param convertView - a reference to the view
+		 * @param parent - the group the parent belongs to
+		 * @return View - the modified view
+		 */
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent)
 		{
-			// TODO Auto-generated method stub
-
 			if (convertView == null)
 			{
 				convertView = LayoutInflater.from(context).inflate(
 						R.layout.listblock_accounts, null);
 			}
 
-			ParseObject object = parseList.get(position);
+			
 
 			return convertView;
-
 		}
-
 	}
-
 }

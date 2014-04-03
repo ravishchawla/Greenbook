@@ -1,7 +1,6 @@
 package com.stacksmashers.greenbook;
 
 import java.util.List;
-
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.AlertDialog;
@@ -16,40 +15,52 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 /**
- * called when the activity first created
+ * The First Activity shown to the user (apart from the splash screen). 
+ * Holds the Login and Registration fragments and coordinates them 
+ * 
+ * @author Ravish Chawla
  */
 public class MainActivity extends BaseActivity
 {
-	protected Button loginButton, registerButton; // call loginbutton and
-													// register button from res
+	/** The register button. */
+	protected Button loginButton, registerButton;
 
+	/** The tag. */
 	protected final String TAG = "activity_main";
 
+	/** The register fragment. */
 	protected RegisterFragment registerFragment;
+	
+	/** The login fragment. */
 	protected LoginFragment loginFragment;
+	
+	/** The action bar. */
 	protected ActionBar actionBar;
+	
+	/** The check. */
 	protected MenuItem check;
 
 	/**
-	 * @param savedInstanceState
-	 * @return void call this method to do initial setup
+	 * called automatically when the activity is first created. 
+	 * inflates the xml layout, finds views within this container, and 
+	 * adds listeners and adapters. 
+	 *
+	 * @param savedInstanceState - saved state from a previous instance
+	 * @return void
 	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-		super.onCreate(savedInstanceState); // create saveinstancestate
-		// setContentView(R.layout.activity_main);
+		super.onCreate(savedInstanceState);
 
-		actionBar = getActionBar();  // get action bar 
+		actionBar = getActionBar(); 
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
 		actionBar.setDisplayShowTitleEnabled(true);  // set display show title  
 
 		Tab tab = actionBar
@@ -67,107 +78,91 @@ public class MainActivity extends BaseActivity
 						new SimpleTabListener<RegisterFragment>(this, "Register",
 								RegisterFragment.class, 1, null));
 		actionBar.addTab(tab);
-
-		// loginButton = (Button)findViewById(R.id.loginButton); // login button
-		// registerButton = (Button)findViewById(R.id.registerButton);
-		// //register button
 	}
 
 	/**
-	 * @param menu
-	 * @return true or false call this method to show the cotextmenu for the menu 
-	 *  this method create option menu 
+	 * automatically called when the activity is first created to inflate
+	 * the options menu. overriden here to inflate a custom menu. 
+	 *
+	 * @param menu - reference to the menu being inflated
+	 * @return boolean - returns true in all cases. there should be no case where the options menu would fail to load. 
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 
-		ActionBar actionBar = getActionBar();   // get action bar 
-		actionBar.setBackgroundDrawable(new ColorDrawable(getResources()  // set background drawble 
+		ActionBar actionBar = getActionBar(); 
+		actionBar.setBackgroundDrawable(new ColorDrawable(getResources() 
 				.getColor(android.R.color.holo_blue_light))); 
-
-		check = menu.findItem(R.id.action_check); // find menu item 
-
+		check = menu.findItem(R.id.action_check);
 		check.setEnabled(false);   
 
 		return true;
-	}// return true 
+	}
 	
 	/**
-	 * this method calls for true or false for seleted items 
+	 * called automatically when an option is selected in the options menu. 
+	 *
+	 * @param item - reference to the item selected 
+	 * @return boolean - returns true if the selection was handled succesfully. 
 	 */
 
 	@Override
 	public boolean onOptionsItemSelected(android.view.MenuItem item)
 	{
-
-		if (item.getItemId() == R.id.action_forgot_password)  // get item id 
+		if (item.getItemId() == R.id.action_forgot_password) 
 		{
 			View view = getLayoutInflater().inflate(R.layout.settings_verify,
 					null);
-			// view layoutinglamer 
 			final EditText textviewer = (EditText) view
 					.findViewById(R.id.verify_email);
-			textviewer.setHint("Email");  // set hint called email 
+			textviewer.setHint("Email");
 			AlertDialog dialog = new AlertDialog.Builder(this)
 					.setView(view)
-					.setMessage("Enter your Email")   // set messege 
-					.setPositiveButton("Send verification Email",  // set button 
-							new OnClickListener()   // new click listener 
+					.setMessage("Enter your Email") 
+					.setPositiveButton("Send verification Email", 
+							new OnClickListener() 
 							{
-
 						/**
-						 *  @param dialog
-						 *  @param which
-						 *  @reutrn which
-						 *  
+						 * automatically called when the positive button on the
+						 * dialog is clicked
+						 * 
+						 * @param dialog
+						 *            - a reference to the currently visible dialog
+						 * @param which
+						 *            - the position of the button just clicked
+						 * 
 						 */
 								@Override
 								public void onClick(DialogInterface dialog,
 										int which)
 								{
-									// TODO Auto-generated method stub
-                                   // we call sqldbase query 
-									
-									
-								//	Cursor caeser = DBDriver.FORGET_USER_INFO(textviewer.getText().toString());
-									//List<ParseObject> parseList = ParseDriver.FORGET_USER_INFO(textviewer.getText().toString());
 									ParseQuery<ParseObject> query = ParseQuery.getQuery(ParseDriver.USER_TABLE);
 									query.whereEqualTo(ParseDriver.USER_EMAIL, textviewer.getText().toString());
 									query.findInBackground(new FindCallback<ParseObject>()
 									{
-										
+							
+										/**
+										 * Parse method, a callback that is automatically initiated when 
+										 * the query is finishe dloading
+										 * 
+										 * @param usersList - the return value of the query
+										 * @param exe - error if failed to query results, null otherwise
+										 */
 										@Override
 										public void done(List<ParseObject> usersList, ParseException exe)
 										{
-											// TODO Auto-generated method stub
-											
 											if(usersList != null)
 											{
-												if (usersList.size() != 0) // caeser.getcount is not 0 
-												{
-													  // move to first 
-
-													
-													ParseObject object = usersList.get(0);
-												//	if (!caeser.getString(1).equals("auth"))
-													
-													
+												if (usersList.size() != 0) 
+												{	
+													ParseObject object = usersList.get(0);	
 														String name = object.getString(ParseDriver.USER_EMAIL);
-														// string name 
 														String email = textviewer.getText()
 																.toString();
-														//view text from tostring 
-														//String pass = caeser.getString(2);
-														String pass = object.getString(ParseDriver.USER_PASS);
-														// pass the string 
-
-														// string messege 
+														String pass = object.getString(ParseDriver.USER_PASS); 
 														String message = Mail.EMAIL_FOR_FORGOTTEN_PASSWORD(name, pass);
-
-														// get new mail 
 														Mail mail = new Mail(
 																"no.reply.greenbook@gmail.com",
 																"hello world");
@@ -175,80 +170,64 @@ public class MainActivity extends BaseActivity
 														mail.setTo(email);
 														mail.setSubject("GreenBook email verifcation");
 														mail.setMessage(message);
-
-														send(mail);      // send mail 
-													
-
+														send(mail);
 												}
 											}
 											else
 												Log.i("Parse", exe.getMessage());
-												
-											
-											
-											
 										}
 									});
-								
-
-
 								}
 							}).create();      
-
-			dialog.show();      // show the dialog 
+			dialog.show(); 
 
 		}
-
-		else if (item.getItemId() == R.id.action_check)   // get item id 
+		
+		else if (item.getItemId() == R.id.action_check) 
 		{
 			if (actionBar.getSelectedNavigationIndex() == 0)
 			{
-				loginFragment = (LoginFragment) getSupportFragmentManager()
-						// get support fragment manager from login fragment 
+				loginFragment = (LoginFragment) getSupportFragmentManager() 
 						.findFragmentByTag("Login");
-				loginFragment.logon();   // logon loginfragment 
+				loginFragment.logon();
 			}
+			
 			else
 			{
 				registerFragment = (RegisterFragment)getSupportFragmentManager().findFragmentByTag("Register");
-				registerFragment.register();      // register 
+				registerFragment.register(); 
 			}
 		}
 
-		return false;    // return false 
+		return false; 
 
 	};
 
 	/**
-	 * @param view
-	 * @return void called when view has been clicked. (login)
-	 * 
+	 * OnClick method associated (in xml) with the Login button 
+	 *
+	 * @param view - reference to the view initiating the call
+	 * @return void
 	 */
 
 	
-	public void onClickLoginMainButton(View view) // to show the contextmenu for
-													// the view
+	public void onClickLoginMainButton(View view)
 	{
-
 		Intent loginIntent = new Intent(getApplicationContext(),
-				LoginFragment.class); // intent login
-		startActivity(loginIntent); // login activity
-
+				LoginFragment.class);
+		startActivity(loginIntent);
 	}
 
 	/**
-	 * @param view
-	 * @return void called when view has been clicked. (register)
-	 * 
+	 * On click method associated (in xml) with the Register button
+	 *
+	 * @param view - reference to the view initiating the call
+	 * @return void 
 	 */
 	public void onClickRegisterMainButton(View view)
 	{
-
 		Intent registerIntent = new Intent(getApplicationContext(),
-				RegisterFragment.class); // intent register
-		startActivity(registerIntent); // register activity
-
+				RegisterFragment.class);
+		startActivity(registerIntent);
 	}
-
-
 }

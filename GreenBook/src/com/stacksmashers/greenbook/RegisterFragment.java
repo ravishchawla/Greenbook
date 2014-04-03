@@ -3,7 +3,6 @@ package com.stacksmashers.greenbook;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
@@ -25,228 +24,223 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 /**
+ * This class maintains code and methods for User Registration. It is bound to
+ * the layout activity_registration.xml
  * 
- * this class make sure everything about regtistration activity
+ * @author Ravish Chawla
  */
-
 public class RegisterFragment extends BaseFragment
 {
 
-	EditText register_name, register_username, register_password,
-			register_checkpassword; // name, username, password, checkpassword
-	TextView name_check, email_check, password_check, checkpassword_check; // we
-																			// can
-																			// see
-																			// name,email,password
-																			// and
-	// checkpassword
-	// check
+	/** The register_checkpassword. */
+	public EditText register_name, register_username, register_password,
+			register_checkpassword;
 
-	ParseQuery<ParseObject> query = ParseQuery.getQuery(ParseDriver.USER_TABLE);
+	/** The checkpassword_check. */
+	public TextView name_check, email_check, password_check,
+			checkpassword_check;
 
-	// calling register button
-	ImageView badge;
+	/** The query. */
+	public ParseQuery<ParseObject> query = ParseQuery
+			.getQuery(ParseDriver.USER_TABLE);
 
-	static boolean dismiss = false;
-	static int PICTURE_REQUEST = 1;
-	static int CROP_REQUEST = 2;
-	/**
-	 * @param args
-	 */
+	/** The badge. */
+	public ImageView badge;
 
+	/** The dismiss. */
+	public static boolean dismiss = false;
+
+	/** The picture request. */
+	public static int PICTURE_REQUEST = 1;
+
+	/** The crop request. */
+	public static int CROP_REQUEST = 2;
+
+	/** The text. */
 	private String text;
-	
-	private List<ParseObject> parseList;
+
+	/** The checkpassword_bool. */
 	private boolean name_bool = false, email_bool = false,
 			password_bool = false, checkpassword_bool = false;
 
+	/** The main. */
 	public static MainActivity main;
+
+	/** The man. */
 	public static NotificationManager man;
+
+	/** The false dialog. */
 	public static AlertDialog falseDialog;
+
+	/** The true dialog. */
 	public static AlertDialog trueDialog;
 
+	/** The photo. */
 	private Bitmap photo;
 
 	/**
-	 * called this method to start the activity. Maintain the activity and
-	 * application.
+	 * Inflating the main layout for this activity, finding views by id,
+	 * initializing important variables, and adding listeners.
 	 * 
 	 * @param inflater
+	 *            the inflater
 	 * @param container
+	 *            the container
 	 * @param savedInstanceState
+	 *            the saved instance state
 	 * @return void
 	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState)
 	{
-		// TODO Auto-generated method stub
-		super.onCreateView(inflater, container, savedInstanceState); // create
-																		// savedinstancestate
-
+		super.onCreateView(inflater, container, savedInstanceState);
 		View view = inflater.inflate(R.layout.activity_register, container,
-				false);// calling activity register
-		// from layour
-
-		main = (MainActivity) getActivity(); // get activity from mainactivity
-
-		register_name = (EditText) view.findViewById(R.id.register_name); // calling
-																			// name
-																			// from
-																			// res
+				false);
+		main = (MainActivity) getActivity();
+		register_name = (EditText) view.findViewById(R.id.register_name);
 		register_username = (EditText) view
-				.findViewById(R.id.register_username); // calling
-														// username
-														// button
+				.findViewById(R.id.register_username);
 		register_password = (EditText) view
-				.findViewById(R.id.register_password); // calling
-														// password
-														// button
+				.findViewById(R.id.register_password);
 		register_checkpassword = (EditText) view
 				.findViewById(R.id.register_checkpassword);
-
-		name_check = (TextView) view.findViewById(R.id.nameCheck); // check name
-		email_check = (TextView) view.findViewById(R.id.emailCheck); // check
-																		// email
-		password_check = (TextView) view.findViewById(R.id.passwordCheck); // check
-																			// password
+		name_check = (TextView) view.findViewById(R.id.nameCheck);
+		email_check = (TextView) view.findViewById(R.id.emailCheck);
+		password_check = (TextView) view.findViewById(R.id.passwordCheck);
 		checkpassword_check = (TextView) view
 				.findViewById(R.id.checkpasswordCheck);
-
 		register_name.addTextChangedListener(new TextWatcher()
 		{
 			/**
+			 * Method called when text is changed
+			 * 
 			 * @param s
+			 *            the - text changed
 			 * @param start
+			 *            - starting position
 			 * @param before
+			 *            - count before
 			 * @param count
-			 * @return void called this method to notify that, within s, the
-			 *         count characters beginning at start have just replaced
-			 *         old text that had length before.
+			 *            - current count
+			 * @return void
 			 */
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count)
 			{
-				// TODO Auto-generated method stub
-				// TODO Auto-generated method stub
-				// TODO Auto-generated method stub
-
-				text = register_name.getEditableText().toString(); // put text
-				// TODO Auto-generated method stub
-				if (text.matches("([A-Z][a-z]+[ ])([A-Z][a-z]+)")) // if text
-																	// are
-																	// registered
-					name_bool = true; // its true
+				text = register_name.getEditableText().toString();
+				if (text.matches("([A-Z][a-z]+[ ])([A-Z][a-z]+)"))
+					name_bool = true;
 				else
-					name_bool = false; // its false
-
+					name_bool = false;
 			}
 
 			/**
+			 * Method called before text is changed
+			 * 
 			 * @param s
+			 *            the - text changed
 			 * @param start
+			 *            - starting position
 			 * @param after
+			 *            - count after
 			 * @param count
-			 * @return void called this method to notify that, within s, the
-			 *         count characters beginning at start start are about to be
-			 *         replaced by new text with length after.
+			 *            - current count
+			 * @return void
 			 */
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
 					int after)
 			{
-				// TODO Auto-generated method stub
-
 			}
 
 			/**
+			 * Method called after text is changed
+			 * 
 			 * @param s
-			 * @return void This method is called to notify you that, somewhere
-			 *         within s, the text has been changed.
+			 *            - text changed as an Editable
+			 * @return void
 			 */
 			@Override
 			public void afterTextChanged(Editable s)
 			{
-				// TODO Auto-generated method stub
-
-				if (name_bool) // if its name
-					name_check.setText(Vars.CHECK); // use the right check mark
+				if (name_bool)
+					name_check.setText(Vars.CHECK);
 				else
-					name_check.setText(Vars.CROSS); // use wrong check mark
+					name_check.setText(Vars.CROSS);
 
 				if (main.check != null)
 					if (name_bool && email_bool && password_bool
-							&& checkpassword_bool) // if name and password true
+							&& checkpassword_bool)
 						main.check.setEnabled(true);
 					else
 						main.check.setEnabled(false);
-
 			}
 		});
 
 		register_username.addTextChangedListener(new TextWatcher() // register
 				{
-
 					/**
+					 * Method called when text is changed
+					 * 
 					 * @param s
+					 *            the - text changed
 					 * @param start
+					 *            - starting position
 					 * @param before
+					 *            - count before
 					 * @param count
-					 * @return void called this method to notify that, within s,
-					 *         the count characters beginning at start have just
-					 *         replaced old text that had length before.
+					 *            - current count
+					 * @return void
 					 */
 					@Override
 					public void onTextChanged(CharSequence s, int start,
 							int before, int count)
 					{
-						// TODO Auto-generated method stub
-
 						text = register_username.getEditableText().toString();
-						// TODO Auto-generated method stub
+
 						if (text.matches(".+@[a-z]+[.](com|edu|org|gov|batman)"))
 							email_bool = true;
 						else
 							email_bool = false;
-
 					}
 
 					/**
+					 * Method called before text is changed
+					 * 
 					 * @param s
+					 *            the - text changed
 					 * @param start
+					 *            - starting position
 					 * @param after
+					 *            - count after
 					 * @param count
-					 * @return void called this method to notify that, within s,
-					 *         the count characters beginning at start start are
-					 *         about to be replaced by new text with length
-					 *         after.
+					 *            - current count
+					 * @return void
 					 */
 					@Override
 					public void beforeTextChanged(CharSequence s, int start,
 							int count, int after)
 					{
-						// TODO Auto-generated method stub
-
 					}
 
 					/**
+					 * Method called after text is changed
+					 * 
 					 * @param s
-					 * @return void This method is called to notify you that,
-					 *         somewhere within s, the text has been changed.
+					 *            - text changed as an editable
+					 * @return void
 					 */
 					@Override
 					public void afterTextChanged(Editable s)
 					{
-						// TODO Auto-generated method stub
-
 						if (email_bool)
 							email_check.setText(Vars.CHECK);
 						else
@@ -258,16 +252,17 @@ public class RegisterFragment extends BaseFragment
 								main.check.setEnabled(true);
 							else
 								main.check.setEnabled(false);
-
 					}
 				});
 
 		register_checkpassword.addTextChangedListener(new TextWatcher()
 		{
 			/**
-			 * @param arg0
+			 * Method called after text is changed
 			 * 
-			 *            we use this method to change the text
+			 * @param s
+			 *            - the text changed as an editable
+			 * @return void
 			 */
 			@Override
 			public void afterTextChanged(Editable arg0)
@@ -277,69 +272,73 @@ public class RegisterFragment extends BaseFragment
 				else
 					checkpassword_check.setText(Vars.CROSS);
 
-				if (main.check != null) // main check not null
+				if (main.check != null)
 					if (name_bool && email_bool && password_bool
 							&& checkpassword_bool)
-						main.check.setEnabled(true); // set main check enabled
-														// true
+						main.check.setEnabled(true);
 					else
-						main.check.setEnabled(false); // set main check enabled
-														// false
-
+						main.check.setEnabled(false);
 			}
 
 			/**
-			 * @param arg0
+			 * Method called before text is changed
+			 * 
+			 * @param s
+			 *            arg0 - text changed
 			 * @param arg1
+			 *            - starting position
 			 * @param arg2
+			 *            - count before
 			 * @param arg3
+			 *            - current count
 			 * @return void
 			 */
 			@Override
 			public void beforeTextChanged(CharSequence arg0, int arg1,
 					int arg2, int arg3)
 			{
-				// TODO Auto-generated method stub
-
 			}
 
 			/**
-			 * @param arg0
+			 * Method called when text is changed
+			 * 
+			 * @param s
+			 *            arg0 - text changed
 			 * @param arg1
+			 *            - starting position
 			 * @param arg2
+			 *            - count after
 			 * @param arg3
+			 *            - current count
 			 * @return void
 			 */
 			@Override
 			public void onTextChanged(CharSequence arg0, int arg1, int arg2,
 					int arg3)
 			{
-				// TODO Auto-generated method stub
-				// TODO Auto-generated method stub
 				text = register_password.getEditableText().toString();
-				// TODO Auto-generated method stub
 				if (text.length() > 0
 						&& text.equals(register_checkpassword.getEditableText()
 								.toString()))
 					checkpassword_bool = true;
 				else
 					checkpassword_bool = false;
-
 			}
 
 		});
 
 		register_password.addTextChangedListener(new TextWatcher()
 		{
-
 			/**
-			 * @param arg0
+			 * Method called when text is changed
 			 * 
+			 * @param arg0
+			 *            - the text changed as an editable
+			 * @return void
 			 */
 			@Override
 			public void afterTextChanged(Editable arg0)
 			{
-
 				if (password_bool)
 					password_check.setText(Vars.CHECK);
 				else
@@ -356,38 +355,44 @@ public class RegisterFragment extends BaseFragment
 						main.check.setEnabled(true);
 					else
 						main.check.setEnabled(false);
-
 			}
 
 			/**
-			 * @param arg0
+			 * Method called before text is changed
+			 * 
+			 * @param s
+			 *            arg0 - text changed
 			 * @param arg1
+			 *            - starting position
 			 * @param arg2
+			 *            - count before
 			 * @param arg3
+			 *            - current count
 			 * @return void
 			 */
 			@Override
 			public void beforeTextChanged(CharSequence arg0, int arg1,
 					int arg2, int arg3)
 			{
-				// TODO Auto-generated method stub
-
 			}
 
 			/**
-			 * @param arg0
+			 * Method called when text is changed
+			 * 
+			 * @param s
+			 *            arg0 - text changed
 			 * @param arg1
+			 *            - starting position
 			 * @param arg2
+			 *            - count before
 			 * @param arg3
+			 *            - current count
 			 * @return void
 			 */
 			@Override
 			public void onTextChanged(CharSequence arg0, int arg1, int arg2,
 					int arg3)
 			{
-
-				// text = register_checkpassword.getEditableText().toString();
-				// TODO Auto-generated method stub
 				if (register_password.getEditableText().toString()
 						.matches(".+"))
 					password_bool = true;
@@ -402,68 +407,62 @@ public class RegisterFragment extends BaseFragment
 					checkpassword_bool = true;
 				else
 					checkpassword_bool = false;
-
 			}
-
 		});
 
 		badge = (ImageView) view.findViewById(R.id.register_pic);
 		badge.setOnClickListener(new OnClickListener()
 		{
-
 			/**
+			 * 
+			 * called when a click operation is performed on the imageview
+			 * 
 			 * @param v
+			 *            - reference to imageview pressed
 			 * @return void
 			 * 
 			 */
 			@Override
 			public void onClick(View v)
 			{
-				// TODO Auto-generated method stub
-
-				Intent intent = new Intent(); // get new intent
-				intent.setType("image/*"); // set intext type image
+				Intent intent = new Intent();
+				intent.setType("image/*");
 				intent.setAction(Intent.ACTION_GET_CONTENT);
 				startActivityForResult(
-						Intent.createChooser(intent, "Select Picture"), // select
-																		// picture
+						Intent.createChooser(intent, "Select Picture"),
 						PICTURE_REQUEST);
-
 			}
 		});
 
 		return view;
-
 	}
 
 	/**
+	 * called automatically when the intent returns to current activity.
+	 * 
 	 * @param request
+	 *            - id of the requested intent
 	 * @param result
+	 *            - status of
 	 * @param data
-	 * @return void this method returns result from activity
+	 *            - data returned from intent
+	 * @return void
 	 */
 
 	@Override
 	public void onActivityResult(int request, int result, Intent data)
 	{
-
 		;
 		getActivity();
-		if (result == Activity.RESULT_OK) // if result for getactivity is
-												// ok
+		if (result == Activity.RESULT_OK)
 		{
-			if (request == PICTURE_REQUEST) // request picture
-
+			if (request == PICTURE_REQUEST)
 			{
 				Toast.makeText(getActivity(), "Selected", Toast.LENGTH_LONG)
-						.show(); // select get activity
-
+						.show();
 				Uri selectedImage = data.getData();
 				String path = selectedImage.getPath();
 				Log.d("path: ", path);
-
-				// badge.setImageURI(selectedImage);
-
 				final Intent crop = new Intent("com.android.camera.action.CROP");
 				crop.setData(selectedImage);
 				crop.putExtra("outputX", 75);
@@ -484,148 +483,134 @@ public class RegisterFragment extends BaseFragment
 					photo = extras.getParcelable("data");
 					badge.setImageBitmap(photo);
 					dismiss = false;
-
 				}
 			}
-
 		}
-
-	}
-
-	@Override
-	public void onResume() // resume work
-	{
-		super.onResume();
-
-		if (dismiss)
-		{
-			register_name.setText(""); // set text name
-			register_username.setText(""); // set text username
-			register_password.setText(""); // set text password
-			register_checkpassword.setText("");// set text check password
-			dismiss = true;
-		}
-
 	}
 
 	/**
-	 * called this method to start the regristration activity Maintain the
-	 * regristration activity and application.
+	 * automatically called activity resumes from a pause state.
 	 * 
+	 * @return void
+	 */
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+		if (dismiss)
+		{
+			register_name.setText("");
+			register_username.setText("");
+			register_password.setText("");
+			register_checkpassword.setText("");
+			dismiss = true;
+		}
+	}
+
+	/**
+	 * called to get user entered input data and query against the database for
+	 * duplicate users.
 	 * 
 	 * @return void
 	 */
 
 	public void register()
 	{
-		final String name = register_name.getEditableText().toString(); // hold
-																		// string
-		// called
-		// name
-		final String username = register_username.getEditableText().toString(); // hold
-		// string
-		// called
-		// username
-		final String password = register_password.getEditableText().toString(); // hold
-		// string
-		// called
-		// password
-		final String checkPassword = register_checkpassword.getEditableText()
-				.toString(); // hold string called check password
-
-		// caeser = DBDriver.CHECK_DUPLICATE_USERS(username);
-
+		final String name = register_name.getEditableText().toString();
+		final String username = register_username.getEditableText().toString();
+		final String password = register_password.getEditableText().toString();
 		query = new ParseQuery<ParseObject>(ParseDriver.USER_TABLE);
 		query.whereEqualTo(ParseDriver.USER_EMAIL, username);
-
 		query.findInBackground(new FindCallback<ParseObject>()
 		{
-
 			@Override
 			public void done(List<ParseObject> usersList, ParseException exe)
 			{
-				// TODO Auto-generated method stub
-
 				if (usersList != null)
 				{
 					if (usersList.size() > 0)
 					{
 						handleRegistration(true, name, username, password);
-
 					}
 					else
 						handleRegistration(false, name, username, password);
-
 				}
-
 				else
 					Log.i("Parse", exe.getMessage());
 
 			}
 		});
 
-
 	}
+
+	/**
+	 * called as a handler for entering registration data into the database, and
+	 * storing user selected picture onto a file.
+	 * 
+	 * @param condition
+	 *            - whether the username is a duplicate
+	 * @param name
+	 *            - the name entered by the user
+	 * @param username
+	 *            - username selected by the user
+	 * @param password
+	 *            - the password entered by the user
+	 * @return int - debugging output for JUnit testing
+	 */
 
 	public int handleRegistration(boolean condition, String name,
 			String username, String password)
 	{
-
 		if (condition)
-			{
-			
+		{
 			falseDialog = new AlertDialog.Builder(getActivity())
-					.setMessage(
-							"Login Now with Email: " + username
-									+ "?")
+					.setMessage("Login Now with Email: " + username + "?")
 					.setTitle("Email Alreaddy Registered")
 					.setPositiveButton("Yes",
 							new DialogInterface.OnClickListener()
 							{
-
 								@Override
 								/**
-								 * @param which
-								 * @return number
+								 * called automatically when the positive button is clicked 
+								 * by the user
+								 * @param dialog - reference to dialog currently in view
+								 * @param which - position of the button clicked in the view
+								 * @return void 
 								 * call this method when user touches the item 
 								 */
 								public void onClick(DialogInterface dialog,
 										int which)
 								{
-									// TODO Auto-generated method stub
-
 									if (main != null)
 										main.actionBar
 												.setSelectedNavigationItem(0);
-
-									// activity
-
 								}
 							})
 					.setNegativeButton("No",
 							new DialogInterface.OnClickListener()
 							{
-
 								/**
+								 * called automatically when the negative button
+								 * is clicked by the user
+								 * 
+								 * @param dialog
+								 *            - reference to dialog currently in
+								 *            view
 								 * @param which
-								 * @return number call this method when user
+								 *            - position of the button clicked
+								 *            in the view
+								 * @return void call this method when user
 								 *         touches the item
 								 */
 								@Override
 								public void onClick(DialogInterface dialog,
 										int which)
 								{
-									// TODO Auto-generated method stub
-
-									register_username.setText(""); // set
-																	// username
-																	// text
-
+									register_username.setText("");
 								}
-							}).show(); // show username register
-			
+							}).show();
 			return 0;
-			}
+		}
 
 		else
 		{
@@ -640,130 +625,105 @@ public class RegisterFragment extends BaseFragment
 			ContextWrapper wrapper = new ContextWrapper(getActivity());
 			File imagesPath = wrapper.getDir("images", Context.MODE_PRIVATE);
 			File filePath = new File(imagesPath, main.normalizeEmail(username));
-
 			FileOutputStream output = null;
-
 			try
 			{
-
 				output = new FileOutputStream(filePath);
 				Log("File Path: " + filePath);
 				photo.compress(Bitmap.CompressFormat.PNG, 100, output);
 				Log("Photo compressed");
-
 				output.close();
 			}
-
 			catch (Exception e)
 			{
-
-				Toast.makeText(getActivity(), "Couldn't save photo", // make
-																		// text
+				Toast.makeText(getActivity(), "Couldn't save photo",
 						Toast.LENGTH_SHORT);
 				e.printStackTrace();
-				
 				return 0;
 			}
-
-			// DBDriver.INSERT_USER(name, username, password,
-			// main.codeEmail(username), 14);
-		//	ParseDriver.INSERT_USER(name, username, password,
-			//		main.codeEmail(username), 14);
-
-		man = 	main.NotifyUser(1, "Please verify your Email Address",
+			man = main.NotifyUser(1, "Please verify your Email Address",
 					"Click to open Default Email client",
 					getActivity().getPackageManager()
 							.getLaunchIntentForPackage("com.android.email"));
 			sendMessage(name, username, password, main.codeEmail(username));
-			// user table
-
-		trueDialog= 	new AlertDialog.Builder(getActivity())
+			trueDialog = new AlertDialog.Builder(getActivity())
 					.setTitle("Login Now?")
 					.setPositiveButton("Yes",
 							new DialogInterface.OnClickListener()
 							{
-
 								/**
+								 * called automatically when the positive button
+								 * is clicked by the user
+								 * 
+								 * @param dialog
+								 *            - reference to dialog currently in
+								 *            view
 								 * @param which
-								 * @return number call this method when user
+								 *            - position of the button clicked
+								 *            in the view
+								 * @return void call this method when user
 								 *         touches the item
 								 */
 								@Override
 								public void onClick(DialogInterface dialog,
 										int which)
 								{
-									// TODO Auto-generated method stub
-
-									/*
-									 * Intent LoginIntent = new Intent(
-									 * getActivity(), LoginActivity.class);
-									 * getActivity().finish();
-									 * startActivity(LoginIntent); // start
-									 */// activity
-
 									dismiss = true;
 									dialog.dismiss();
-									// getActivity().getActionBar().setSelectedNavigationItem(0);
-
 									MainActivity main = (MainActivity) getActivity();
-
 									if (main != null)
 										main.actionBar
 												.setSelectedNavigationItem(0);
-
 								}
 							})
 					.setNegativeButton("Exit",
 							new DialogInterface.OnClickListener()
 							{
-
 								/**
-								 * @param which
+								 * called automatically when the positive button
+								 * is clicked by the user
+								 * 
 								 * @param dialog
-								 * @return number call this method when user
+								 *            - reference to dialog currently in
+								 *            view
+								 * @param which
+								 *            - position of the button clicked
+								 *            in the view
+								 * @return void call this method when user
 								 *         touches the item
 								 */
 								@Override
 								public void onClick(DialogInterface dialog,
 										int which)
 								{
-									// TODO Auto-generated method stub
-
-									getActivity().finish(); // finish
-
+									getActivity().finish();
 								}
-							}).show(); // show the activity
-			
-			
-
+							}).show();
 		}
 		return 1;
 	}
 
 	/**
+	 * called to send a message to the user as verification.
+	 * 
 	 * @param name
+	 *            - the name of the user
 	 * @param user
+	 *            - the username, also email at which to send to
+	 * @param pass
+	 *            - the password - sent to user as insurance
 	 * @param code
-	 * @return void this method send messege to string
+	 *            - a verification code
 	 */
-
 	public void sendMessage(String name, String user, String pass, String code)
 	{
-		// sendEmail();
-
 		String message = Mail
 				.EMAIL_FOR_NEW_REGISTRATION(name, user, code, pass);
-
 		Mail mail = new Mail("no.reply.greenbook@gmail.com", "hello world");
 		mail.setFrom("no.reply.greenbook@gmail.com");
 		mail.setTo(user);
 		mail.setSubject("GreenBook email verifcation");
 		mail.setMessage(message);
-
 		main.send(mail);
-
-		// new SendMail().execute(mail);
-
 	}
-
 }

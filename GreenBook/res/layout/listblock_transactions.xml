@@ -10,7 +10,7 @@
            android:layout_width="60dp"
            android:layout_height="50dp"
            android:layout_alignParentTop="true"
-           android:src="@drawable/transactions" />
+           android:src="@drawable/content_positive" />
 
         <TextView
         android:id="@+id/transaction_block_balance"
@@ -29,6 +29,7 @@
             android:layout_toLeftOf="@+id/transaction_block_balance"
             android:layout_toRightOf="@+id/transaction_block_icon"
             android:ellipsize="marquee"
+			android:singleLine="true"
             android:gravity="center_vertical"
             android:text="Title"
             android:textAppearance="?android:attr/textAppearanceLarge" />

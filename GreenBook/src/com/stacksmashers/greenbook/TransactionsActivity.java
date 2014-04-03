@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.FragmentTransaction;
@@ -29,65 +28,97 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class TransactionsActivity, surrounding activity for holding
+ * the three swipe view tabs/fragments. Also utilizes the Navigation Drawer
+ * and is the central hub of the entire app. 
+ * 
+ * @author Ravish Chawla
+ */
 public class TransactionsActivity extends BaseActivity implements
 		ActionBar.TabListener
 {
 
+	/** The page adapter. */
 	private FragmentPagerAdapter pageAdapter;
+
+	/** The viewpager. */
 	private ViewPager viewpager;
-	private TransactionsFragment transactionFragment;
+
+	/** The action bar. */
 	private ActionBar actionBar;
+
+	/** The user id. */
 	protected String userID;
+
+	/** The account id. */
 	protected int accountID = -1;
+
+	/** The nav list. */
 	private ListView navList;
+
+	/** The navigation drawer. */
 	private DrawerLayout navigationDrawer;
+
+	/** The action toggle. */
 	private ActionBarDrawerToggle actionToggle;
 
+	/** The on create being called. */
 	private boolean onCreateBeingCalled = false;
-	ParseQuery<ParseObject> userQuery = ParseQuery
-			.getQuery(ParseDriver.USER_TABLE);
-	ParseQuery<ParseObject> currencyQuery = ParseQuery
+
+	
+
+	/** The currency query. */
+	private ParseQuery<ParseObject> currencyQuery = ParseQuery
 			.getQuery(ParseDriver.CURRENCY_TABLE);
 
-	ArrayAdapter navigationAdapter;
+	/** The navigation adapter. */
+	private ArrayAdapter<ParseObject> navigationAdapter;
 
-	// private TabsPageAdapter tabsPageAdapter;
+	/** The spending tag. */
+	private String SPENDING_TAG;
 
-	int spendingMode;
-	int incomeMode;
-	String SPENDING_TAG;
-	String INCOME_TAG;
-	String TRANSACTIONS_TAG;
+	/** The income tag. */
+	private String INCOME_TAG;
 
+	/** The transactions tag. */
+	private String TRANSACTIONS_TAG;
+
+	/** The spending reports fragment. */
 	protected SpendingReportsFragment spendingReportsFragment;
 
+	/** The income source reports fragment. */
 	protected IncomeSourceReportsFragment incomeSourceReportsFragment;
 
-
-
 	/**
-	 * this class make sure about transction activity
+	 * this class make sure about transction activity.
 	 */
 	public TransactionsActivity()
 	{
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
+	 * The main method.
+	 * 
 	 * @param args
+	 *            the arguments
 	 */
 	public static void main(String[] args)
 	{
-		// TODO Auto-generated method stub
-
 	}
 
+	/**
+	 * Called to requery the database to find updated values, and also refresh
+	 * the list and graph on the activity with newere data.
+	 * 
+	 * @return void
+	 */
 	public void query()
 	{
 		ParseQuery<ParseObject> accountQuery = ParseQuery
@@ -97,50 +128,57 @@ public class TransactionsActivity extends BaseActivity implements
 		accountQuery.findInBackground(new FindCallback<ParseObject>()
 		{
 
+			/**
+			 * called automatically as a callback when Parse finishes finding in
+			 * the background
+			 * 
+			 * @param accountList
+			 *            - the list of items it has found
+			 * @param exe
+			 *            - an exception, null, if worked properly
+			 */
 			@Override
 			public void done(List<ParseObject> accountList, ParseException exe)
 			{
-				// TODO Auto-generated method stub
-
 				if (accountList != null)
 				{
 					Vars.accountsParseList = accountList;
 					navigationAdapter.clear();
 					navigationAdapter.addAll(accountList);
 				}
-
 			}
 		});
-
 	}
 
+	/**
+	 * Called to query all the transactions for this specific user, and update
+	 * all views that use that data.
+	 * 
+	 * @param callUpdate
+	 *            - boolean that checks whether to update all views as well,
+	 *            useful when not all the views have properly ifnlatd before
+	 *            this call.
+	 */
 	public void queryTransactions(final boolean callUpdate)
 	{
 		ParseQuery<ParseObject> transactionQuery = ParseQuery
 				.getQuery(ParseDriver.TRANSACTION_TABLE);
-		// transactionQuery.whereEqualTo(ParseDriver.ACCOUNT_TRANSACTION,
-		// Vars.accountParseObj);
-
-		final TransactionsFragment transactionsFragment = (TransactionsFragment) getSupportFragmentManager()
-				.findFragmentByTag(TRANSACTIONS_TAG);
-
-		final SpendingReportsFragment spendingFragment = (SpendingReportsFragment) getSupportFragmentManager()
-				.findFragmentByTag(SPENDING_TAG);
-
-		final IncomeSourceReportsFragment incomeFragment = (IncomeSourceReportsFragment) getSupportFragmentManager()
-				.findFragmentByTag(INCOME_TAG);
-
-
 		Log.i("transfrag ", "" + (Vars.accountParseObj == null));
 		transactionQuery.findInBackground(new FindCallback<ParseObject>()
 		{
-
+			/**
+			 * called automatically as a callback when Parse finishes finding in
+			 * the background
+			 * 
+			 * @param accountList
+			 *            - the list of items it has found
+			 * @param exe
+			 *            - an exception, null, if worked properly
+			 */
 			@Override
 			public void done(List<ParseObject> transactionList,
 					ParseException exe)
 			{
-				// TODO Auto-generated method stub
-
 				if (transactionList != null)
 				{
 					try
@@ -148,7 +186,6 @@ public class TransactionsActivity extends BaseActivity implements
 						Vars.transactionParseList = transactionList;
 						if (callUpdate)
 							updateData();
-
 					}
 
 					catch (Exception aout)
@@ -158,48 +195,46 @@ public class TransactionsActivity extends BaseActivity implements
 				}
 				else
 					Log.i("transfragerr ", exe.getMessage());
-
 			}
 		});
-
 	}
 
 	/**
+	 * Called automatically when the activity is first created. Inflates the xml
+	 * layout, finds all views by their ids, and assigns liseners and adapters.
+	 * 
 	 * @param savedInstanceState
-	 * @return void we call this method to initalize this activity
+	 *            - saved data from a previous instance
+	 * @return void
 	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-
-		// TODO Auto-generated method stub
-		super.onCreate(savedInstanceState); // initalize savedinstancestate
-
+		super.onCreate(savedInstanceState);
 		onCreateBeingCalled = true;
-		setContentView(R.layout.activity_transaction); // call setcontentview
-		Bundle extras = getIntent().getExtras(); // get intent bundle extras
-
+		setContentView(R.layout.activity_transaction);
+		Bundle extras = getIntent().getExtras();
 		userID = extras.getString("User ID");
 		viewpager = (ViewPager) findViewById(R.id.transactoins_viewpager);
-
 		currencyQuery.whereEqualTo(ParseDriver.OBJECT_ID,
 				Vars.currencyParseObj.getObjectId());
-
 		currencyQuery.findInBackground(new FindCallback<ParseObject>()
 		{
-
+			/**
+			 * called automatically as a callback when Parse finishes finding in
+			 * the background
+			 * 
+			 * @param currencyList
+			 *            - the list of items it has found
+			 * @param exe
+			 *            - an exception, null, if worked properly
+			 */
 			@Override
 			public void done(List<ParseObject> currencyList, ParseException exe)
 			{
-				// TODO Auto-generated method stub
-
 				if (currencyList != null)
 				{
-					// Vars.DEF_CURRENT_ID =
-					// usersList.get(0).getString(ParseDriver.USER_CURRENCY);
-
 					ParseObject object = currencyList.get(0);
-
 					Vars.DEF_CURRENCY_SYMBOL = object
 							.getString(ParseDriver.CURRENCY_SYMBOL);
 					Vars.DEF_CURRENCY_TICKER = object
@@ -209,21 +244,16 @@ public class TransactionsActivity extends BaseActivity implements
 				}
 			}
 		});
-		actionBar = getActionBar(); // get action bar
+		actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-		// actionBar.setDisplayShowTitleEnabled(true); // enabled display show
-
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setHomeButtonEnabled(true);
-
 		navList = (ListView) findViewById(R.id.navigation_drawer);
 		navigationDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-
 		actionToggle = new ActionBarDrawerToggle(this, navigationDrawer,
 				R.drawable.ic_drawer, R.string.open_drawer,
 				R.string.close_drawer)
 		{
-
 			@Override
 			public void onDrawerClosed(View view)
 			{
@@ -235,71 +265,69 @@ public class TransactionsActivity extends BaseActivity implements
 			{
 				invalidateOptionsMenu();
 			}
-
 		};
 
 		navigationDrawer.setDrawerListener(actionToggle);
-
 		navigationAdapter = new NavigationAdapter(getApplicationContext(),
 				new ArrayList<ParseObject>());
 		navList.setAdapter(navigationAdapter);
-
 		query();
 		queryTransactions(false);
 		navList.setOnItemClickListener(new OnItemClickListener()
 		{
 
+			/**
+			 * called automatically when an item in the Navigation Drawer has
+			 * been clicked.
+			 * 
+			 * @param parent
+			 *            - a reference to the Adapter that filled this list
+			 * @param view
+			 *            - a reference to the view that was just clicked
+			 * @param pos
+			 *            - the position of the item clicked
+			 * @param id
+			 *            - the id value assigned to the view by its adapter
+			 * @return void
+			 */
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int pos,
 					long id)
 			{
-				// TODO Auto-generated method stub
-				TransactionsFragment transactionsFragment = (TransactionsFragment) getSupportFragmentManager()
-						.findFragmentByTag(TRANSACTIONS_TAG);
-
-				SpendingReportsFragment spendingFragment = (SpendingReportsFragment) getSupportFragmentManager()
-						.findFragmentByTag(SPENDING_TAG);
-
-				IncomeSourceReportsFragment incomeFragment = (IncomeSourceReportsFragment) getSupportFragmentManager()
-						.findFragmentByTag(INCOME_TAG);
-
-
+				
 				Vars.accountParseObj = Vars.accountsParseList.get(pos);
-
-				String titleText = "Transactions";
-
+				
 				updateData();
 				accountID = pos;
 				navigationDrawer.closeDrawer(navList);
-
 			}
-
 		});
-
-		// navList.setAdapter(mAdapter);
 
 		Utility.dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
 				Locale.getDefault());
-
-		String titleText = "Transactions";
-
+		
 		pageAdapter = new FragmentPagerAdapter(getSupportFragmentManager())
 		{
-
 			@Override
 			public int getCount()
 			{
-				// TODO Auto-generated method stub
 				return 3;
 			}
 
+			/**
+			 * Called when a Tab is selected for the first time. It creates a
+			 * new instance of the fragment being created, and returns a
+			 * reference to that, based on which tab has been clicked.
+			 * 
+			 * @param - the index based on the position of tab clicked
+			 */
 			@Override
 			public Fragment getItem(int index)
 			{
 				switch (index)
 				{
 					case 0:
-						return transactionFragment = new TransactionsFragment();
+						return new TransactionsFragment();
 
 					case 1:
 						spendingReportsFragment = new SpendingReportsFragment();
@@ -310,92 +338,98 @@ public class TransactionsActivity extends BaseActivity implements
 						incomeSourceReportsFragment = new IncomeSourceReportsFragment();
 						incomeSourceReportsFragment.setRetainInstance(true);
 						return incomeSourceReportsFragment;
-
-
 				}
 
 				return null;
-
-				// TODO Auto-generated method stub
-
 			}
 		};
+
 		viewpager.setOffscreenPageLimit(2);
+
 		viewpager.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
 		{
-
+			/**
+			 * method called automatically when a page has been shifted to.
+			 * 
+			 * @param position
+			 *            - which page has been shiftied to
+			 */
 			@Override
 			public void onPageSelected(int position)
 			{
-				// TODO Auto-generated method stub
-
 				actionBar.setSelectedNavigationItem(position);
-
 				Log.i("Transct", "calling onREsume()");
 				pageAdapter.getItem(position).onResume();
-
 				invalidateOptionsMenu();
 			}
 
+			/**
+			 * method called automatically when a page is being scrolled, and
+			 * has not completly finished scrolling.
+			 * 
+			 * @param arg0
+			 *            - the position of the previous page
+			 * @param arg1
+			 *            - scrolling factor
+			 * @param arg2
+			 *            - the posiition of the next page
+			 */
 			@Override
 			public void onPageScrolled(int arg0, float arg1, int arg2)
 			{
-				// TODO Auto-generated method stub
-
 			}
 
+			/**
+			 * method called automatically when the scrolling state of a page
+			 * changes
+			 * 
+			 * @param arg0
+			 *            - the position of the page whose values just changed
+			 */
 			@Override
 			public void onPageScrollStateChanged(int arg0)
 			{
-				// TODO Auto-generated method stub
-
 			}
 		});
 
 		viewpager.setAdapter(pageAdapter);
-		// actionBar.setHomeButtonEnabled(false);
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
 		actionBar.addTab(actionBar.newTab().setText("Transactions")
 				.setTabListener(this));
 		actionBar.addTab(actionBar.newTab().setText("Spending Report")
 				.setTabListener(this));
 		actionBar.addTab(actionBar.newTab().setText("Income Report")
 				.setTabListener(this));
-		
 
 		new Handler().postDelayed(new Runnable()
 		{
-
 			@Override
 			/**
-			 * @return void 
+			 * method called after 2000 milliseconds have passed
+			 * @return  void
 			 */
 			public void run()
 			{
-
 				navigationDrawer.openDrawer(navList);
-
 			}
 
 		}, 2000);
-
 	}
 
+	/**
+	 * method called to obtain new data from the database, and to set adapters
+	 * in this view with the newer data
+	 * 
+	 * @return voiod
+	 */
 	protected void updateData()
 	{
-		// TODO Auto-generated method stub
 		final TransactionsFragment transactionsFragment = (TransactionsFragment) getSupportFragmentManager()
 				.findFragmentByTag(TRANSACTIONS_TAG);
-
 		final SpendingReportsFragment spendingFragment = (SpendingReportsFragment) getSupportFragmentManager()
 				.findFragmentByTag(SPENDING_TAG);
-
 		final IncomeSourceReportsFragment incomeFragment = (IncomeSourceReportsFragment) getSupportFragmentManager()
 				.findFragmentByTag(INCOME_TAG);
-
-
-		
 		transactionsFragment.transactionAdapter.clear();
 		String objId = Vars.accountParseObj.getObjectId();
 		Vars.transactionAccountParseList.clear();
@@ -407,17 +441,13 @@ public class TransactionsActivity extends BaseActivity implements
 					.getObjectId().equals(objId))
 			{
 				Vars.transactionAccountParseList.add(obj);
-
 				Log.d("transagcc",
 						"adding "
 								+ obj.getDouble(ParseDriver.TRANSACTION_VALUE));
 			}
-
 		}
-
 		Log.d("transac", Vars.transactionAccountParseList.toString() + "");
 		Log.d("transac", Vars.transactionTotalSum + "");
-
 		if (transactionsFragment != null)
 		{
 			transactionsFragment.transactionAdapter
@@ -439,17 +469,19 @@ public class TransactionsActivity extends BaseActivity implements
 			incomeFragment.incomeAdapter.addAll(incomeFragment.regroup());
 			incomeFragment.refreshGraph();
 		}
-		
-		
 	}
 
+	/**
+	 * method called automatically when the activity goes into the resumed state
+	 * from a paused state
+	 * 
+	 * @return void
+	 */
 	@Override
 	protected void onResume()
 	{
-
 		Log.d("transac", "transactionactivity.onresume()");
 		super.onResume();
-
 		navigationAdapter.clear();
 		navigationAdapter.addAll(Vars.accountsParseList);
 
@@ -458,20 +490,25 @@ public class TransactionsActivity extends BaseActivity implements
 			onCreateBeingCalled = false;
 			return;
 		}
-
 		updateData();
-
 	}
 
+	/**
+	 * method called automatically when the activity goes into the paused state
+	 * 
+	 * @return void
+	 */
 	@Override
 	protected void onPause()
 	{
 		super.onPause();
 		Log.d("transac", "transactionactivity.onpause()");
-
 		onCreateBeingCalled = false;
 	}
 
+	/**
+	 * method called automatically when the activity gets destroyed
+	 */
 	@Override
 	protected void onDestroy()
 	{
@@ -480,21 +517,22 @@ public class TransactionsActivity extends BaseActivity implements
 	}
 
 	/**
+	 * method called automatically when the activity starts. it finds a menu by
+	 * id, and inflates it on top of the screen. This activity uses this
+	 * extensiviely. When a page switches, the current menu is invalidated, so
+	 * this method is recalled, and it changes the current menu based on which
+	 * page is open right now.
 	 * 
-	 * @param menu
-	 * @return boolean we use this method to create option menu
+	 * @return menu - the menu being inflated
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-
 		if (navigationDrawer.isDrawerOpen(navList))
 			getMenuInflater().inflate(R.menu.menu_drawer, menu);
 
 		else
 		{
-
-			// TODO Auto-generated method stub
 			Log.i("Debug", "Create");
 			int sel = getActionBar().getSelectedNavigationIndex();
 			if (sel == 0)
@@ -505,26 +543,22 @@ public class TransactionsActivity extends BaseActivity implements
 
 			else if (sel == 2)
 				getMenuInflater().inflate(R.menu.menu_income, menu);
-			
-			
-			
-			// submenu.add("Stranger").setIcon(R.drawable.content_forgot);
 		}
-		// }
 
 		return super.onCreateOptionsMenu(menu);
 	}
 
 	/**
-	 * @return boolean
+	 * Called automatically when an item in the options menu is selected. method
+	 * also takes in account which page is currently open.
+	 * 
 	 * @param item
-	 *            we use this method to select items
+	 *            - a reference to the men item just selected
+	 * @return boolean
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
-		// TODO Auto-generated method stub
-
 		TransactionsFragment transactionsFragment = (TransactionsFragment) getSupportFragmentManager()
 				.findFragmentByTag(TRANSACTIONS_TAG);
 
@@ -536,7 +570,6 @@ public class TransactionsActivity extends BaseActivity implements
 		if (item.getItemId() == R.id.transactions_refresh)
 		{
 			queryTransactions(true);
-
 		}
 
 		if (item.getItemId() == R.id.accounts_refresh)
@@ -579,56 +612,52 @@ public class TransactionsActivity extends BaseActivity implements
 		IncomeSourceReportsFragment incomeFragment = (IncomeSourceReportsFragment) getSupportFragmentManager()
 				.findFragmentByTag(INCOME_TAG);
 
-		
 		if (item.getItemId() == R.id.spending_view_type)
 		{
-
 			if (item.isChecked())
 			{
 				item.setIcon(R.drawable.content_list);
-
 				spendingFragment.displayView(0);
 				item.setChecked(false);
 			}
 			else
 			{
 				item.setIcon(R.drawable.content_graph);
-
 				spendingFragment.displayView(1);
 				item.setChecked(true);
 			}
 
 			return super.onOptionsItemSelected(item);
-
 		}
 
 		if (item.getItemId() == R.id.income_view_type)
 		{
-
 			if (item.isChecked())
 			{
 				item.setIcon(R.drawable.content_graph);
-
 				incomeFragment.displayView(1);
 				item.setChecked(false);
 			}
 			else
 			{
 				item.setIcon(R.drawable.content_list);
-
 				incomeFragment.displayView(0);
 				item.setChecked(true);
 			}
 
 			return super.onOptionsItemSelected(item);
-
 		}
 
-
-		
 		return super.onOptionsItemSelected(item);
-
 	}
+
+	/**
+	 * method called after onCreate has been called.
+	 * 
+	 * @param savedInstanceState
+	 *            - saved state from a previous instance
+	 * @return void
+	 */
 
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState)
@@ -639,76 +668,148 @@ public class TransactionsActivity extends BaseActivity implements
 
 	};
 
+	/**
+	 * method called when the state of the page changes (ie., navigation drawer
+	 * closed, opened, viewpager on, off, etc..)
+	 * 
+	 * @param newConfig
+	 *            - the newer configuration of the activity
+	 * @return void
+	 */
+
 	@Override
 	public void onConfigurationChanged(
 			android.content.res.Configuration newConfig)
 	{
-
 		super.onConfigurationChanged(newConfig);
 		actionToggle.onConfigurationChanged(newConfig);
-
 	};
 
+	/**
+	 * Sets the spending report tag
+	 * 
+	 * @param tag
+	 *            the new spending report tag
+	 */
 	public void setSpendingReportTag(String tag)
 	{
 		SPENDING_TAG = tag;
 	}
 
+	/**
+	 * Sets the income report tag.
+	 * 
+	 * @param tag
+	 *            the new income report tag
+	 */
 	public void setIncomeReportTag(String tag)
 	{
 		INCOME_TAG = tag;
 	}
 
-	
+	/**
+	 * Gets the spending report tag.
+	 * 
+	 * @return the spending report tag
+	 */
 	public String getSpendingReportTag()
 	{
 		return SPENDING_TAG;
 	}
 
+	/**
+	 * Gets the income report tag.
+	 * 
+	 * @return the income report tag
+	 */
 	public String getIncomeReportTag()
 	{
 		return INCOME_TAG;
 	}
 
-	
+	/**
+	 * Sets the transaction tag.
+	 * 
+	 * @param tag
+	 *            the new transaction tag
+	 */
 	public void setTransactionTag(String tag)
 	{
 		TRANSACTIONS_TAG = tag;
 	}
 
+	/**
+	 * Gets the transaction tag.
+	 * 
+	 * @return the transaction tag
+	 */
 	public String getTransactionTag()
 	{
 		return TRANSACTIONS_TAG;
 	}
 
+	/**
+	 * method automatically called when a tab from the actionbar is reselected
+	 * 
+	 * @param tab
+	 *            - the tab reselected
+	 * @ft - FragmentTransaction from base context
+	 * @return void
+	 */
 	@Override
 	public void onTabReselected(Tab tab, FragmentTransaction ft)
 	{
-		// TODO Auto-generated method stub
-
 	}
 
+	/**
+	 * method called automatically when a tab from the action bar is selected
+	 * 
+	 * @param tab
+	 *            - the tab selected
+	 * @param ft
+	 *            - fragmentTransaction from base context
+	 */
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft)
 	{
-		// TODO Auto-generated method stub
-
 		viewpager.setCurrentItem(tab.getPosition());
-
 	}
 
+	/**
+	 * called automatically when a tab is deselected from the actionbar
+	 * 
+	 * @param tab
+	 *            - the tab deselected
+	 * @param ft
+	 *            - fragmentTransaction from base context
+	 * @return void
+	 */
 	@Override
 	public void onTabUnselected(Tab tab, FragmentTransaction ft)
 	{
-		// TODO Auto-generated method stub
-
 	}
 
+	/**
+	 * A custom array adatper that sets the values of the 
+	 * list based on data from the database
+	 */
 	class NavigationAdapter extends ArrayAdapter<ParseObject>
 	{
+
+		/** The context. */
 		private Context context;
+
+		/** The parse list. */
 		private List<ParseObject> parseList;
 
+		/**
+		 * Instantiates a new navigation adapter.
+		 * 
+		 * @param _context
+		 *            the _context
+		 * @param _parseList
+		 *            the _parse list
+		 */
 		public NavigationAdapter(Context _context, List<ParseObject> _parseList)
 		{
 			super(_context, R.layout.drawer_item, _parseList);
@@ -717,11 +818,17 @@ public class TransactionsActivity extends BaseActivity implements
 
 		}
 
+		/**
+		 * called internallly by the adapter when setting views. ovveridden here to 
+		 * modify the view before it is put in the adapter. 
+		 * @param position - the position of the view
+		 * @param convertView - the view being modified
+		 * @param parent - a container for all views
+		 * @return View - the modified view 
+		 */
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent)
 		{
-			// TODO Auto-generated method stub
-
 			if (convertView == null)
 			{
 				convertView = LayoutInflater.from(context).inflate(
@@ -734,9 +841,6 @@ public class TransactionsActivity extends BaseActivity implements
 					.setText(object.getString(ParseDriver.ACCOUNT_NAME));
 
 			return convertView;
-
 		}
-
 	}
-
 }

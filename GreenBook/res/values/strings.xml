@@ -31,5 +31,9 @@
     <string name="open_drawer">Open Drawer</string>
 	<string name="close_drawer">Close Drawer</string>
 	
+	
+	 <string name="App_Metadata">Greenbook \nVer. 1.7</string>
+	 <string name = "name">Ravish Chawla \nAnna Stenstrom \nDevang Patel \nNick Patel \nCody Owen</string>
+	 <string name="copyfight">"Copyright © 2014 Franz d'Anconia</string>
 	<string name="transaction_ad_unit_id">ca-app-pub-8311338123994124/5214395496</string>
 </resources>
