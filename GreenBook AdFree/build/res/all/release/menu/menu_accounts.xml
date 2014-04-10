@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/accounts_add" 
+          android:text="Add"
+          android:visible="true"
+          android:showAsAction="always"
+          android:title="Add"
+          android:icon="@drawable/content_new"></item>
+    
+     <item android:id="@+id/accounts_sort" 
+          android:text="Sort"
+          android:visible="true"
+          android:showAsAction="always"
+          android:title="Add"
+          android:icon="@drawable/content_sort">
+         
+         <menu>
+			<item 
+			    android:id="@+id/accounts_color_sort"
+			    android:title="Color" />
+			
+			<item
+			    android:id="@+id/accounts_name_sort"
+			    android:title="Name" />
+			
+			<item
+			    android:id="@+id/accounts_balance_sort"
+			    android:title="Balance" />
+			
+			<item
+			    android:id="@+id/accounts_bank_sort"
+			    android:title="Bank" />
+             
+             
+         </menu>
+         
+         
+         
+     </item> 
+
+    <!--  --><Spinner android:id="@+id/accounts_spinner"
+        	 android:layout_width="fill_parent"
+        	 android:layout_height="wrap_content"
+        	 android:drawSelectorOnTop="true"
+        	 android:visible="true"
+        	 android:showAsAction="always"></Spinner>
+    -->
+</menu>
+<!-- From: file:/D:/Users/Ravish/SkyDrive/Workspace/CurrentProjects/2340/Android%20Design%20Project/GreenBook/res/menu/menu_accounts.xml -->

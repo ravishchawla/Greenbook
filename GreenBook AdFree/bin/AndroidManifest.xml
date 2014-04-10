@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.stacksmashers.greenbook"
+    android:versionCode="1"
+    android:versionName="1.7" >
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="18" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/greenbook"
+        android:label="@string/app_name"
+        android:logo="@drawable/greenbook"
+        android:theme="@style/AppTheme" >
+                <activity
+            android:name="com.stacksmashers.greenbook.SplashScreen"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.stacksmashers.greenbook.MainActivity"
+            android:uiOptions="splitActionBarWhenNarrow" >
+        </activity>
+        <activity android:name="com.stacksmashers.greenbook.RegisterActivity" >
+            android:noHitory="true">
+        </activity>
+        <activity android:name="com.stacksmashers.greenbook.LoginActivity" >
+        </activity>
+        <activity android:name="com.stacksmashers.greenbook.AccountsFragment" >
+        </activity>
+        <activity android:name="com.stacksmashers.greenbook.SettingsActivity" >
+        </activity>
+        <activity android:name="com.stacksmashers.greenbook.VerifyEmail" >
+        </activity>
+        <activity
+            android:name="com.stacksmashers.greenbook.HomeActivity"
+            android:uiOptions="splitActionBarWhenNarrow" >
+>
+        </activity>
+        <activity android:name="com.stacksmashers.greenbook.TransactionsActivity" >
+        </activity>
+        <activity
+            android:name="com.stacksmashers.greenbook.About" ></activity>
+    </application>
+
+</manifest>

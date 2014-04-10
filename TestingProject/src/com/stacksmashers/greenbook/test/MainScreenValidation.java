@@ -3,7 +3,6 @@ package com.stacksmashers.greenbook.test;
 import android.os.SystemClock;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.stacksmashers.greenbook.MainActivity;
 import com.stacksmashers.greenbook.R;
@@ -38,7 +37,6 @@ public class MainScreenValidation extends
 	 * 
 	 */
 	public void testDuplicateUser() {
-TextView nameField = (TextView)activity.findViewById(R.id.register_name);
 		
 		
 		
@@ -76,10 +74,7 @@ TextView nameField = (TextView)activity.findViewById(R.id.register_name);
 	 */
 	public void testNewUser()
 	{
-		
-TextView nameField = (TextView)activity.findViewById(R.id.register_name);
-		
-		
+	
 		
 		
 		if(fragment != null)
@@ -156,7 +151,7 @@ TextView nameField = (TextView)activity.findViewById(R.id.register_name);
 		
 		if(fragment != null)
 		{
-			fragment.main = null;
+			RegisterFragment.main = null;
 			fragment.handleRegistration(false, "Ravish Chawla", "stack@smashers.com", "ss");
 			assertTrue("Check null", activity.getActionBar().getSelectedNavigationIndex() == 1);
 		}
@@ -241,7 +236,7 @@ TextView nameField = (TextView)activity.findViewById(R.id.register_name);
 		{
 			fragment.handleRegistration(true, "Ravish Chawla", "stack@smashers.com", "ss");
 			
-			assertTrue("Notification Manager notnull", fragment.man != null);
+			assertTrue("Notification Manager notnull", RegisterFragment.man != null);
 		}
 		
 	}
@@ -256,7 +251,7 @@ TextView nameField = (TextView)activity.findViewById(R.id.register_name);
 	{
 		if(fragment != null)
 		{
-			assertTrue("Notification Manager notnull", fragment.man == null);
+			assertTrue("Notification Manager notnull", RegisterFragment.man == null);
 		}
 	}
 	

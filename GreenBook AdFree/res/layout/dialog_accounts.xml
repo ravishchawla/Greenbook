@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/accounts_dialog"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#606060"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/accounts_dialog_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:ems="10"
+        android:hint="Account Name"
+        android:textColor="#009900"
+        android:textColorHint="#C0C0C0" >
+
+        <requestFocus />
+    </EditText>
+
+    <Spinner
+        android:id="@+id/accounts_dialog_bank"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/accounts_dialog_name" />
+
+    <TextView
+        android:id="@+id/account_display_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/accounts_dialog_balance"
+        android:layout_alignBottom="@+id/accounts_dialog_balance"
+        android:layout_alignParentLeft="true"
+        android:text="£"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <EditText
+        android:id="@+id/accounts_dialog_balance"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/accounts_dialog_bank"
+        android:ems="10"
+        android:hint="Balance"
+        android:inputType="numberDecimal"
+        android:textColor="#009900"
+        android:textColorHint="#C0C0C0" />
+
+    <CheckBox
+        android:id="@+id/accounts_interst"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/accounts_dialog_balance"
+        android:layout_marginTop="14dp"
+        android:text="Interst" />
+
+    <AutoCompleteTextView
+        android:id="@+id/accounts_display_custom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/accounts_interst"
+        android:autoText="true"
+        android:ems="10"
+        android:hint="Custom Bank"
+        android:textColor="#009900"
+        android:textColorHint="#C0C0C0" />
+
+    <EditText
+        android:id="@+id/accounts_interst_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/accounts_interst"
+        android:ems="10"
+        android:hint="Interest Rate"
+        android:textColor="#009900"
+        android:textColorHint="#C0C0C0" />
+
+</RelativeLayout>

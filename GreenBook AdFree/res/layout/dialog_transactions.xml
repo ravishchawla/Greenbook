@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#606060"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/transaction_add_source"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/transaction_add_value"
+        android:ems="10"
+        android:hint="Money Source"
+        android:textColor="#009900"
+        android:textColorHint="#C0C0C0" />
+
+    <EditText
+        android:id="@+id/transaction_add_reasno"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/transaction_add_source"
+        android:ems="10"
+        android:hint="Reason For Withrawal"
+        android:visibility="gone" />
+
+    <Spinner
+        android:id="@+id/transactions_account_select"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" />
+
+    <EditText
+        android:id="@+id/transaction_add_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/transaction_switch"
+        android:layout_toRightOf="@+id/transaction_add_source"
+        android:ems="10"
+        android:hint="Value"
+        android:inputType="numberDecimal"
+        android:textColor="#009900"
+        android:textColorHint="#C0C0C0" />
+
+    <TextView
+        android:id="@+id/transactions_currency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/transaction_add_value"
+        android:layout_alignRight="@+id/transaction_add_source"
+        android:text="£ "
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <Switch
+        android:id="@+id/transaction_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/transactions_account_select"
+        android:checked="false"
+        android:textOff="Deposit"
+        android:textOn="Withraw" />
+
+</RelativeLayout>

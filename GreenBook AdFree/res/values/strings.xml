@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">GreenBook</string>
+    <string name="action_settings">Settings</string>
+    <string name="welcome">Welcome to GreenBook.</string>
+    <string-array name="Banks">
+        <item >American Expres Credit Card</item>
+        <item >Bank of America</item>
+        <item >Capital One</item>
+        <item >Chase Bank</item>
+        <item >Citibank Banking</item>
+        <item >Discover Card</item>
+        <item >Fifth Third Bank</item>
+        <item >SunTrust Bank</item>
+        <item >US Bank</item>
+        <item >Wells Fargo</item>
+        <item >Other</item>
+    </string-array>
+
+    <string-array name="Colors">
+        <item >White </item>
+        <item >Red </item>
+        <item >Green </item>
+        <item >Blue </item>
+        <item >Yellow </item>
+        <item >Cyan </item>
+        <item >Magenta </item>
+     </string-array>
+     
+    <string name="open_drawer">Open Drawer</string>
+	<string name="close_drawer">Close Drawer</string>
+	
+	
+	 <string name="App_Metadata">Greenbook \nVer. 1.7</string>
+	 <string name = "name">Ravish Chawla \nAnna Stenstrom \nDevang Patel \nNick Patel \nCody Owen</string>
+	 <string name="copyfight">"Copyright © 2014 Franz d'Anconia</string>
+	<string name="transaction_ad_unit_id">ca-app-pub-8311338123994124/5214395496</string>
+</resources>

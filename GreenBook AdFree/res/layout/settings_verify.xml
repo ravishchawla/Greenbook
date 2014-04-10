@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#606060"
+    android:gravity="center_horizontal|center_vertical"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/verify_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:ems="10"
+        android:gravity="center"
+        android:hint="Enter Code"
+        android:textColor="#006600"
+        android:textColorHint="#C0C0C0" >
+
+        <requestFocus />
+    </EditText>
+
+</LinearLayout>

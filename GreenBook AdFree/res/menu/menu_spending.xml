@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+   
+    
+    <item android:id="@+id/accounts_settings"
+           android:text="Settings"
+           android:title="Settings"
+           android:visible="true" >
+    </item>       
+    
+     
+    	<item android:id="@+id/transactions_refresh"
+    	    android:text="Refresh"
+    	    android:visible="true"
+    	    android:showAsAction="always"
+    	    android:title="Refresh"
+    	    android:icon="@drawable/ic_action_refresh" ></item>
+          
+   <item
+       android:id="@+id/spending_view_type" 
+          android:text="View Type"
+          android:visible="true"
+          android:showAsAction="always"
+          android:title="View Type"
+          android:checked="true"
+          android:icon="@drawable/content_list">
+   
+			
+                   
+           
+   
+               
+   </item>
+
+</menu>
