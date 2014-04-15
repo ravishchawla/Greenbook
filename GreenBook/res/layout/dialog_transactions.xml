@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- @author Anna Stenstrom -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#606060"
+    android:background="#C0C0C0"
     android:orientation="vertical" >
 
     <EditText
@@ -15,7 +16,7 @@
         android:ems="10"
         android:hint="Money Source"
         android:textColor="#000000"
-        android:textColorHint="#C0C0C0" />
+        android:textColorHint="#909090" />
 
     <EditText
         android:id="@+id/transaction_add_reasno"
@@ -45,7 +46,7 @@
         android:hint="Value"
         android:inputType="numberDecimal"
         android:textColor="#000000"
-        android:textColorHint="#C0C0C0" />
+        android:textColorHint="#909090" />
 
     <TextView
         android:id="@+id/transactions_currency"
@@ -63,6 +64,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/transactions_account_select"
         android:checked="false"
+        android:textColorLink="@android:color/holo_green_dark"
         android:textOff="Deposit"
         android:textOn="Withraw" />
 

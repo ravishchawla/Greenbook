@@ -18,7 +18,7 @@ import javax.mail.internet.MimeMultipart;
  * The Class Mail, intended to create a connection with an 
  * email server and send an email message over a network connection. 
  * 
- * @authoor Ravish Chawla
+ * @author Ravish Chawla
  */
 public class Mail extends javax.mail.Authenticator
 {
