@@ -4,13 +4,6 @@
     android:layout_height="match_parent"
     android:background="#606060"
     android:orientation="vertical" >
-    
-       <ImageView
-           android:id="@+id/transaction_block_icon"
-           android:layout_width="60dp"
-           android:layout_height="50dp"
-           android:layout_alignParentTop="true"
-           android:src="@drawable/content_positive" />
 
         <TextView
         android:id="@+id/transaction_block_balance"
@@ -39,10 +32,29 @@
             android:layout_width="fill_parent"
             android:layout_height="26dip"
             android:layout_alignLeft="@+id/transaction_block_title"
+            android:layout_alignParentRight="true"
             android:layout_below="@+id/transaction_block_balance"
             android:ellipsize="marquee"
             android:text="Description"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="#006600" />
+            android:textColor="#000000" />
+
+        <ImageView
+            android:id="@+id/transaction_block_icon"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/content_positive" />
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="45dp"
+            android:layout_height="30dp"
+            android:layout_alignBottom="@+id/transaction_block_description"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/transaction" />
+
+eLarge" />
         
 </RelativeLayout>

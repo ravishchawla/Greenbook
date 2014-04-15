@@ -30,8 +30,10 @@
         android:layout_centerHorizontal="true"
         android:text="Greenbook"
         android:textAppearance="@style/AppTheme"
-        android:textColor="#009900"
-        android:textSize="58dp" />
+        android:textColor="#000000"
+        android:textColorLink="@android:color/holo_green_dark"
+        android:textSize="58dp"
+        android:textStyle="italic" />
 
     <ProgressBar
         android:id="@+id/progressBar1"

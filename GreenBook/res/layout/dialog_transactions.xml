@@ -14,7 +14,7 @@
         android:layout_below="@+id/transaction_add_value"
         android:ems="10"
         android:hint="Money Source"
-        android:textColor="#009900"
+        android:textColor="#000000"
         android:textColorHint="#C0C0C0" />
 
     <EditText
@@ -44,7 +44,7 @@
         android:ems="10"
         android:hint="Value"
         android:inputType="numberDecimal"
-        android:textColor="#009900"
+        android:textColor="#000000"
         android:textColorHint="#C0C0C0" />
 
     <TextView

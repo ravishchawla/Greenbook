@@ -3,6 +3,7 @@ package com.stacksmashers.greenbook;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
@@ -11,6 +12,7 @@ import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -24,6 +26,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -83,6 +86,8 @@ public class RegisterFragment extends BaseFragment
 
 	/** The photo. */
 	private Bitmap photo;
+	
+	public TextView check;
 
 	/**
 	 * Inflating the main layout for this activity, finding views by id,
@@ -171,11 +176,13 @@ public class RegisterFragment extends BaseFragment
 			@Override
 			public void afterTextChanged(Editable s)
 			{
-				if (name_bool)
+				if (name_bool){
 					name_check.setText(Vars.CHECK);
-				else
+					name_check.setTextColor(Color.GREEN);
+				}
+				else{
 					name_check.setText(Vars.CROSS);
-
+				}
 				if (main.check != null)
 					if (name_bool && email_bool && password_bool
 							&& checkpassword_bool)
@@ -241,10 +248,13 @@ public class RegisterFragment extends BaseFragment
 					@Override
 					public void afterTextChanged(Editable s)
 					{
-						if (email_bool)
+						if (email_bool){
 							email_check.setText(Vars.CHECK);
-						else
+							email_check.setTextColor(Color.GREEN);
+						}	
+						else{
 							email_check.setText(Vars.CROSS);
+						}	
 
 						if (main.check != null)
 							if (name_bool && email_bool && password_bool

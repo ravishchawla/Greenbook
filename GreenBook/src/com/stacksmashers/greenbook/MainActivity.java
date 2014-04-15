@@ -1,7 +1,6 @@
 package com.stacksmashers.greenbook;
 
 import java.util.List;
-
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.AlertDialog;
@@ -14,10 +13,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
-
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -60,7 +57,6 @@ public class MainActivity extends BaseActivity
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-		getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 		super.onCreate(savedInstanceState);
 
 		actionBar = getActionBar(); 
@@ -96,9 +92,7 @@ public class MainActivity extends BaseActivity
 	{
 		getMenuInflater().inflate(R.menu.main, menu);
 
-		ActionBar actionBar = getActionBar(); 
-		actionBar.setBackgroundDrawable(new ColorDrawable(getResources() 
-				.getColor(android.R.color.holo_blue_light))); 
+
 		check = menu.findItem(R.id.action_check);
 		check.setEnabled(false);   
 
