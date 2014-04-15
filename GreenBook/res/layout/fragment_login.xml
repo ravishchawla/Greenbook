@@ -16,9 +16,10 @@
         android:gravity="center"
         android:hint="Login Password"
         android:inputType="textPassword"
-        android:textColor="#009900"
+        android:textColor="#000000"
         android:textColorHint="#C0C0C0"
-        android:textStyle="italic" />
+        android:textColorLink="@android:color/holo_green_dark"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/login_name"
@@ -31,10 +32,10 @@
         android:gravity="center"
         android:hint="Login Email"
         android:inputType="textEmailAddress"
-        android:textColor="#009900"
+        android:textColor="#000000"
         android:textColorHint="#C0C0C0"
-        android:textColorLink="#009900"
-        android:textStyle="italic" />
+        android:textColorLink="@android:color/holo_green_dark"
+        android:textStyle="bold" />
 
     <ImageView
         android:id="@+id/imageView1"
