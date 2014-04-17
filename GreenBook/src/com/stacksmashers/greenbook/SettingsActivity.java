@@ -56,7 +56,7 @@ public class SettingsActivity extends BaseActivity
 	private ListView list;
 
 	/** The setting_names. */
-	private static String[] setting_names = new String[3];
+	private static String[] setting_names = new String[4];
 
 	/** The setting pos. */
 	private static int settingPos;
@@ -85,13 +85,17 @@ public class SettingsActivity extends BaseActivity
 	private Setting region = new Setting("Regional Settings",
 			"Select your default Currency", R.drawable.ic_launcher);
 
+	
+	/** The tutorial */
+	private Setting tutorial = new Setting("Tutorial", "View Tutorial", R.drawable.ic_launcher);
+	
 	/** The about. */
 	private Setting about = new Setting("About the App",
 			"Meet the developers and contact them for support",
 			R.drawable.ic_launcher);
 
 	/** The settings. */
-	private Setting[] settings = { verification, region, about };
+	private Setting[] settings = { verification, region, tutorial, about };
 
 	/** The settings adapter. */
 	private CustomArrayAdapter settingsAdapter;
@@ -101,9 +105,12 @@ public class SettingsActivity extends BaseActivity
 
 	/** The Constant SETTING_REGION_SETTING. */
 	private final static int SETTING_REGION_SETTING = 1;
+		
+	/** The Constant SETTING_TUTORIAL. */
+	private final static int SETTING_TUTORIAL = 2;
 	
 	/** The Constant SETTING_ABOUT. */
-	private final static int SETTING_ABOUT = 2;
+	private final static int SETTING_ABOUT = 3;
 
 	/**
 	 * Instantiates a new settings activity.
@@ -169,6 +176,12 @@ public class SettingsActivity extends BaseActivity
 				{
 					Log.i("setting", "calling changeregion)(");
 					changeRegion();
+				}
+				
+				if (position == SETTING_TUTORIAL)
+				{
+					Log.i("setting", "calling tutorial");
+					viewTutorial();
 				}
 				
 				if(position == SETTING_ABOUT)
@@ -385,6 +398,7 @@ public class SettingsActivity extends BaseActivity
 					Toast.LENGTH_LONG).show();
 	}
 
+	
 	/**
 	 * called when the user decides to change the currency of the app
 	 */
@@ -494,7 +508,8 @@ public class SettingsActivity extends BaseActivity
 								}
 							});
 
-						Vars.userParseObj.put(ParseDriver.USER_CURRENCY, value);
+						Vars.userParseObj.put(ParseDriver.USER_CURRENCY, Vars.currencyParseList.get(value));
+						Log.d("userparseobj: ", Vars.currencyParseList.get(value).getObjectId());
 						Vars.userParseObj.saveInBackground();
 						Vars.DEF_CURRENCY_SYMBOL = currencySymbols.get(value);
 						Vars.DEF_CURRENCY_TICKER = tickers.get(value);
@@ -516,6 +531,13 @@ public class SettingsActivity extends BaseActivity
 		});
 	}
 
+	
+	public void viewTutorial()
+	{
+		Intent intent = new Intent(getApplicationContext(), TutorialActivity.class);
+		startActivity(intent);
+	}
+	
 	/**
 	 * method called when the activit changes state from a paused to a resumed
 	 * 

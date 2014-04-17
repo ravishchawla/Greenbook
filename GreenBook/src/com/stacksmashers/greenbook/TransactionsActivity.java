@@ -4,13 +4,19 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.ActionBar.Tab;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -28,6 +34,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -271,6 +278,42 @@ public class TransactionsActivity extends BaseActivity implements
 		navigationAdapter = new NavigationAdapter(getApplicationContext(),
 				new ArrayList<ParseObject>());
 		navList.setAdapter(navigationAdapter);
+		
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		SharedPreferences.Editor editor = prefs.edit();
+		
+		if(!prefs.contains(Vars.userParseObj.getObjectId()))
+		{
+			editor.putBoolean(Vars.userParseObj.getObjectId(), false);
+			editor.commit();
+			
+		AlertDialog dialog = 	new AlertDialog.Builder(this).setTitle("View Tutorial for First time use?").setPositiveButton("Yes", new OnClickListener()
+			{
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which)
+				{
+					// TODO Auto-generated method stub
+					
+					Intent tutorialIntent = new Intent(getApplicationContext(), TutorialActivity.class);
+					startActivity(tutorialIntent);
+					
+				}
+			}).setNegativeButton("No", new OnClickListener()
+			{
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which)
+				{
+					// TODO Auto-generated method stub
+					dialog.dismiss();
+					
+				}
+			}).show();
+		
+		
+		}
+		
 		query();
 		queryTransactions(false);
 		navList.setOnItemClickListener(new OnItemClickListener()

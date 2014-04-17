@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+         <item android:id="@+id/tutorial_left" 
+          android:text="Back"
+          android:visible="true"
+          android:showAsAction="always"
+          android:title="Back"
+          android:icon="@drawable/ic_action_back"></item>
+  
+         <item android:id="@+id/tutorial_right" 
+          android:text="Next"
+          android:visible="true"
+          android:showAsAction="always"
+          android:title="Next"
+          android:icon="@drawable/ic_action_forward"></item>
+         
+         
+         
+    
+
+</menu>

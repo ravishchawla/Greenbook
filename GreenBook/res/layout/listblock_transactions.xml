@@ -49,12 +49,12 @@
             android:src="@drawable/content_positive" />
 
         <ImageView
-            android:id="@+id/imageView1"
+            android:id="@+id/tutorial_image"
             android:layout_width="45dp"
             android:layout_height="30dp"
             android:layout_alignBottom="@+id/transaction_block_description"
             android:layout_alignParentLeft="true"
-            android:src="@drawable/transaction" />
+            android:src="@drawable/transactions" />
 
 eLarge" />
         
