@@ -4,12 +4,12 @@ An Android app that that allows users to manage monetary transactions on the go.
 
 Features
 ========
-Parse Backend Service for cloud data storage
-Ad monetization through AdMob service
-In-app Email account verification (using JavaMail api)
-Native and clean UI Design
-Currency integration with Yahoo! Currency Feed
-ModelViewPresenter Design
+- Parse Backend Service for cloud data storage
+- Ad monetization through AdMob service
+- In-app Email account verification (using JavaMail api)
+- Native and clean UI Design
+- Currency integration with Yahoo! Currency Feed
+- ModelViewPresenter Design
 
 
 Releases
